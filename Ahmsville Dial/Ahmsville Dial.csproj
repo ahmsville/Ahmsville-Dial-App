@@ -65,22 +65,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dial_Base.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dial_MacroKey.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dial_SpaceNav.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dial_Ultimate.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -92,18 +76,6 @@
     <Compile Include="AhmsvilleDialViewModel.cs" />
     <Compile Include="DialConfiguration.xaml.cs">
       <DependentUpon>DialConfiguration.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dial_Base.xaml.cs">
-      <DependentUpon>Dial_Base.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dial_MacroKey.xaml.cs">
-      <DependentUpon>Dial_MacroKey.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dial_SpaceNav.xaml.cs">
-      <DependentUpon>Dial_SpaceNav.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dial_Ultimate.xaml.cs">
-      <DependentUpon>Dial_Ultimate.xaml</DependentUpon>
     </Compile>
     <Compile Include="InApp_Operations\InAppOperations_Interface.cs" />
     <Compile Include="InApp_Operations\SpaceNavOperations.cs" />

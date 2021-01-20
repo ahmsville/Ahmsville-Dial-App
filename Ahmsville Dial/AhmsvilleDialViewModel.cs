@@ -179,10 +179,10 @@ namespace Ahmsville_Dial
 
             dialinfo = new List<Dial_information>
             {
-            new Dial_information {name = "Base", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Ahmsville_Dial_Base_version_main\", imagepath = softwarepath + @"\base\default.jpg" },
-            new Dial_information {name = "MacroKey", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Ahmsville_Dial_Macro_version_main\", imagepath = softwarepath + @"\macro\default.jpg" },
-            new Dial_information {name = "SpaceNav", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Ahmsville_Dial_SpaceNav_version_main\", imagepath = softwarepath + @"\spacenav\default.jpg" },
-            new Dial_information {name = "Absolute", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Ahmsville_Dial_Absolute_version_main\", imagepath = softwarepath + @"\absolute\default.jpg" }
+            new Dial_information {name = "Base", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Base_Variant_main\", imagepath = softwarepath + @"\base\default.jpg" },
+            new Dial_information {name = "MacroKey", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\MacroKey_Variant_main\", imagepath = softwarepath + @"\macro\default.jpg" },
+            new Dial_information {name = "SpaceNav", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\SpaceNav_Variant_main\", imagepath = softwarepath + @"\spacenav\default.jpg" },
+            new Dial_information {name = "Absolute", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Absolute_Variant_main\", imagepath = softwarepath + @"\absolute\default.jpg" }
             };
 
             

@@ -48,11 +48,22 @@ namespace Ahmsville_Dial
             DataContext = new AhmsvilleDialViewModel();
 
             //AhmsvilleDialViewModel.Instance.diallistindex = 3;
-           diallist.SelectedIndex = 3;
-           // loaddialinfo();
+            diallist.SelectedIndex = 0;
+            // loaddialinfo();
             // dialimage.Source = new BitmapImage(new Uri(selecteddialimagepath[10]));
             // DataContext = new AhmsvilleDialViewModel();
-
+/*
+            appinfo.Visibility = System.Windows.Visibility.Collapsed;
+            knob1.Visibility = System.Windows.Visibility.Collapsed;
+            knob2.Visibility = System.Windows.Visibility.Collapsed;
+            capacitivetouch.Visibility = System.Windows.Visibility.Collapsed;
+            mk1.Visibility = System.Windows.Visibility.Collapsed;
+            mk2.Visibility = System.Windows.Visibility.Collapsed;
+            mk3.Visibility = System.Windows.Visibility.Collapsed;
+            mk4.Visibility = System.Windows.Visibility.Collapsed;
+            mk5.Visibility = System.Windows.Visibility.Collapsed;
+            spacenav.Visibility = System.Windows.Visibility.Collapsed;
+*/
             spacenav_manual.IsChecked = true;   //select default space navigator mode
             configname.Text = "NewAppConfig";
             PopulateConfigList();  //load configuration selection
