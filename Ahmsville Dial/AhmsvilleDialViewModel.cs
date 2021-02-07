@@ -167,22 +167,27 @@ namespace Ahmsville_Dial
 
             inappoperations = new List<inapp>
             { 
-            new inapp {operationname = "volume_up", operationclass = "System_MediaControl"},
-            new inapp {operationname = "volume_down", operationclass = "System_MediaControl"},
-            new inapp {operationname = "volume_mute", operationclass = "System_MediaControl"},
-            new inapp {operationname = "media_PlayPause", operationclass = "System_MediaControl"},
-            new inapp {operationname = "media_next", operationclass = "System_MediaControl"},
-            new inapp {operationname = "media_prev", operationclass = "System_MediaControl"},
-            new inapp {operationname = "media_stop", operationclass = "System_MediaControl"}
-            
+            new inapp {operationname = "volume_up", operationclass = "MediaControl"},
+            new inapp {operationname = "volume_down", operationclass = "MediaControl"},
+            new inapp {operationname = "volume_mute", operationclass = "MediaControl"},
+            new inapp {operationname = "media_PlayPause", operationclass = "MediaControl"},
+            new inapp {operationname = "media_next", operationclass = "MediaControl"},
+            new inapp {operationname = "media_prev", operationclass = "MediaControl"},
+            new inapp {operationname = "media_stop", operationclass = "MediaControl"},
+            /*
+            new inapp {operationname = "SW_rotatemodel_xpos", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_rotatemodel_xneg", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_rotatemodel_ypos", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_rotatemodel_yneg", operationclass = "SOLIDWORKS"}
+            */
             };
 
             dialinfo = new List<Dial_information>
             {
-            new Dial_information {name = "Base", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Base_Variant_main\", imagepath = softwarepath + @"\base\default.jpg" },
-            new Dial_information {name = "MacroKey", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\MacroKey_Variant_main\", imagepath = softwarepath + @"\macro\default.jpg" },
-            new Dial_information {name = "SpaceNav", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\SpaceNav_Variant_main\", imagepath = softwarepath + @"\spacenav\default.jpg" },
-            new Dial_information {name = "Absolute", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Absolute_Variant_main\", imagepath = softwarepath + @"\absolute\default.jpg" }
+            new Dial_information {name = "Base Variant", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Base_Variant_main\", imagepath = softwarepath + @"\base\default.jpg" },
+            new Dial_information {name = "MacroKey Variant", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\MacroKey_Variant_main\", imagepath = softwarepath + @"\macro\default.jpg" },
+            new Dial_information {name = "SpaceNav Variant", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\SpaceNav_Variant_main\", imagepath = softwarepath + @"\spacenav\default.jpg" },
+            new Dial_information {name = "Absolute Variant", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Absolute_Variant_main\", imagepath = softwarepath + @"\absolute\default.jpg" }
             };
 
             

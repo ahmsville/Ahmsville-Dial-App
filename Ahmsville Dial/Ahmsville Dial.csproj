@@ -39,6 +39,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework.Aero2" />
+    <Reference Include="SolidWorks.Interop.sldworks">
+      <HintPath>..\..\..\..\..\..\Program Files\SOLIDWORKS Corp\SOLIDWORKS\api\redist\SolidWorks.Interop.sldworks.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -77,10 +81,12 @@
     <Compile Include="DialConfiguration.xaml.cs">
       <DependentUpon>DialConfiguration.xaml</DependentUpon>
     </Compile>
-    <Compile Include="InApp_Operations\InAppOperations_Interface.cs" />
+    <Compile Include="InApp_Operations\SOLIDWORKS.cs" />
+    <Compile Include="InApp_Operations\SOLIDWORKS_INTERFACE.cs" />
+    <Compile Include="InApp_Operations\SpaceNavOperations_INTERFACE.cs" />
+    <Compile Include="InApp_Operations\MediaControl_INTERFACE.cs" />
     <Compile Include="InApp_Operations\SpaceNavOperations.cs" />
-    <Compile Include="InApp_Operations\SpaceNav_Interface.cs" />
-    <Compile Include="InApp_Operations\System_MediaControl.cs" />
+    <Compile Include="InApp_Operations\MediaControl.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

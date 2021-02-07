@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ahmsville_Dial.InApp_Operations
 {
-    interface InAppOperations_Interface
+    interface SOLIDWORKS_INTERFACE
     {
-        string PerformInAppOperation(string operationclass, string operationname);
+        bool solidworks(int G_P, float x, float y, float rad);
+        string solidworks(string operationclass, string operationname);
     }
 }

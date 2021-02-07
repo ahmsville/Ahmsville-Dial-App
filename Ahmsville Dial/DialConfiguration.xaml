@@ -27,7 +27,7 @@
         <Rectangle Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" Height="1"
                    Style="{DynamicResource rectangle}" Margin="20"/>
         <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-        <TextBlock  Text="Dial Version" VerticalAlignment="Center" Margin="10"
+        <TextBlock  Text="Dial Variant" VerticalAlignment="Center" Margin="10"
                    Style="{DynamicResource defaulttittle}"/>
             <ComboBox  Width="300" Margin="20,20" SelectionChanged="OpenSettingsPage"  Style="{DynamicResource ComboBoxStyle1}"
                        x:Name="diallist" ItemsSource="{Binding dialinfo}">

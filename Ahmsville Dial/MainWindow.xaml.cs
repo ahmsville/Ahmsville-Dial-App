@@ -383,7 +383,7 @@ namespace Ahmsville_Dial
                 {
                     if (processedport != _serialPort.PortName)
                     {
-                        string dialreg = inputstring + " Version" + " at -" + _serialPort.PortName;
+                        string dialreg = inputstring  + " at -" + _serialPort.PortName;
                       
                             Array.Resize<string>(ref dialnames, pos + 1);
                             dialnames[pos] = dialreg.Replace("*", "");
@@ -460,7 +460,7 @@ namespace Ahmsville_Dial
                         }
                     }
                 }
-                //MessageBox.Show(G_xyrad[2] + "   " + P_xyrad[2]);
+                MessageBox.Show(G_xyrad[2] + "   " + P_xyrad[2]);
             }
 
 
@@ -498,14 +498,39 @@ namespace Ahmsville_Dial
             }
             if (classname != "") //if operation is built into app and not the location of a file
             {
-
-                Type stringtotype = Type.GetType("Ahmsville_Dial.InApp_Operations." + classname);
-                if (stringtotype != null)
+                if (classname == "MediaControl") //medial control interface
                 {
-                    var temptype = (InApp_Operations.InAppOperations_Interface)Activator.CreateInstance(stringtotype);
-                    temptype.PerformInAppOperation(classname, operationtoperform); //call appropriate inapp operation class
+                    Type stringtotype = Type.GetType("Ahmsville_Dial.InApp_Operations." + classname);
+                    if (stringtotype != null)
+                    {
+                        var temptype = (InApp_Operations.MediaControl_INTERFACE)Activator.CreateInstance(stringtotype);
+                        temptype.mediacontrol(classname, operationtoperform); //call appropriate inapp operation class
 
+                    }
                 }
+                else if (classname == "SpaceNavOperations") //spacenav operation interface
+                {
+                    Type stringtotype = Type.GetType("Ahmsville_Dial.InApp_Operations." + classname);
+                    if (stringtotype != null)
+                    {
+                        var temptype = (InApp_Operations.SpaceNavOperations_INTERFACE)Activator.CreateInstance(stringtotype);
+                        temptype.SpaceNav(classname, operationtoperform); //call appropriate inapp operation class
+                        //MessageBox.Show(temptype.SpaceNav(classname, operationtoperform)); //call appropriate inapp operation class
+
+                    }
+                }
+                else if (classname == "SOLIDWORKS") //spacenav operation interface
+                {
+                    Type stringtotype = Type.GetType("Ahmsville_Dial.InApp_Operations." + classname);
+                    if (stringtotype != null)
+                    {
+                        var temptype = (InApp_Operations.SOLIDWORKS_INTERFACE)Activator.CreateInstance(stringtotype);
+                        temptype.solidworks(classname, operationtoperform); //call appropriate inapp operation class
+                        //MessageBox.Show(temptype.solidworks(classname, operationtoperform)); //call appropriate inapp operation class
+
+                    }
+                }
+
             }
             else
             {
@@ -948,6 +973,7 @@ namespace Ahmsville_Dial
 
                 string[] configsettings = System.IO.File.ReadAllLines(configfiles[cnt]);
 
+
                 string configline = configsettings[2];  //line for name
                 int substringindex = configline.LastIndexOf("=");
                 if (substringindex > 0)
@@ -992,6 +1018,7 @@ namespace Ahmsville_Dial
                     cindex = Int32.Parse(sub);
 
                 }
+               
                 if (cindex <= availableconfigs.Length)
                 {
                     //add read config name to availableconfigs array

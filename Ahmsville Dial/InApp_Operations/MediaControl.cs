@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ahmsville_Dial.InApp_Operations
 {
-    class System_MediaControl : InAppOperations_Interface
+    class MediaControl : MediaControl_INTERFACE
     {
         private const byte VK_VOLUME_MUTE = 0xAD;
         private const byte VK_VOLUME_DOWN = 0xAE;
@@ -64,7 +64,7 @@ namespace Ahmsville_Dial.InApp_Operations
             keybd_event(VK_MEDIA_STOP, MapVirtualKey(VK_MEDIA_STOP, 0), KEYEVENTF_EXTENDEDKEY, 0);
             keybd_event(VK_MEDIA_STOP, MapVirtualKey(VK_MEDIA_STOP, 0), KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
         }
-        public string PerformInAppOperation(string operationclass, string operationname)
+        public string mediacontrol(string operationclass, string operationname)
         {
             _MethodInfo _Method = this.GetType().GetMethod(operationname);
             _Method.Invoke(this, null);

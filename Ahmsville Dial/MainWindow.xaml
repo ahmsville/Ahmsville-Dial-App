@@ -117,7 +117,8 @@
                 Margin="100,10"  Template="{DynamicResource ButtonBase_MyStyle}" FontWeight="Bold" Height="40" Click="SwitchButton_Click"/>
             </StackPanel>
             <StackPanel Width="450" VerticalAlignment="Center">
-                <ComboBox Width="300" Height="70" Margin="20,20"  Style="{DynamicResource ComboBoxStyle1}"
+                <TextBlock  Text="Dial Variant" Margin="75,0" Style="{DynamicResource defaultsubtittle}" HorizontalAlignment="left"/>
+                <ComboBox Width="300" Height="70" Margin="10"  Style="{DynamicResource ComboBoxStyle1}"
                        x:Name="manualSWdiallist" ItemsSource="{Binding dialinfo}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
