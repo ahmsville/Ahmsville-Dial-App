@@ -17,7 +17,7 @@ using System.Windows.Interop;
 using System.IO.Ports;
 using System.Timers;
 using System.IO;
-
+using System.IO.Compression;
 
 namespace Ahmsville_Dial
 {
@@ -1633,19 +1633,31 @@ namespace Ahmsville_Dial
             var answer = MessageBox.Show("This will overite any custom changes to all associated libraries \n Are you sure you want to continue?", "Ahmsville Dial", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (answer == MessageBoxResult.Yes)
             {
-                string librarylocation = System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries";
-                string libraryfolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries";
-                string[] libraries = Directory.GetDirectories(librarylocation);
-
-                foreach (string s in libraries)
+                try
                 {
-                    string dest = libraryfolder + s.Replace(librarylocation, "");
-                    Directory.CreateDirectory(dest);
-                    copyfilesRecursively(s, dest);
-                    // MessageBox.Show(System.IO.Path.GetFileName(s));
-                    //File.Copy(s, libraryfolder);
+                    Directory.CreateDirectory(System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Extracted"); //create temp directory
+                    ZipFile.ExtractToDirectory(System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Ahmsville Dial Libraries.zip", System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Extracted"); //extract libraries to temp directory
+                    string librarylocation = System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Extracted";
+                    string libraryfolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries";
+                    string[] libraries = Directory.GetDirectories(librarylocation);
+
+
+                    foreach (string s in libraries)
+                    {
+                        string dest = libraryfolder + s.Replace(librarylocation, "");
+                        Directory.CreateDirectory(dest);
+                        copyfilesRecursively(s, dest);
+                        // MessageBox.Show(System.IO.Path.GetFileName(s));
+                        //File.Copy(s, libraryfolder);
+                    }
+                    Directory.Delete(System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Extracted", true);
+                    MessageBox.Show("Libraries Updated", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                MessageBox.Show("Libraries Updated", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Information);
+                catch (Exception)
+                {
+                    MessageBox.Show("Run the App as Administrator to use this function", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                
             }
             else
             {
