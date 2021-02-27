@@ -33,6 +33,8 @@ namespace Ahmsville_Dial
         }
 
 
+        public List<string> inappOperationClasses { get; set; }
+
 
         public List<inapp> inappoperations { get; set; }
 
@@ -174,13 +176,33 @@ namespace Ahmsville_Dial
             new inapp {operationname = "media_next", operationclass = "MediaControl"},
             new inapp {operationname = "media_prev", operationclass = "MediaControl"},
             new inapp {operationname = "media_stop", operationclass = "MediaControl"},
-            /*
-            new inapp {operationname = "SW_rotatemodel_xpos", operationclass = "SOLIDWORKS"},
-            new inapp {operationname = "SW_rotatemodel_xneg", operationclass = "SOLIDWORKS"},
-            new inapp {operationname = "SW_rotatemodel_ypos", operationclass = "SOLIDWORKS"},
-            new inapp {operationname = "SW_rotatemodel_yneg", operationclass = "SOLIDWORKS"}
-            */
+            
+            new inapp {operationname = "SW_roll_xpos", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_roll_xneg", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_roll_ypos", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_roll_yneg", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_zoomIn", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_zoomOut", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_spinCW", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_spinCCW", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_move_xpos", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_move_xneg", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_move_ypos", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_move_yneg", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_zoomToFit", operationclass = "SOLIDWORKS"}
+
             };
+
+            inappOperationClasses = new List<string>
+            {
+
+            };
+            var inappoperation_classGroup = inappoperations.GroupBy(x => x.operationclass); //group inbuilt operation into appropriate class
+            foreach (var opClass in inappoperation_classGroup)
+            {
+
+                inappOperationClasses.Add(opClass.Key);
+            }
 
             dialinfo = new List<Dial_information>
             {

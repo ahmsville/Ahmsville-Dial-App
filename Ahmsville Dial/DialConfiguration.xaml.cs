@@ -236,10 +236,10 @@ namespace Ahmsville_Dial
 
         private void Button_CreateConfiguration(object sender, RoutedEventArgs e)
         {
-
+            //validate config name for special characters
             if (ValidateConfigName(configname.Text.ToString()) == false)
-            {  //validate config name for special characters
-                string filename = configname.Text.ToString().Replace(" ", ""); //remove space from name
+            {
+                string filename = configname.Text.ToString().Replace(" ", "_"); //remove space from name
                 configname.Text = filename;
                 string configpath = selecteddialfilepath + filename + "_.ino"; //generate config's absolute path
 
@@ -871,6 +871,7 @@ namespace Ahmsville_Dial
 
         private bool ValidateConfigName(string value)
         {
+            value = value.Replace("_"," ");
             //checks for special characters in configname
             return !(Regex.IsMatch(value, @"^[a-zA-Z0-9 ]*$"));
         }
@@ -1157,7 +1158,7 @@ namespace Ahmsville_Dial
         {
             if (ValidateConfigName(configname.Text.ToString()) == false)
             {  //validate config name for special characters
-                string filename = configname.Text.ToString().Replace(" ", ""); //remove space from name
+                string filename = configname.Text.ToString().Replace(" ", "_"); //remove space from name
                 configname.Text = filename;
                 string configpath = selecteddialfilepath + filename + "_.ino"; //generate config's absolute path
 
@@ -3443,9 +3444,61 @@ namespace Ahmsville_Dial
             MessageBox.Show(textBox.Text);
         }
 
-        
+        private void InApp_Filter(object sender, SelectionChangedEventArgs e)
+        {
+            
+            ComboBox comboBox = e.Source as ComboBox;
+            
+          
+            DependencyObject parent1 = VisualTreeHelper.GetParent(comboBox); //parent stackpanel
+            DependencyObject mainParent = LogicalTreeHelper.GetParent(parent1); //get main inapp function combobox
+            
+            ComboBox mainparent = mainParent as ComboBox;
+            // mainparent.IsEditable = true;
+            mainparent.Text = "jfjfsjjddj";
+        }
 
-       
+      
+
+      
+
+        private void functionscombobox_knob1_CCW_DropDownOpened(object sender, EventArgs e)
+        {
+            string name = e.GetType().BaseType.ToString();
+            MessageBox.Show(name);
+            //ComboBox comboBox =  as ComboBox;
+        }
+
+        private void Enable_OperationFilter(object sender, ContextMenuEventArgs e)
+        {
+            ComboBox combobox = e.Source as ComboBox;
+            combobox.IsEditable = true;
+            
+        }
+
+        private void filterOperations(object sender, TextChangedEventArgs e)
+        {
+            ComboBox combobox = e.Source as ComboBox;
+            string filterstring = combobox.Text;
+            var inappoperation_classGroup = AhmsvilleDialViewModel.Instance.inappoperations.GroupBy(x => x.operationclass); //group inbuilt operation into appropriate class
+            foreach (var opclass in inappoperation_classGroup)
+            {
+                if (opclass.Key.StartsWith(filterstring, StringComparison.InvariantCultureIgnoreCase))
+                {
+                   
+                    foreach (var OP in opclass)
+                    {
+                       // MessageBox.Show(OP.operationname.ToS
+                      // combobox.Items.Remove(OP);
+                    }
+                }
+                
+            }
+        }
+
+
+
+
 
 
 

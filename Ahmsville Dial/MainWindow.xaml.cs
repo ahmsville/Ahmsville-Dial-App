@@ -89,6 +89,8 @@ namespace Ahmsville_Dial
 
         //public AhmsvilleDialViewModel model { get; set; }
 
+        InApp_Operations.SOLIDWORKS_INTERFACE solidworksInstance = new InApp_Operations.SOLIDWORKS();
+        
         public MainWindow()
         {
             DataContext = new AhmsvilleDialViewModel();
@@ -223,7 +225,7 @@ namespace Ahmsville_Dial
 
         private void Connect_Button(object sender, RoutedEventArgs e)
         {
-
+            
             if (wired_diallist.Items.IsEmpty)
             {
 
@@ -351,90 +353,25 @@ namespace Ahmsville_Dial
             _serialPort.DataBits = 8;
             _serialPort.StopBits = StopBits.One;
             _serialPort.Handshake = Handshake.None;
-            _serialPort.ReadTimeout = 1000;
-            _serialPort.WriteTimeout = 1000;
+            _serialPort.ReadTimeout = 500;
+            _serialPort.WriteTimeout = 500;
             _serialPort.DataReceived += DataReceivedHandler;
+
+          
         }
 
+        #region Serial Data Received Event
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
 
             char[] inChar = new char[19];
-            try
+            
+            while (_serialPort.BytesToRead > 0)
             {
-                _serialPort.Read(inChar, 0, 19);
-                inputstring = new string(inChar);
-
-
-            }
-            catch (Exception)
-            {
-                //connectionstate.Text = "ConnectDialion closed";
-            }
-            if (inputstring.Contains("*******Base Variant") || inputstring.Contains("***MacroKey Variant") || inputstring.Contains("***SpaceNav Variant") || inputstring.Contains("***Absolute Variant") || inputstring.Contains("***Wireless Adapter"))
-            {
-                if (AhmsvilleDialViewModel.Instance.constate == 3 && availableconfigs.Length > 0)
-                {
-                    intentionaldisconnect = false;
-                    AhmsvilleDialViewModel.Instance.constate = 1;
-                    AhmsvilleDialViewModel.Instance.connectionstate += "back to life" + "\n";
-                }
-                else if (AhmsvilleDialViewModel.Instance.constate == 0)
-                {
-                    if (processedport != _serialPort.PortName)
-                    {
-                        string dialreg = inputstring  + " at -" + _serialPort.PortName;
-                      
-                            Array.Resize<string>(ref dialnames, pos + 1);
-                            dialnames[pos] = dialreg.Replace("*", "");
-                            processedport = _serialPort.PortName;
-                            pos += 1;
-                            inputstring = "";
-                            dialfound = true;
-                        
-                        
-                    }
-                }
-            }
-            else if (inputstring.Contains("|||"))  // detected wireless devices update
-            {
-                Array.Clear(detectedwirelessdials, 0, detectedwirelessdials.Length);  // clear detectedwirelessdials array
-                inputstring = inputstring.Replace("*", "");
-                detectedwirelessdials = (inputstring.Replace("|", "")).ToArray();
-            }
-
-            else if (inputstring.StartsWith("app is in charge"))  //in app operation data
-            {
-                receivedlineindex = Int32.Parse(inputstring.Replace("app is in charge", ""));
-                //MessageBox.Show(inputstring);
-                InApp_Operation(receivedlineindex);
-
-
-            }
-            else if (inputstring.StartsWith("<")) //spacenav raw gyro data
-            {
-
-                inputstring = inputstring.Replace("<", "");
-                int floatstrpos = 0;
-                string[] G_xyrad = new string[3];
-                string[] P_xyrad = new string[3];
-                foreach (char c in inputstring)
-                {
-                    if (c == '|')
-                    {
-                        floatstrpos += 1;
-                    }
-                    else
-                    {
-                        G_xyrad[floatstrpos] += c;
-                    }
-                }
-
-                char[] inChar2 = new char[19];
                 try
                 {
-                    _serialPort.Read(inChar2, 0, 19);  //grab second set of spacenav data (planar)
-                    inputstring2 = new string(inChar2);
+                    _serialPort.Read(inChar, 0, 19);
+                    inputstring = new string(inChar);
 
 
                 }
@@ -442,13 +379,54 @@ namespace Ahmsville_Dial
                 {
                     //connectionstate.Text = "ConnectDialion closed";
                 }
-
-                if (inputstring2.StartsWith(">")) //spacenav raw gyro data
+                if (inputstring.Contains("*******Base Variant") || inputstring.Contains("***MacroKey Variant") || inputstring.Contains("***SpaceNav Variant") || inputstring.Contains("***Absolute Variant") || inputstring.Contains("***Wireless Adapter"))
                 {
-                    inputstring2.Replace(">", "");
-                    floatstrpos = 0;
+                    if (AhmsvilleDialViewModel.Instance.constate == 3 && availableconfigs.Length > 0)
+                    {
+                        intentionaldisconnect = false;
+                        AhmsvilleDialViewModel.Instance.constate = 1;
+                        AhmsvilleDialViewModel.Instance.connectionstate += "back to life" + "\n";
+                    }
+                    else if (AhmsvilleDialViewModel.Instance.constate == 0)
+                    {
+                        if (processedport != _serialPort.PortName)
+                        {
+                            string dialreg = inputstring + " at -" + _serialPort.PortName;
 
-                    foreach (char c in inputstring2)
+                            Array.Resize<string>(ref dialnames, pos + 1);
+                            dialnames[pos] = dialreg.Replace("*", "");
+                            processedport = _serialPort.PortName;
+                            pos += 1;
+                            inputstring = "";
+                            dialfound = true;
+
+
+                        }
+                    }
+                }
+                else if (inputstring.Contains("|||"))  // detected wireless devices update
+                {
+                    Array.Clear(detectedwirelessdials, 0, detectedwirelessdials.Length);  // clear detectedwirelessdials array
+                    inputstring = inputstring.Replace("*", "");
+                    detectedwirelessdials = (inputstring.Replace("|", "")).ToArray();
+                }
+
+                else if (inputstring.StartsWith("app is in charge"))  //in app operation data
+                {
+                    receivedlineindex = Int32.Parse(inputstring.Replace("app is in charge", ""));
+                    //MessageBox.Show(inputstring);
+                    InApp_Operation(receivedlineindex);
+
+
+                }
+                else if (inputstring.StartsWith("<")) //spacenav raw gyro data
+                {
+
+                    inputstring = inputstring.Replace("<", "");
+                    int floatstrpos = 0;
+                    string[] G_xyrad = new string[3];
+                    string[] P_xyrad = new string[3];
+                    foreach (char c in inputstring)
                     {
                         if (c == '|')
                         {
@@ -456,19 +434,53 @@ namespace Ahmsville_Dial
                         }
                         else
                         {
-                            P_xyrad[floatstrpos] += c;
+                            G_xyrad[floatstrpos] += c;
                         }
                     }
+
+                    char[] inChar2 = new char[19];
+                    try
+                    {
+                        _serialPort.Read(inChar2, 0, 19);  //grab second set of spacenav data (planar)
+                        inputstring2 = new string(inChar2);
+
+
+                    }
+                    catch (Exception)
+                    {
+                        //connectionstate.Text = "ConnectDialion closed";
+                    }
+
+                    if (inputstring2.StartsWith(">")) //spacenav raw gyro data
+                    {
+                        inputstring2.Replace(">", "");
+                        floatstrpos = 0;
+
+                        foreach (char c in inputstring2)
+                        {
+                            if (c == '|')
+                            {
+                                floatstrpos += 1;
+                            }
+                            else
+                            {
+                                P_xyrad[floatstrpos] += c;
+                            }
+                        }
+                    }
+                    MessageBox.Show(G_xyrad[2] + "   " + P_xyrad[2]);
                 }
-                MessageBox.Show(G_xyrad[2] + "   " + P_xyrad[2]);
             }
+            
 
 
 
 
 
-        }
+        } 
+        #endregion
 
+        #region External code Interface
         private void InApp_Operation(int receivedindex)
         {
             string operationtoperform = "";
@@ -521,14 +533,20 @@ namespace Ahmsville_Dial
                 }
                 else if (classname == "SOLIDWORKS") //spacenav operation interface
                 {
-                    Type stringtotype = Type.GetType("Ahmsville_Dial.InApp_Operations." + classname);
-                    if (stringtotype != null)
-                    {
-                        var temptype = (InApp_Operations.SOLIDWORKS_INTERFACE)Activator.CreateInstance(stringtotype);
-                        temptype.solidworks(classname, operationtoperform); //call appropriate inapp operation class
-                        //MessageBox.Show(temptype.solidworks(classname, operationtoperform)); //call appropriate inapp operation class
+                    //_MethodInfo classmethod = solidworksInstance.GetType().GetMethod(operationtoperform);
+                    //Type classfunc = Type.GetType(operationtoperform);
+                    //classmethod.Invoke(this, null);
+                    //solidworksInstance.SW_rotatemodel_xpos();
+                    
+                Type stringtotype = Type.GetType("Ahmsville_Dial.InApp_Operations." + classname);
+                if (stringtotype != null)
+                {
+                    
+                        solidworksInstance.solidworks(classname, operationtoperform); //call appropriate inapp operation class
+                    //MessageBox.Show(temptype.solidworks(classname, operationtoperform)); //call appropriate inapp operation class
 
-                    }
+                }
+                    
                 }
 
             }
@@ -544,7 +562,9 @@ namespace Ahmsville_Dial
                 }
             }
 
-        }
+        } 
+        #endregion
+
         private void getavailablePorts()
         {
             /********************disconnect from connected serial device********************/
@@ -889,8 +909,9 @@ namespace Ahmsville_Dial
                 configfound = false;
                 foreach (string s in availableconfigs)
                 {
+                    
                     //MessageBox.Show(i.ToString());
-                    if (activeapp.Contains(s))
+                    if (activeapp.Contains(s.Replace("_", " ")))
                     {
                         if (AhmsvilleDialViewModel.Instance.constate == 1)
                         {

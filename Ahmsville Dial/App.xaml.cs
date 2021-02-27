@@ -30,7 +30,7 @@ namespace Ahmsville_Dial
 
             CreateContextMenu();
             MainWindow.Show();
-           MainWindow.Hide();
+         //  MainWindow.Hide();
         }
 
         private void CreateContextMenu()

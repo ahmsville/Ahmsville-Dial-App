@@ -8,7 +8,7 @@
         Title="Dial Configuration" SizeToContent="Width" Height="720" >
 
     <Grid x:Name="pagecontent0">
-       
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0"/>
             <ColumnDefinition Width="auto"/>
@@ -27,7 +27,7 @@
         <Rectangle Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" Height="1"
                    Style="{DynamicResource rectangle}" Margin="20"/>
         <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-        <TextBlock  Text="Dial Variant" VerticalAlignment="Center" Margin="10"
+            <TextBlock  Text="Dial Variant" VerticalAlignment="Center" Margin="10"
                    Style="{DynamicResource defaulttittle}"/>
             <ComboBox  Width="300" Margin="20,20" SelectionChanged="OpenSettingsPage"  Style="{DynamicResource ComboBoxStyle1}"
                        x:Name="diallist" ItemsSource="{Binding dialinfo}">
@@ -39,7 +39,7 @@
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
-            
+
             </ComboBox>
         </StackPanel>
         <Grid Name="pagecontent" Grid.Column="1" Grid.ColumnSpan="3
@@ -87,23 +87,23 @@
 
                 <ComboBox Margin="10" SelectedIndex="0" MouseEnter="Appledcolor_GotFocus" 
                              Width="220" Style="{DynamicResource ComboBoxStyle1}">
-                        <StackPanel Orientation="Horizontal" Margin="0,0">
-                            <TextBlock Text="Color" Margin="0,0,33,0" VerticalAlignment="Center"/>
-                            <ComboBox  Width="120"
+                    <StackPanel Orientation="Horizontal" Margin="0,0">
+                        <TextBlock Text="Color" Margin="0,0,33,0" VerticalAlignment="Center"/>
+                        <ComboBox  Width="120"
                   ItemsSource="{Binding ledcolors}" Style="{DynamicResource ComboBoxStyle1}" x:Name="appledcolor" >
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Rectangle Width="17" Height="17" Margin="5,0" Fill="{Binding}" />
-                                <TextBlock VerticalAlignment="Center" Text="{Binding}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0">
-                            <TextBlock Text="Animation" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                            <ComboBox ItemsSource="{Binding ledanimations}" Width="120" Style="{DynamicResource ComboBoxStyle1}" x:Name="appledanimation">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Width="17" Height="17" Margin="5,0" Fill="{Binding}" />
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0">
+                        <TextBlock Text="Animation" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                        <ComboBox ItemsSource="{Binding ledanimations}" Width="120" Style="{DynamicResource ComboBoxStyle1}" x:Name="appledanimation">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding}"/>
@@ -112,8 +112,8 @@
                         </ComboBox>
                     </StackPanel>
 
-                    </ComboBox>
-                
+                </ComboBox>
+
                 <CheckBox Content="Default"  Margin="10"
                                   VerticalAlignment="Center" x:Name="DefaultConfig"/>
             </StackPanel>
@@ -159,8 +159,8 @@
                                     Width="300" Style="{DynamicResource SliderStyle1}" ValueChanged="knob1res_ValueChanged"/>
                             <TextBlock x:Name="knob1resvalue" Text="Default" Margin="10,0"/>
                         </StackPanel>
-                       
-                            <StackPanel Orientation="Horizontal">
+
+                        <StackPanel Orientation="Horizontal">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock VerticalAlignment="Center"  Text="CW"
                    Margin="10" Style="{DynamicResource defaultsubtittle}"/>
@@ -186,7 +186,9 @@
                                 <RadioButton x:Name="file_knob1_CW" Margin="10" Content="File/Script" Template="{DynamicResource RadioButton_MyStyle}"
                                          Checked="Inbuiltfunc_knob1_CW_Checked"/>
                                 <ComboBox ItemsSource="{Binding inappoperations}" DisplayMemberPath="operationname" x:Name="functionscombobox_knob1_CW" Margin="10" Width="200"
-                                  Style="{DynamicResource ComboBoxStyle1}" />
+                                  Style="{DynamicResource ComboBoxStyle1}"/>
+
+
                                 <Button Click="Browsebutton_knob1_CW_Click" x:Name="browsebutton_knob1_CW" Margin="10" Width="70
                                 " Content="Browse" Template="{DynamicResource ButtonBase_MyStyle}"/>
                             </StackPanel>
