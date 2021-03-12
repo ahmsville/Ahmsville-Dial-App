@@ -89,6 +89,7 @@
     <Compile Include="DialConfiguration.xaml.cs">
       <DependentUpon>DialConfiguration.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GetSerialDevices.cs" />
     <Compile Include="InApp_Operations\SOLIDWORKS.cs" />
     <Compile Include="InApp_Operations\SOLIDWORKS_INTERFACE.cs" />
     <Compile Include="InApp_Operations\SpaceNavOperations_INTERFACE.cs" />

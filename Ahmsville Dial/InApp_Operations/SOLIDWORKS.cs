@@ -176,7 +176,11 @@ namespace Ahmsville_Dial.InApp_Operations
         public void SW_zoomToFit()
         {
             swDoc.ViewZoomtofit();
-        } 
+        }
+        public void SW_measure()
+        {
+           
+        }
         #endregion
 
 
