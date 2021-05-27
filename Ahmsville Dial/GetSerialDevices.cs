@@ -16,7 +16,7 @@ namespace Ahmsville_Dial
 
         private SerialPort _serialPort;
         string inputstring = "";
-        private int con_try = 5;
+        private int con_try = 6;
         private string[] ports;
 
         public static System.Timers.Timer COMportQTimer;
@@ -63,6 +63,8 @@ namespace Ahmsville_Dial
 
         public bool getDevices(List<string> searchstrings, int bytestoread, string Qstr, Action callback)
         {
+            serialdevicelist.Clear();
+            porttoquery = 0;
             getDevicesAsync(searchstrings, bytestoread, Qstr, callback);
             return true;
         }
@@ -100,34 +102,37 @@ namespace Ahmsville_Dial
         {
 
             char[] inChar = new char[characterstoread];
-
-            while (_serialPort.BytesToRead > 0)
+            if (_serialPort.IsOpen)
             {
-                try
+                while (_serialPort.BytesToRead > 0)
                 {
-                    _serialPort.Read(inChar, 0, characterstoread);
-                    inputstring = new string(inChar);
-
-
-                }
-                catch (Exception)
-                {
-
-                }
-                foreach (string match in stringstomatch)
-                {
-                    if (inputstring.Contains(match))
+                    try
                     {
-                        string str = _serialPort.PortName + ";" + match;
-                        if (!serialdevicelist.Contains(str))
-                        {
-                            serialdevicelist.Add(str);
-                        }
+                        _serialPort.Read(inChar, 0, characterstoread);
+                        inputstring = new string(inChar);
+
 
                     }
-                }
+                    catch (Exception)
+                    {
 
+                    }
+                    foreach (string match in stringstomatch)
+                    {
+                        if (inputstring.Contains(match))
+                        {
+                            string str = _serialPort.PortName + ";" + match;
+                            if (!serialdevicelist.Contains(str))
+                            {
+                                serialdevicelist.Add(str);
+                            }
+
+                        }
+                    }
+
+                }
             }
+          
 
         }
 

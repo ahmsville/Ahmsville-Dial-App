@@ -75,16 +75,21 @@
         </StackPanel>
 
 
+        <StackPanel Margin="50,0,0,0" Grid.Column="5" Grid.Row="1" Grid.RowSpan="3"  Orientation="Vertical">
+            <StackPanel Margin="0,0,0,0" Grid.Column="5" Grid.Row="1"  Orientation="Horizontal" >
 
-        <StackPanel Margin="50,0,0,0" Grid.Column="5" Grid.Row="1"  Orientation="Horizontal" >
-            
-            <Button x:Name="reprogram_dial" Margin= "10"
+                <Button x:Name="reprogram_dial" Margin= "10"
                 Content="ReProgram Dial"  Height="120" VerticalAlignment="Top"
                 Template="{DynamicResource ButtonBase_MyStyle}" Width="120" Padding="10" FontWeight="Bold" Click="Reprogram_dial_Click"/>
-            <Button  Margin= "10"
+                <Button  Margin= "10"
                 Content="Dial-Configuration" Click="Button_Dialconfig" Height="120" VerticalAlignment="Top"
                 Template="{DynamicResource ButtonBase_MyStyle}" Width="140" Padding="10" FontWeight="Bold"/>
+            </StackPanel>
+            <Button x:Name="reset_dial" Margin= "10"
+                Content="Reset Dial"  Height="30" VerticalAlignment="Top"
+                Template="{DynamicResource ButtonBase_MyStyle}" Width="auto" Padding="1" FontWeight="Bold" Click="reset_dial_Click" />
         </StackPanel>
+      
         <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
             <RadioButton  x:Name="AutoSW" Margin="50,10"  
                 Content="AUTO SWITCHING" Tag="AutoSW" Checked="RadioButton_Switchmode" HorizontalAlignment="Center"

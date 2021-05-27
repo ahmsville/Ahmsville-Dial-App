@@ -28,7 +28,8 @@ namespace Ahmsville_Dial
     public partial class MainWindow : Window
     {
         private static System.Timers.Timer aTimer;
-        private static System.Timers.Timer COMportQTimer;
+        private static System.Timers.Timer reconTimer;
+        //private static System.Timers.Timer COMportQTimer;
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern IntPtr GetForegroundWindow();
@@ -91,7 +92,9 @@ namespace Ahmsville_Dial
         //public AhmsvilleDialViewModel model { get; set; }
 
         InApp_Operations.SOLIDWORKS_INTERFACE solidworksInstance = new InApp_Operations.SOLIDWORKS();
-        
+        private bool deviceremoved;
+        private bool deviceadded;
+
         public MainWindow()
         {
             DataContext = new AhmsvilleDialViewModel();
@@ -116,7 +119,7 @@ namespace Ahmsville_Dial
         {
             if (AhmsvilleDialViewModel.Instance.constate != 1)
             {
-                if (GetSerialDevices.serialdevicelist.Count == 1) //connect to the only available device
+                if (wired_diallist.Items.Count == 1) //connect to the only available device
                 {
                     wired_diallist.SelectedIndex = 0;
                             string selecteddialport = wired_diallist.SelectedItem.ToString();
@@ -361,6 +364,7 @@ namespace Ahmsville_Dial
             _serialPort.ReadTimeout = 500;
             _serialPort.WriteTimeout = 500;
             _serialPort.DataReceived += DataReceivedHandler;
+           // _serialPort.ReadBufferSize = 19 * 2;
 
           
         }
@@ -455,6 +459,7 @@ namespace Ahmsville_Dial
 
                     else if (inputstring.StartsWith("app is in charge"))  //in app operation data
                     {
+                        _serialPort.DiscardInBuffer();
                         receivedlineindex = Int32.Parse(inputstring.Replace("app is in charge", ""));
                         //MessageBox.Show(inputstring);
                         InApp_Operation(receivedlineindex);
@@ -624,6 +629,7 @@ namespace Ahmsville_Dial
                         int tryturn = 0;
                         while (_serialPort.IsOpen && tryturn < con_try)
                         {
+
                             _serialPort.Close();
                             tryturn++;
                         }
@@ -660,8 +666,9 @@ namespace Ahmsville_Dial
             
             if (GetSerialDevices.serialdevicelist.Count != 0)
             {
+                //AhmsvilleDialViewModel.Instance.constate = 3;
                 //_serialPort = null;
-                    wired_diallist.Items.Clear();
+                wired_diallist.Items.Clear();
                     foreach (string s in GetSerialDevices.serialdevicelist)
                     {
                         
@@ -671,8 +678,13 @@ namespace Ahmsville_Dial
                     populateWirelessDiallist();
                     ConnectDial();
                     processedport = "";
-             
+
             }
+            else
+            {
+                AhmsvilleDialViewModel.Instance.connectionstate += "No Dial Found" + "\n";
+            }
+            reconTimer.Enabled = false;
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -711,40 +723,20 @@ namespace Ahmsville_Dial
             return IntPtr.Zero;
         }
 
-        private async Task Usb_DeviceRemovedAsync()
+        private void Usb_DeviceRemovedAsync()
         {
-            if (_serialPort != null)
-            {
-                if (!_serialPort.IsOpen)
-                {
-                    AhmsvilleDialViewModel.Instance.constate = 2;
-                    AhmsvilleDialViewModel.Instance.connectionstate += "Disconnected" + "\n";
-                    await Task.Delay(3000);
-                    //getavailablePorts();
-                    goGetDevices();
-                    // RefreshPortList();
-                }
-            }
-           
-
-
-
+                reconTimer.Enabled = false;
+                deviceadded = false;
+                deviceremoved = true;
+                reconTimer.Enabled = true;
         }
-        private async Task Usb_DeviceAddedAsync()
-        {
-
-            
-            AhmsvilleDialViewModel.Instance.constate = 0;
-            is_wireless = false;
-            await Task.Delay(3000);
-
-            // getavailablePorts();
-            goGetDevices();
-            // RefreshPortList();
-
-
-
-
+        private void Usb_DeviceAddedAsync()
+        {   
+          
+                reconTimer.Enabled = false;
+                deviceremoved = false;
+                deviceadded = true;
+                reconTimer.Enabled = true;
 
         }
 
@@ -837,17 +829,59 @@ namespace Ahmsville_Dial
 
         }
 
-     
+        private void reconnectTimerEvent(Object source, ElapsedEventArgs e)
+        {
+            if (deviceadded)
+            {
+                AhmsvilleDialViewModel.Instance.constate = 0;
+                is_wireless = false;
+                this.Dispatcher.Invoke(() =>
+                {
+                    goGetDevices();
+                });
+                deviceadded = false;
+            }
+            else if (deviceremoved)
+            {
+                if (_serialPort != null)
+                {
+                    if (!_serialPort.IsOpen)
+                    {
+                        AhmsvilleDialViewModel.Instance.constate = 2;
+                        AhmsvilleDialViewModel.Instance.connectionstate += "Disconnected" + "\n";
+
+                        //getavailablePorts();
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            goGetDevices();
+                        });
+                        deviceremoved = false;
+                        // RefreshPortList();
+                        //reconTimer.Enabled = false;
+                    }
+                }
+            }
+            
+        }
         private void SetTimer()
         {
             // Create a timer for normal id update.
             aTimer = new System.Timers.Timer(500);
             aTimer.AutoReset = true;
-            aTimer.Enabled = false;
+            aTimer.Enabled = true;
             // Hook up the Elapsed event for the timer. 
             aTimer.Elapsed += OnTimedEvent;
 
+
+            //set reconnection timer
+            reconTimer = new System.Timers.Timer(5000);
+            reconTimer.AutoReset = true;
+            reconTimer.Enabled = false;
+            // Hook up the Elapsed event for the timer. 
+            reconTimer.Elapsed += reconnectTimerEvent;
         }
+
+       
         private void ChangeActiveDialConfig()
         {
             if (AutoSW.IsChecked == true)
@@ -1123,7 +1157,11 @@ namespace Ahmsville_Dial
                         }
 
                         AhmsvilleDialViewModel.Instance.connectionstate += "New wireless Dial detected, select dial from list" + "\n";
-
+                        if (wireless_diallist.Items.Count == 1)
+                        {
+                            AhmsvilleDialViewModel.Instance.constate = 1;
+                            wireless_diallist.SelectedIndex = 0;
+                        }
 
                     }
                     else
@@ -1655,6 +1693,26 @@ namespace Ahmsville_Dial
             catch (Exception)
             {
               
+            }
+        }
+
+        private void reset_dial_Click(object sender, RoutedEventArgs e)
+        {
+            if (_serialPort != null)
+            {
+                if (_serialPort.IsOpen)
+                {
+                    try
+                    {
+                        _serialPort.Write("r");
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+                   
+                }
             }
         }
     }

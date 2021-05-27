@@ -45,6 +45,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_255A8E57B8E048ECB6C3921159D7D8C2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_2664CC00EACF4A6EA3A489138BF41019"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -137,6 +143,18 @@
         {
         "MsmKey" = "8:_4F8EEE4A5A484293956CDA2AA0637671"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_52E4FDA2E71704CFBCA437CDE6649882"
+        "OwnerKey" = "8:_8EFE2B29139C68E329A7AF78A53C3AFB"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_52E4FDA2E71704CFBCA437CDE6649882"
+        "OwnerKey" = "8:_2664CC00EACF4A6EA3A489138BF41019"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -394,18 +412,6 @@
         "Entry"
         {
         "MsmKey" = "8:_C95AA97EC3F44D67A85C73AC46CFC14B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CCE00D8E551C6301FB2AFFF01E44221A"
-        "OwnerKey" = "8:_2664CC00EACF4A6EA3A489138BF41019"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D07BA59E72A94F0687CE2C3EB4F4FB83"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -707,6 +713,26 @@
             "TargetName" = "8:mk1.jpg"
             "Tag" = "8:"
             "Folder" = "8:_263629C4A127452DAAEE97129599C7B4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_255A8E57B8E048ECB6C3921159D7D8C2"
+            {
+            "SourcePath" = "8:..\\Ahmsville Dial\\bin\\Debug\\Libraries\\Ahmsville Dial Libraries.zip"
+            "TargetName" = "8:Ahmsville Dial Libraries.zip"
+            "Tag" = "8:"
+            "Folder" = "8:_2E93C7D1E5504753BFA7BC78D64B89B7"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1041,6 +1067,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_52E4FDA2E71704CFBCA437CDE6649882"
+            {
+            "SourcePath" = "8:Ahmsville Dial_SOLIDWORKS AddIn.tlb"
+            "TargetName" = "8:Ahmsville Dial_SOLIDWORKS AddIn.tlb"
+            "Tag" = "8:"
+            "Folder" = "8:_E36E6643A2C3488091B57C42277EAB97"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:2"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_569B240BFF816622920EE01FD74A7C91"
@@ -1811,46 +1857,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CCE00D8E551C6301FB2AFFF01E44221A"
-            {
-            "SourcePath" = "8:Ahmsville Dial_SOLIDWORKS AddIn.tlb"
-            "TargetName" = "8:Ahmsville Dial_SOLIDWORKS AddIn.tlb"
-            "Tag" = "8:"
-            "Folder" = "8:_CF70298A880C4648BDAB730C33A470C4"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:2"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D07BA59E72A94F0687CE2C3EB4F4FB83"
-            {
-            "SourcePath" = "8:..\\Ahmsville Dial\\bin\\Debug\\Libraries\\Ahmsville Dial Libraries.zip"
-            "TargetName" = "8:Ahmsville Dial Libraries.zip"
-            "Tag" = "8:"
-            "Folder" = "8:_2E93C7D1E5504753BFA7BC78D64B89B7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D18A8316E73C4DEAA0598AB6393158A2"
             {
             "SourcePath" = "8:..\\Ahmsville Dial\\bin\\Debug\\base\\led.jpg"
@@ -2186,7 +2192,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Ahmsville Dial"
         "ProductCode" = "8:{6737B31B-C483-424B-942E-A36865988F1F}"
-        "PackageCode" = "8:{69EA33A4-D314-4E0B-982B-DED31C6B4499}"
+        "PackageCode" = "8:{7DC60F0B-01F1-46C6-BB8E-659FABCAEBC6}"
         "UpgradeCode" = "8:{4B59ACB3-953C-4F8E-9C2C-5F87B1C2DE54}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -2199,7 +2205,7 @@
         "ARPHELPLINK" = "8:"
         "Title" = "8:Ahmsville Dial"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Ahmsville "
+        "ARPCONTACT" = "8:Ahmsville Labs"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:Companion software for the Ahmsville Dial"
         "ARPURLINFOABOUT" = "8:"
@@ -2749,7 +2755,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8C735826AEDF4C8DB6B9E8D8F8B9B1C3"
             {
-            "SourcePath" = "8:..\\Ahmsville Dial\\obj\\Debug\\Ahmsville Dial.exe"
+            "SourcePath" = "8:..\\Ahmsville Dial\\obj\\Release\\Ahmsville Dial.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E36E6643A2C3488091B57C42277EAB97"

@@ -29,7 +29,7 @@ namespace Ahmsville_Dial.InApp_Operations
         private static bool gotSolidworks = false;
         public static bool connectedtoSolidworksDoc = false;
 
-        double rollmodelStep = 0.1;
+        double rollmodelStep = 0.05;
 
         ModelDoc2 swModel = default(ModelDoc2);
 
@@ -159,19 +159,19 @@ namespace Ahmsville_Dial.InApp_Operations
         }
         public void SW_move_xpos()
         {
-            myModelView.TranslateBy(0.01, 0);
+            myModelView.TranslateBy(0.005, 0);
         }
         public void SW_move_xneg()
         {
-            myModelView.TranslateBy(-0.01, 0);
+            myModelView.TranslateBy(-0.005, 0);
         }
         public void SW_move_ypos()
         {
-            myModelView.TranslateBy(0, 0.01);
+            myModelView.TranslateBy(0, 0.005);
         }
         public void SW_move_yneg()
         {
-            myModelView.TranslateBy(0, -0.01);
+            myModelView.TranslateBy(0, -0.005);
         }
         public void SW_zoomToFit()
         {
