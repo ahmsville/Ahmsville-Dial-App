@@ -189,6 +189,7 @@ namespace Ahmsville_Dial
             new inapp {operationname = "SW_move_xneg", operationclass = "SOLIDWORKS"},
             new inapp {operationname = "SW_move_ypos", operationclass = "SOLIDWORKS"},
             new inapp {operationname = "SW_move_yneg", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_auto_orientationLock", operationclass = "SOLIDWORKS"},
             new inapp {operationname = "SW_zoomToFit", operationclass = "SOLIDWORKS"}
 
             };

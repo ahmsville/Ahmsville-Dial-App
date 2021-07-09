@@ -1324,6 +1324,12 @@
                                 <CheckBox Content="Continuous Tilt" x:Name="continuoustilt" VerticalAlignment="Center"
                                   Checked="ContinuousSpaceNavMode"/>
                             </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                                <TextBlock Text="Tilt Sensitivity" Margin="20,0" FontWeight="Bold" Style="{DynamicResource defaulttext}"/>
+                                <Slider x:Name="tiltsensitivity" Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True"
+                                    Width="300" Style="{DynamicResource SliderStyle1}" ValueChanged="tiltsensitivity_ValueChanged" />
+                                <TextBlock x:Name="tiltsensitivityvalue" Text="Default" Margin="10,0"/>
+                            </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                         x:Name="tiltup" MouseEnter="tiltup_MouseEnter">
                                 <TextBlock VerticalAlignment="Center"  Text="Tilt Up" 
@@ -1460,7 +1466,12 @@
                                 <CheckBox Content="Continuous Slide" x:Name="continuousslide" VerticalAlignment="Center"
                                       Checked="ContinuousSpaceNavMode"/>
                             </StackPanel>
-
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                                <TextBlock Text="Slide Sensitivity" Margin="20,0" FontWeight="Bold" Style="{DynamicResource defaulttext}"/>
+                                <Slider x:Name="slidesensitivity" Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True"
+                                    Width="300" Style="{DynamicResource SliderStyle1}" ValueChanged="slidesensitivity_ValueChanged" />
+                                <TextBlock x:Name="slidesensitivityvalue" Text="Default" Margin="10,0"/>
+                            </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                         x:Name="slideup" MouseEnter="slideup_MouseEnter">
                                 <TextBlock VerticalAlignment="Center"  Text="Slide Up" 

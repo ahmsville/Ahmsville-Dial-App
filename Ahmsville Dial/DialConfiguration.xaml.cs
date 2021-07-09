@@ -3496,6 +3496,30 @@ namespace Ahmsville_Dial
             }
         }
 
+        private void tiltsensitivity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (tiltsensitivity.Value == 0)
+            {
+                tiltsensitivityvalue.Text = "Default";
+            }
+            else
+            {
+                tiltsensitivityvalue.Text = tiltsensitivity.Value.ToString();
+            }
+        }
+
+        private void slidesensitivity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (slidesensitivity.Value == 0)
+            {
+                slidesensitivityvalue.Text = "Default";
+            }
+            else
+            {
+                slidesensitivityvalue.Text = slidesensitivity.Value.ToString();
+            }
+        }
+
 
 
 

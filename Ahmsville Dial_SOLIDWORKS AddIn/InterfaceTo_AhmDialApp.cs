@@ -13,5 +13,6 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
     {
         //SldWorks swApp, ModelDoc2 swDoc, ModelView myModelView
         void processInApp_Queue();
+        void processInApp_Raw();
     }
 }

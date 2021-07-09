@@ -8,7 +8,6 @@ namespace Ahmsville_Dial.InApp_Operations
 {
     interface SOLIDWORKS_INTERFACE
     {
-        bool solidworks(int G_P, float x, float y, float rad);
         string solidworks(string operationclass, string operationname);
     }
 }

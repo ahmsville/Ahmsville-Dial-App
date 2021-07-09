@@ -25,6 +25,7 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
         [Icon(typeof(Resources), nameof(Resources.DialLogo))]
 
         private Ito_AhmDialApp to_callback;
+        private Ito_AhmDialApp to_callback2;
 
         ModelDoc model = null;
         ModelView myModelView = null;
@@ -74,47 +75,92 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
 
         }
 
-        public bool registerCallback_InSW(Ito_AhmDialApp callreturn)
+        string activeFunctionID = "";
+        public bool registerCallback_InSW(Ito_AhmDialApp callreturn, string functionIdentifier)
         {
-            if (to_callback != callreturn)
+            activeFunctionID = functionIdentifier;
+            if (activeFunctionID == "default")
             {
-                poolingStarted = false;
-                to_callback = callreturn;
+                if (to_callback != callreturn)
+                {
+                    poolingStarted = false;
+                    to_callback = callreturn;
 
+                }
             }
+            else if (activeFunctionID == "raw")
+            {
+                if (to_callback2 != callreturn)
+                {
+                    poolingStarted2 = false;
+                    to_callback2 = callreturn;
+
+                }
+            }
+            
+           
             return true;
         }
 
         bool poolingStarted = false;
+        bool poolingStarted2 = false;
 
         public bool queueIN()
         {
             while (poolingStarted)
             {
-                try
+                while (to_callback != null)
                 {
-
-                    to_callback.processInApp_Queue();
+                    try
+                    {
+                        to_callback.processInApp_Queue();
+                    }
+                    catch (Exception)
+                    {
+                        poolingStarted = false;
+                        // to_callback = null;
+                    }
                 }
-                catch (Exception)
-                {
-                    poolingStarted = false;
-                    // to_callback = null;
-                }
+                
             }
             
             
            
             return true;
         }
-      
+
+        public bool queueIN2()
+        {
+            while (poolingStarted2)
+            {
+                while (to_callback2 != null)
+                {
+                    try
+                    {
+                        to_callback2.processInApp_Raw();
+
+                    }
+                    catch (Exception)
+                    {
+                        poolingStarted2 = false;
+                        // to_callback = null;
+                    }
+                }
+                
+            }
+
+
+
+            return true;
+        }
+
         public async void breakoffOperationAsync()
         {
             if (to_callback != null)
             {
                 Task<bool> invokeQueue = new Task<bool>(queueIN);
-                invokeQueue.Start();
                 poolingStarted = true;
+                invokeQueue.Start();
                 //App.SendMsgToUser(poolingStarted.ToString());
                 bool ret = await invokeQueue;
                 if (ret)
@@ -126,14 +172,37 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
             }
         }
 
+        public async void breakoffOperationAsync2()
+        {
+            if (to_callback2 != null)
+            {
+                Task<bool> invokeQueue2 = new Task<bool>(queueIN2);
+                poolingStarted2 = true;
+                invokeQueue2.Start();
+                //App.SendMsgToUser(poolingStarted.ToString());
+                bool ret2 = await invokeQueue2;
+                if (ret2)
+                {
+                    to_callback2 = null;
+                    poolingStarted2 = false;
+                    //App.SendMsgToUser("endedloop");
+                }
+            }
+        }
+
         private int OnIdleNotify()
         {
             if (!poolingStarted)
             {
-                breakoffOperationAsync();     
+                breakoffOperationAsync();
                 
             }
-           
+            if (!poolingStarted2)
+            {
+                
+                breakoffOperationAsync2();
+            }
+
             return 0;
             // App.SendMsgToUser($"debug");
             

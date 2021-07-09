@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>DialLogo.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CodeStack.SwEx.AddIn, Version=0.8.1.0, Culture=neutral, PublicKeyToken=a46023996d4724e7, processorArchitecture=MSIL">
       <HintPath>..\packages\CodeStack.SwEx.AddIn.0.8.1\lib\net40\CodeStack.SwEx.AddIn.dll</HintPath>
@@ -85,6 +88,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\dial logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DialLogo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

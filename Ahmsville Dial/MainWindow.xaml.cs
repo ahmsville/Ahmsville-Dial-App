@@ -41,7 +41,8 @@ namespace Ahmsville_Dial
         static extern int GetWindowTextLength(IntPtr hWnd);
 
 
-        static SerialPort _serialPort;
+        static SerialPort _serialPort = new SerialPort();
+        List<string> filteredSerialData = new List<string>();
         // Get a list of serial port names.
         static string[] ports = SerialPort.GetPortNames();
         static string inputstring = "";
@@ -65,7 +66,7 @@ namespace Ahmsville_Dial
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\MacroKey_Variant_main\",
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\SpaceNav_Variant_main\",
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Absolute_Variant_main\"};
-       
+
         string connecteddialconfigpath = "";
         string[] dialvariants = { "Base", "MAcroKey", "SpaceNav", "Absolute" };
         char[] detectedwirelessdials = { '0', '0', '0', '0' };
@@ -103,9 +104,9 @@ namespace Ahmsville_Dial
             SetTimer();
             AhmsvilleDialViewModel.Instance.constate = 0;
 
-           
+
             goGetDevices();
-           
+
             //ConnectDial();
 
 
@@ -122,28 +123,28 @@ namespace Ahmsville_Dial
                 if (wired_diallist.Items.Count == 1) //connect to the only available device
                 {
                     wired_diallist.SelectedIndex = 0;
-                            string selecteddialport = wired_diallist.SelectedItem.ToString();
-                       
-                        var splitcominfo = selecteddialport.Split(';');
-                        SwitchSerialPort(splitcominfo[0]); //get selected port name
-                            try
-                            {
-                                int tryturn = 0;
-                                while (!_serialPort.IsOpen && tryturn < con_try) //open connection on selected port
-                                {
-                                    //AhmsvilleDialViewModel.Instance.connectionstate = ("connecting to port- " + _serialPort.PortName.ToString() + " try - " + tryturn.ToString());
-                                    _serialPort.Open();
-                                    tryturn++;
-                                }
+                    string selecteddialport = wired_diallist.SelectedItem.ToString();
 
-                            }
-                            catch (Exception)
-                            {
-                                // AhmsvilleDialViewModel.Instance.connectionstate = ("Unauthorized Access");
-                            }
-                        
-                    
-                    
+                    var splitcominfo = selecteddialport.Split(';');
+                    SwitchSerialPort(splitcominfo[0]); //get selected port name
+                    try
+                    {
+                        int tryturn = 0;
+                        while (!_serialPort.IsOpen && tryturn < con_try) //open connection on selected port
+                        {
+                            //AhmsvilleDialViewModel.Instance.connectionstate = ("connecting to port- " + _serialPort.PortName.ToString() + " try - " + tryturn.ToString());
+                            _serialPort.Open();
+                            tryturn++;
+                        }
+
+                    }
+                    catch (Exception)
+                    {
+                        // AhmsvilleDialViewModel.Instance.connectionstate = ("Unauthorized Access");
+                    }
+
+
+
 
 
                     if (_serialPort.IsOpen)  //is connected to a directly connected device
@@ -203,34 +204,34 @@ namespace Ahmsville_Dial
 
         private void wiredDialList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-         
-                try
-                {
-                    int tryturn = 0;
-                    while (_serialPort.IsOpen && tryturn < con_try)
-                    {
-                        //AhmsvilleDialViewModel.Instance.connectionstate = ("closing port- " + _serialPort.PortName.ToString() + " try - " + tryturn.ToString());
-                        _serialPort.Close();
-                        tryturn++;
-                    }
-                }
-                catch (Exception)
-                {
-                    //AhmsvilleDialViewModel.Instance.connectionstate = ("Unauthorized Access");
-                }
-                wired_diallist.IsEnabled = true;
-                AhmsvilleDialViewModel.Instance.constate = 2;
-                intentionaldisconnect = true;
 
-                AhmsvilleDialViewModel.Instance.connectionstate += "disconnected from dial" + "\n";
-
-            
-         
+            try
+            {
+                int tryturn = 0;
+                while (_serialPort.IsOpen && tryturn < con_try)
+                {
+                    //AhmsvilleDialViewModel.Instance.connectionstate = ("closing port- " + _serialPort.PortName.ToString() + " try - " + tryturn.ToString());
+                    _serialPort.Close();
+                    tryturn++;
+                }
             }
+            catch (Exception)
+            {
+                //AhmsvilleDialViewModel.Instance.connectionstate = ("Unauthorized Access");
+            }
+            wired_diallist.IsEnabled = true;
+            AhmsvilleDialViewModel.Instance.constate = 2;
+            intentionaldisconnect = true;
+
+            AhmsvilleDialViewModel.Instance.connectionstate += "disconnected from dial" + "\n";
+
+
+
+        }
 
         private void Connect_Button(object sender, RoutedEventArgs e)
         {
-            
+
             if (wired_diallist.Items.IsEmpty)
             {
 
@@ -267,7 +268,7 @@ namespace Ahmsville_Dial
                     AhmsvilleDialViewModel.Instance.connectionstate += "disconnected from dial" + "\n";
 
                 }
-                else if (AhmsvilleDialViewModel.Instance.constate == 2 || AhmsvilleDialViewModel.Instance.constate == 3) 
+                else if (AhmsvilleDialViewModel.Instance.constate == 2 || AhmsvilleDialViewModel.Instance.constate == 3)
                 {
                     if (!wired_diallist.Items.IsEmpty)
                     {
@@ -289,7 +290,7 @@ namespace Ahmsville_Dial
                         {
                             string selecteddialport = wired_diallist.SelectedItem.ToString();
                             var splitcom = selecteddialport.Split(';');
-                          
+
                             SwitchSerialPort(splitcom[0]);
                         }
 
@@ -364,9 +365,9 @@ namespace Ahmsville_Dial
             _serialPort.ReadTimeout = 500;
             _serialPort.WriteTimeout = 500;
             _serialPort.DataReceived += DataReceivedHandler;
-           // _serialPort.ReadBufferSize = 19 * 2;
+            // _serialPort.ReadBufferSize = 19 * 2;
 
-          
+
         }
 
         private void connectSerialPort(string portname)
@@ -401,17 +402,19 @@ namespace Ahmsville_Dial
             }
             if (_serialPort.IsOpen)
             {
-               
+
             }
         }
 
         #region Serial Data Received Event
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
-
             char[] inChar = new char[19];
+            filteredSerialData.Clear();
             if (_serialPort.IsOpen)
             {
+                string gy = "";
+                string pl = "";
                 while (_serialPort.BytesToRead > 0)
                 {
                     try
@@ -419,12 +422,33 @@ namespace Ahmsville_Dial
                         _serialPort.Read(inChar, 0, 19);
                         inputstring = new string(inChar);
 
+                        if (inputstring.Contains("<"))
+                        {
+                            filteredSerialData.Remove(gy);
+                            gy = inputstring;
+                        }
+                        else if (inputstring.Contains(">"))
+                        {
+                            filteredSerialData.Remove(pl);
+                            pl = inputstring;
+                        }
+                        filteredSerialData.Add(inputstring);
 
                     }
                     catch (Exception)
                     {
                         //connectionstate.Text = "ConnectDialion closed";
                     }
+                }
+                filteredSerialData = filteredSerialData.Distinct().ToList();
+
+                //filter for the most current spacenav data
+                
+               
+
+                for (int i = 0; i < filteredSerialData.Count(); i++)
+                {
+                    inputstring = filteredSerialData.ElementAt(i);
                     if (inputstring.Contains("*******Base Variant") || inputstring.Contains("***MacroKey Variant") || inputstring.Contains("***SpaceNav Variant") || inputstring.Contains("***Absolute Variant") || inputstring.Contains("***Wireless Adapter"))
                     {
                         if (AhmsvilleDialViewModel.Instance.constate == 3 && availableconfigs.Length > 0)
@@ -459,7 +483,7 @@ namespace Ahmsville_Dial
 
                     else if (inputstring.StartsWith("app is in charge"))  //in app operation data
                     {
-                        _serialPort.DiscardInBuffer();
+                        // _serialPort.DiscardInBuffer();
                         receivedlineindex = Int32.Parse(inputstring.Replace("app is in charge", ""));
                         //MessageBox.Show(inputstring);
                         InApp_Operation(receivedlineindex);
@@ -468,7 +492,6 @@ namespace Ahmsville_Dial
                     }
                     else if (inputstring.StartsWith("<")) //spacenav raw gyro data
                     {
-
                         inputstring = inputstring.Replace("<", "");
                         int floatstrpos = 0;
                         string[] G_xyrad = new string[3];
@@ -484,49 +507,85 @@ namespace Ahmsville_Dial
                                 G_xyrad[floatstrpos] += c;
                             }
                         }
-
-                        char[] inChar2 = new char[19];
-                        try
+                        if (!G_xyrad.Contains(null))
                         {
-                            _serialPort.Read(inChar2, 0, 19);  //grab second set of spacenav data (planar)
-                            inputstring2 = new string(inChar2);
-
-
-                        }
-                        catch (Exception)
-                        {
-                            //connectionstate.Text = "ConnectDialion closed";
-                        }
-
-                        if (inputstring2.StartsWith(">")) //spacenav raw gyro data
-                        {
-                            inputstring2.Replace(">", "");
-                            floatstrpos = 0;
-
-                            foreach (char c in inputstring2)
+                            
+                            if (i < filteredSerialData.Count - 1)
                             {
-                                if (c == '|')
-                                {
-                                    floatstrpos += 1;
+                                inputstring = filteredSerialData.ElementAt(i + 1);
+                                if (inputstring.StartsWith(">"))
+                                {   
+                                    inputstring = inputstring.Replace(">", "");
+                                    floatstrpos = 0;
+
+                                    foreach (char c in inputstring)
+                                    {
+                                        if (c == '|')
+                                        {
+                                            floatstrpos += 1;
+                                        }
+                                        else
+                                        {
+                                            P_xyrad[floatstrpos] += c;
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    P_xyrad[floatstrpos] += c;
+                                    for (int k = 0; k < 3; k++)
+                                    {
+                                        P_xyrad[k] = "0";
+                                    }
                                 }
+
+                            }
+                            
+                            
+                            
+                            ProcessSpaceNavData.ProcessSpaceNavDataOBJ.process(activeapp, G_xyrad, P_xyrad);
+                            
+                        }
+                        //System.Console.WriteLine(activeapp);
+                       //System.Console.WriteLine("gyro =  " + G_xyrad[0] + "   " + G_xyrad[1] + "   " + G_xyrad[2]);
+                        //System.Console.WriteLine("planar =  " + P_xyrad[0] + "   " + P_xyrad[1] + "   " + P_xyrad[2]);
+                        // MessageBox.Show(G_xyrad[2] + "   " + P_xyrad[2]);
+                    }
+                    else if (inputstring.StartsWith(">")) //spacenav raw planar data
+                    {
+                        inputstring = inputstring.Replace(">", "");
+                        int floatstrpos = 0;
+                        string[] P_xyrad = new string[3];
+                        foreach (char c in inputstring)
+                        {
+                            if (c == '|')
+                            {
+                                floatstrpos += 1;
+                            }
+                            else
+                            {
+                                P_xyrad[floatstrpos] += c;
                             }
                         }
-                        MessageBox.Show(G_xyrad[2] + "   " + P_xyrad[2]);
+                        if (!P_xyrad.Contains(null))
+                        {
+                            string[] G_xyrad = { "0", "0", "0" };
+                            //ProcessSpaceNavData.ProcessSpaceNavDataOBJ.process(activeapp, G_xyrad, P_xyrad);
+                            //i = filteredSerialData.Count;
+                        }
+                        //System.Console.WriteLine(activeapp);
+                        //System.Console.WriteLine("planar =  " + P_xyrad[0] + "   " + P_xyrad[1] + "   " + P_xyrad[2]);
+                        // MessageBox.Show(G_xyrad[2] + "   " + P_xyrad[2]);
                     }
                 }
             }
-           
-            
 
 
 
 
 
-        } 
+
+
+        }
         #endregion
 
         #region External code Interface
@@ -586,16 +645,16 @@ namespace Ahmsville_Dial
                     //Type classfunc = Type.GetType(operationtoperform);
                     //classmethod.Invoke(this, null);
                     //solidworksInstance.SW_rotatemodel_xpos();
-                    
-                Type stringtotype = Type.GetType("Ahmsville_Dial.InApp_Operations." + classname);
-                if (stringtotype != null)
-                {
-                    
-                        solidworksInstance.solidworks(classname, operationtoperform); //call appropriate inapp operation class
-                    //MessageBox.Show(temptype.solidworks(classname, operationtoperform)); //call appropriate inapp operation class
 
-                }
-                    
+                    Type stringtotype = Type.GetType("Ahmsville_Dial.InApp_Operations." + classname);
+                    if (stringtotype != null)
+                    {
+
+                        solidworksInstance.solidworks(classname, operationtoperform); //call appropriate inapp operation class
+                                                                                      //MessageBox.Show(temptype.solidworks(classname, operationtoperform)); //call appropriate inapp operation class
+
+                    }
+
                 }
 
             }
@@ -611,12 +670,12 @@ namespace Ahmsville_Dial
                 }
             }
 
-        } 
+        }
         #endregion
 
-    
 
-     
+
+
         private void goGetDevices()
         {
             //close port
@@ -643,11 +702,13 @@ namespace Ahmsville_Dial
 
             wired_diallist.Items.Clear();
             wireless_diallist.Items.Clear();
+            Array.Clear(detectedwirelessdials, 0, detectedwirelessdials.Length);
+            Array.Clear(prevdetectedwirelessdials, 0, prevdetectedwirelessdials.Length);
 
             AhmsvilleDialViewModel.Instance.connectionstate += "Querying..." + "\n";
 
             List<string> tomatch = new List<string>();
-           
+
             tomatch.Add("*******Base Variant");
             tomatch.Add("***MacroKey Variant");
             tomatch.Add("***SpaceNav Variant");
@@ -663,21 +724,21 @@ namespace Ahmsville_Dial
         }
         public void getSerialDevicesCallback()
         {
-            
+
             if (GetSerialDevices.serialdevicelist.Count != 0)
             {
                 //AhmsvilleDialViewModel.Instance.constate = 3;
                 //_serialPort = null;
                 wired_diallist.Items.Clear();
-                    foreach (string s in GetSerialDevices.serialdevicelist)
-                    {
-                        
-                        wired_diallist.Items.Add(s.Replace("*", ""));
+                foreach (string s in GetSerialDevices.serialdevicelist)
+                {
 
-                    }
-                    populateWirelessDiallist();
-                    ConnectDial();
-                    processedport = "";
+                    wired_diallist.Items.Add(s.Replace("*", ""));
+
+                }
+                populateWirelessDiallist();
+                ConnectDial();
+                processedport = "";
 
             }
             else
@@ -725,18 +786,18 @@ namespace Ahmsville_Dial
 
         private void Usb_DeviceRemovedAsync()
         {
-                reconTimer.Enabled = false;
-                deviceadded = false;
-                deviceremoved = true;
-                reconTimer.Enabled = true;
+            reconTimer.Enabled = false;
+            deviceadded = false;
+            deviceremoved = true;
+            reconTimer.Enabled = true;
         }
         private void Usb_DeviceAddedAsync()
-        {   
-          
-                reconTimer.Enabled = false;
-                deviceremoved = false;
-                deviceadded = true;
-                reconTimer.Enabled = true;
+        {
+
+            reconTimer.Enabled = false;
+            deviceremoved = false;
+            deviceadded = true;
+            reconTimer.Enabled = true;
 
         }
 
@@ -783,22 +844,26 @@ namespace Ahmsville_Dial
                 {
                     try
                     {
-                        if (!_serialPort.IsOpen)
+                        if (_serialPort != null)
                         {
-                            AhmsvilleDialViewModel.Instance.constate = 2;
-                        }
-                        else
-                        {
-                            if (AhmsvilleDialViewModel.Instance.constate == 1)
+                            if (!_serialPort.IsOpen)
                             {
-                                this.Dispatcher.Invoke(() =>
-                                {
-                                    ChangeActiveDialConfig();
-                                    prevactiveapp = activeapp;
-                                });
+                                AhmsvilleDialViewModel.Instance.constate = 2;
                             }
+                            else
+                            {
+                                if (AhmsvilleDialViewModel.Instance.constate == 1)
+                                {
+                                    this.Dispatcher.Invoke(() =>
+                                    {
+                                        ChangeActiveDialConfig();
+                                        prevactiveapp = activeapp;
+                                    });
+                                }
 
+                            }
                         }
+                        
 
                     }
                     catch (Exception)
@@ -818,8 +883,12 @@ namespace Ahmsville_Dial
             });
             try
             {
-                _serialPort.DtrEnable = true;
-                _serialPort.RtsEnable = true;
+                if (_serialPort != null)
+                {
+                    _serialPort.DtrEnable = true;
+                    _serialPort.RtsEnable = true;
+                }
+               
             }
             catch (Exception)
             {
@@ -861,7 +930,7 @@ namespace Ahmsville_Dial
                     }
                 }
             }
-            
+
         }
         private void SetTimer()
         {
@@ -874,14 +943,14 @@ namespace Ahmsville_Dial
 
 
             //set reconnection timer
-            reconTimer = new System.Timers.Timer(5000);
+            reconTimer = new System.Timers.Timer(8000);
             reconTimer.AutoReset = true;
             reconTimer.Enabled = false;
             // Hook up the Elapsed event for the timer. 
             reconTimer.Elapsed += reconnectTimerEvent;
         }
 
-       
+
         private void ChangeActiveDialConfig()
         {
             if (AutoSW.IsChecked == true)
@@ -890,7 +959,7 @@ namespace Ahmsville_Dial
                 configfound = false;
                 foreach (string s in availableconfigs)
                 {
-                    
+
                     //MessageBox.Show(i.ToString());
                     if (activeapp.Contains(s.Replace("_", " ")))
                     {
@@ -1020,7 +1089,7 @@ namespace Ahmsville_Dial
                     cindex = Int32.Parse(sub);
 
                 }
-               
+
                 if (cindex <= availableconfigs.Length)
                 {
                     //add read config name to availableconfigs array
@@ -1200,7 +1269,8 @@ namespace Ahmsville_Dial
 
             } //disconnect from dial so arduino can program the dial
 
-            if (AutoSW.IsChecked == true) {
+            if (AutoSW.IsChecked == true)
+            {
                 try
                 {
                     selectdialversionFromLibrary();
@@ -1242,7 +1312,7 @@ namespace Ahmsville_Dial
                     {
                         selectdialversionFromLibrary(manualSWdiallist.SelectedIndex);
                         System.Diagnostics.Process.Start(dialconfigpath[manualSWdiallist.SelectedIndex] + dialmain_arduinofileByVersion[manualSWdiallist.SelectedIndex]);
-                        
+
                     }
                     catch (Exception)
                     {
@@ -1253,14 +1323,14 @@ namespace Ahmsville_Dial
                 {
                     MessageBox.Show("Select a Dial Variant", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
-               
+
             }
         }
 
 
         private void selectdialversionFromLibrary()
         {
-            
+
             //checked for directly connected dial
             if (wired_diallist.SelectedItem.ToString().Contains("Absolute"))
             {
@@ -1269,8 +1339,8 @@ namespace Ahmsville_Dial
                 {
                     string headerfilepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\";
                     string[] headerfile = System.IO.File.ReadAllLines(headerfilepath + "AhmsvilleDial_v2.h");
-                   // string[] maincodefile = Directory.GetFiles(selecteddialfilepath, "*main.ino"); // <-- Case-insensitive
-                  //  string[] maincode = System.IO.File.ReadAllLines(maincodefile[0]);
+                    // string[] maincodefile = Directory.GetFiles(selecteddialfilepath, "*main.ino"); // <-- Case-insensitive
+                    //  string[] maincode = System.IO.File.ReadAllLines(maincodefile[0]);
                     using (System.IO.StreamWriter file = new System.IO.StreamWriter(headerfilepath + "AhmsvilleDial_v2.h"))
                     {
                         for (int i = 0; i < headerfile.Length; i++)
@@ -1287,7 +1357,7 @@ namespace Ahmsville_Dial
                 }
                 catch (Exception)
                 {
-                   
+
                 }
             }
             else if (wired_diallist.SelectedItem.ToString().Contains("Base"))
@@ -1315,7 +1385,7 @@ namespace Ahmsville_Dial
                 }
                 catch (Exception)
                 {
-                  
+
                 }
             }
             else if (wired_diallist.SelectedItem.ToString().Contains("MacroKey"))
@@ -1663,13 +1733,13 @@ namespace Ahmsville_Dial
                 {
                     MessageBox.Show("Run the App as Administrator to use this function", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                
+
             }
             else
             {
-                
+
             }
-            
+
         }
         private void copyfilesRecursively(string source, string dest)
         {
@@ -1680,19 +1750,19 @@ namespace Ahmsville_Dial
                 foreach (string s in files)
                 {
                     string filename = dest + @"\" + System.IO.Path.GetFileName(s);
-                   File.Copy(s, filename, true); //copy files to dest
+                    File.Copy(s, filename, true); //copy files to dest
                 }
                 foreach (string s in folders)
                 {
                     string newdest = dest + @"\" + System.IO.Path.GetFileName(s);
-                   Directory.CreateDirectory(newdest); //create folder in dest
+                    Directory.CreateDirectory(newdest); //create folder in dest
                     copyfilesRecursively(s, newdest);
 
                 }
             }
             catch (Exception)
             {
-              
+
             }
         }
 
@@ -1711,7 +1781,7 @@ namespace Ahmsville_Dial
 
                         throw;
                     }
-                   
+
                 }
             }
         }
