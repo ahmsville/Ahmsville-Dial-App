@@ -51,6 +51,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_2627BAC2A9CA0BDE17360A376940ECC4"
+        "OwnerKey" = "8:_8A6FA1408DA94289BDF658DE0E00E34A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_27310E14299D40FE8A388853D5F19444"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -82,6 +88,12 @@
         "Entry"
         {
         "MsmKey" = "8:_299E698548DA4F769668837B3FA529FC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2A512C18298E4A36841E9484E0FBF4FD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -149,6 +161,24 @@
         {
         "MsmKey" = "8:_4F8EEE4A5A484293956CDA2AA0637671"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_52E4FDA2E71704CFBCA437CDE6649882"
+        "OwnerKey" = "8:_8EFE2B29139C68E329A7AF78A53C3AFB"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_569B240BFF816622920EE01FD74A7C91"
+        "OwnerKey" = "8:_B8176247BBE2CB15421B11E870464B0B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_569B240BFF816622920EE01FD74A7C91"
+        "OwnerKey" = "8:_8A6FA1408DA94289BDF658DE0E00E34A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -231,6 +261,30 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7DD9E3FBB3FCCE0388FA5B5EF2426B3C"
+        "OwnerKey" = "8:_BC3066E2CDDC62E52A54B1E167BFA0F9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7DD9E3FBB3FCCE0388FA5B5EF2426B3C"
+        "OwnerKey" = "8:_8A6FA1408DA94289BDF658DE0E00E34A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7DD9E3FBB3FCCE0388FA5B5EF2426B3C"
+        "OwnerKey" = "8:_8EFE2B29139C68E329A7AF78A53C3AFB"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7DD9E3FBB3FCCE0388FA5B5EF2426B3C"
+        "OwnerKey" = "8:_B8176247BBE2CB15421B11E870464B0B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_7F702B3BDCB347EFA703F9FDB5F01B5D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -257,6 +311,12 @@
         {
         "MsmKey" = "8:_8E4EA5161779407BA296B8F0E4059DB0"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8EFE2B29139C68E329A7AF78A53C3AFB"
+        "OwnerKey" = "8:_5AB0B2D9AAB44BFC8AB63FB46F4ABED5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -334,7 +394,7 @@
         "Entry"
         {
         "MsmKey" = "8:_B8176247BBE2CB15421B11E870464B0B"
-        "OwnerKey" = "8:_C63C70BA4519FD22EE990D9F576B3CFF"
+        "OwnerKey" = "8:_8EFE2B29139C68E329A7AF78A53C3AFB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -364,12 +424,6 @@
         "Entry"
         {
         "MsmKey" = "8:_BC3066E2CDDC62E52A54B1E167BFA0F9"
-        "OwnerKey" = "8:_C63C70BA4519FD22EE990D9F576B3CFF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BC3066E2CDDC62E52A54B1E167BFA0F9"
         "OwnerKey" = "8:_8A6FA1408DA94289BDF658DE0E00E34A"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -381,25 +435,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_BC3066E2CDDC62E52A54B1E167BFA0F9"
+        "OwnerKey" = "8:_8EFE2B29139C68E329A7AF78A53C3AFB"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C192BC125DD24EFC9DB16F3A34BB4425"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C63C70BA4519FD22EE990D9F576B3CFF"
-        "OwnerKey" = "8:_5AB0B2D9AAB44BFC8AB63FB46F4ABED5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_C95AA97EC3F44D67A85C73AC46CFC14B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CD9DAF531630470C88EE4B363300D87C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -472,49 +520,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C63C70BA4519FD22EE990D9F576B3CFF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C63C70BA4519FD22EE990D9F576B3CFF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_8A6FA1408DA94289BDF658DE0E00E34A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BC3066E2CDDC62E52A54B1E167BFA0F9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B8176247BBE2CB15421B11E870464B0B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B8176247BBE2CB15421B11E870464B0B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_8A6FA1408DA94289BDF658DE0E00E34A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_5AB0B2D9AAB44BFC8AB63FB46F4ABED5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_8EFE2B29139C68E329A7AF78A53C3AFB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -538,7 +550,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_569B240BFF816622920EE01FD74A7C91"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_BC3066E2CDDC62E52A54B1E167BFA0F9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_7DD9E3FBB3FCCE0388FA5B5EF2426B3C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -751,6 +775,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2627BAC2A9CA0BDE17360A376940ECC4"
+            {
+            "SourcePath" = "8:Ahmsville Dial_SOLIDWORKS AddIn.tlb"
+            "TargetName" = "8:Ahmsville Dial_SOLIDWORKS AddIn.tlb"
+            "Tag" = "8:"
+            "Folder" = "8:_590E521389044CC6A7250C22A07561E0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:2"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_27310E14299D40FE8A388853D5F19444"
             {
             "SourcePath" = "8:..\\Ahmsville Dial\\bin\\Debug\\spacenav\\tiltdown.jpg"
@@ -828,6 +872,26 @@
             "TargetName" = "8:mk5.jpg"
             "Tag" = "8:"
             "Folder" = "8:_263629C4A127452DAAEE97129599C7B4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2A512C18298E4A36841E9484E0FBF4FD"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\Documents\\Arduino\\libraries\\Ahmsville Dial Libraries v1.2.zip"
+            "TargetName" = "8:Ahmsville Dial Libraries.zip"
+            "Tag" = "8:"
+            "Folder" = "8:_2E93C7D1E5504753BFA7BC78D64B89B7"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1071,6 +1135,57 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_52E4FDA2E71704CFBCA437CDE6649882"
+            {
+            "SourcePath" = "8:Ahmsville Dial_SOLIDWORKS AddIn.tlb"
+            "TargetName" = "8:Ahmsville Dial_SOLIDWORKS AddIn.tlb"
+            "Tag" = "8:"
+            "Folder" = "8:_E36E6643A2C3488091B57C42277EAB97"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:2"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_569B240BFF816622920EE01FD74A7C91"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:SolidWorks.Interop.swconst, Version=27.1.0.72, Culture=neutral, PublicKeyToken=19f43e188e4269d8, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_569B240BFF816622920EE01FD74A7C91"
+                    {
+                    "Name" = "8:SolidWorks.Interop.swconst.DLL"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:SolidWorks.Interop.swconst.DLL"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_E36E6643A2C3488091B57C42277EAB97"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_58BBB0B363A94CA6B5675508AD188975"
@@ -1326,6 +1441,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7DD9E3FBB3FCCE0388FA5B5EF2426B3C"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:SolidWorks.Interop.sldworks, Version=27.1.0.72, Culture=neutral, PublicKeyToken=7c4797c3e4eeac03, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_7DD9E3FBB3FCCE0388FA5B5EF2426B3C"
+                    {
+                    "Name" = "8:SolidWorks.Interop.sldworks.DLL"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:SolidWorks.Interop.sldworks.DLL"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_E36E6643A2C3488091B57C42277EAB97"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7F702B3BDCB347EFA703F9FDB5F01B5D"
             {
             "SourcePath" = "8:..\\Ahmsville Dial\\bin\\Debug\\absolute\\mk2.jpg"
@@ -1404,6 +1550,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_8EFE2B29139C68E329A7AF78A53C3AFB"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Ahmsville Dial_SOLIDWORKS AddIn, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_8EFE2B29139C68E329A7AF78A53C3AFB"
+                    {
+                    "Name" = "8:Ahmsville Dial_SOLIDWORKS AddIn.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Ahmsville Dial_SOLIDWORKS AddIn.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_E36E6643A2C3488091B57C42277EAB97"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_914386B06B88495491C81DC394B41261"
@@ -1759,63 +1936,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C63C70BA4519FD22EE990D9F576B3CFF"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Ahmsville Dial_SOLIDWORKS AddIn, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_C63C70BA4519FD22EE990D9F576B3CFF"
-                    {
-                    "Name" = "8:Ahmsville Dial_SOLIDWORKS AddIn.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Ahmsville Dial_SOLIDWORKS AddIn.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_E36E6643A2C3488091B57C42277EAB97"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C95AA97EC3F44D67A85C73AC46CFC14B"
             {
             "SourcePath" = "8:..\\Ahmsville Dial\\bin\\Debug\\absolute\\mk1.jpg"
             "TargetName" = "8:mk1.jpg"
             "Tag" = "8:"
             "Folder" = "8:_53510EBEAD90434386085D89E19C06F7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CD9DAF531630470C88EE4B363300D87C"
-            {
-            "SourcePath" = "8:..\\Ahmsville Dial\\bin\\Debug\\Libraries\\Ahmsville Dial Libraries.zip"
-            "TargetName" = "8:Ahmsville Dial Libraries.zip"
-            "Tag" = "8:"
-            "Folder" = "8:_2E93C7D1E5504753BFA7BC78D64B89B7"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2728,7 +2854,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5AB0B2D9AAB44BFC8AB63FB46F4ABED5"
             {
-            "SourcePath" = "8:..\\Ahmsville Dial\\obj\\Release\\Ahmsville Dial.exe"
+            "SourcePath" = "8:..\\Ahmsville Dial\\obj\\Debug\\Ahmsville Dial.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E36E6643A2C3488091B57C42277EAB97"
@@ -2756,7 +2882,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8A6FA1408DA94289BDF658DE0E00E34A"
             {
-            "SourcePath" = "8:..\\Ahmsville Dial_SOLIDWORKS AddIn\\obj\\Release\\Ahmsville Dial_SOLIDWORKS AddIn.dll"
+            "SourcePath" = "8:..\\Ahmsville Dial_SOLIDWORKS AddIn\\obj\\Debug\\Ahmsville Dial_SOLIDWORKS AddIn.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_590E521389044CC6A7250C22A07561E0"

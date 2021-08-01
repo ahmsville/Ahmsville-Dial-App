@@ -206,7 +206,8 @@ namespace Ahmsville_Dial.InApp_Operations
         }
         public void SW_move_yneg()
         {
-            myModelView.TranslateBy(0, -0.005);
+           myModelView.TranslateBy(0, -0.005);
+            
         }
         public void SW_zoomToFit()
         {
@@ -216,6 +217,7 @@ namespace Ahmsville_Dial.InApp_Operations
         {
 
         }
+
 
         public void SW_auto_orientationLock()
         {

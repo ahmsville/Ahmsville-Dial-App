@@ -61,7 +61,7 @@
             <StackPanel Margin="20" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center">
 
                 <Image x:Name="dialimage" Margin="10"
-                       HorizontalAlignment="Center" VerticalAlignment="Top" MaxWidth="500"/>
+                       HorizontalAlignment="Center" VerticalAlignment="Top" MaxWidth="350"/>
 
 
             </StackPanel>
@@ -119,7 +119,7 @@
             </StackPanel>
 
             <ScrollViewer Grid.Column="3" Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="auto" x:Name="settings" MouseLeave="Settings_LostFocus"
-                       VerticalAlignment="Top" HorizontalAlignment="Center">
+                       VerticalAlignment="Top" HorizontalAlignment="Center" Width="auto">
                 <Grid ScrollViewer.CanContentScroll="True">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0" />

@@ -10,4 +10,9 @@ namespace Ahmsville_Dial.InApp_Operations
     {
         string solidworks(string operationclass, string operationname);
     }
+
+    interface FUSION360_INTERFACE
+    {
+        string fusion360(string operationclass, string operationname);
+    }
 }

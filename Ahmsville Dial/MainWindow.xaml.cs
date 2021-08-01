@@ -93,6 +93,7 @@ namespace Ahmsville_Dial
         //public AhmsvilleDialViewModel model { get; set; }
 
         InApp_Operations.SOLIDWORKS_INTERFACE solidworksInstance = new InApp_Operations.SOLIDWORKS();
+       // InApp_Operations.SOLIDWORKS_INTERFACE fusion360Instance = new InApp_Operations.FUSION360();
         private bool deviceremoved;
         private bool deviceadded;
 
@@ -649,9 +650,25 @@ namespace Ahmsville_Dial
                     Type stringtotype = Type.GetType("Ahmsville_Dial.InApp_Operations." + classname);
                     if (stringtotype != null)
                     {
-
-                        solidworksInstance.solidworks(classname, operationtoperform); //call appropriate inapp operation class
+                        InApp_Operations.SOLIDWORKS.swObj.solidworks(classname, operationtoperform); //call appropriate inapp operation class
+                        //solidworksInstance.solidworks(classname, operationtoperform); //call appropriate inapp operation class
                                                                                       //MessageBox.Show(temptype.solidworks(classname, operationtoperform)); //call appropriate inapp operation class
+
+                    }
+
+                }
+                else if (classname == "FUSION360") //spacenav operation interface
+                {
+                    //_MethodInfo classmethod = solidworksInstance.GetType().GetMethod(operationtoperform);
+                    //Type classfunc = Type.GetType(operationtoperform);
+                    //classmethod.Invoke(this, null);
+                    //solidworksInstance.SW_rotatemodel_xpos();
+
+                    Type stringtotype = Type.GetType("Ahmsville_Dial.InApp_Operations." + classname);
+                    if (stringtotype != null)
+                    {
+                        InApp_Operations.FUSION360.f360Obj.fusion360(classname, operationtoperform); //call appropriate inapp operation class
+                                                                                     
 
                     }
 

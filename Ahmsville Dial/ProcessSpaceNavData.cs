@@ -33,6 +33,28 @@ namespace Ahmsville_Dial
 
                 
             }
+            else if (activeapp.Contains("Fusion 360"))
+            {
+                
+                double[] Gdata = { 0, 0, 0 };
+                double[] Pdata = { 0, 0, 0 };
+                try
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Gdata[i] = double.Parse(gyrodata[i]);
+                        Pdata[i] = double.Parse(planedata[i]);
+                    }
+                    InApp_Operations.FUSION360.f360Obj.setRawValues(Gdata, Pdata);
+                }
+                catch (Exception)
+                {
+
+
+                }
+
+
+            }
         }
     }
 }
