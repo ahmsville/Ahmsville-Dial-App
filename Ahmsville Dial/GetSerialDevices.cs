@@ -102,36 +102,45 @@ namespace Ahmsville_Dial
         {
 
             char[] inChar = new char[characterstoread];
-            if (_serialPort.IsOpen)
+            try
             {
-                while (_serialPort.BytesToRead > 0)
+                if (_serialPort.IsOpen)
                 {
-                    try
+                    while (_serialPort.BytesToRead > 0)
                     {
-                        _serialPort.Read(inChar, 0, characterstoread);
-                        inputstring = new string(inChar);
-
-
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                    foreach (string match in stringstomatch)
-                    {
-                        if (inputstring.Contains(match))
+                        try
                         {
-                            string str = _serialPort.PortName + ";" + match;
-                            if (!serialdevicelist.Contains(str))
-                            {
-                                serialdevicelist.Add(str);
-                            }
+                            _serialPort.Read(inChar, 0, characterstoread);
+                            inputstring = new string(inChar);
+
 
                         }
-                    }
+                        catch (Exception)
+                        {
 
+                        }
+                        foreach (string match in stringstomatch)
+                        {
+                            if (inputstring.Contains(match))
+                            {
+                                string str = _serialPort.PortName + ";" + match;
+                                if (!serialdevicelist.Contains(str))
+                                {
+                                    serialdevicelist.Add(str);
+                                }
+
+                            }
+                        }
+
+                    }
                 }
             }
+            catch (Exception)
+            {
+
+              
+            }
+           
           
 
         }
@@ -217,7 +226,7 @@ namespace Ahmsville_Dial
                                     {
                                         _serialPort.Close();
                                     }
-                                    catch (Exception)
+                                    catch (NullReferenceException)
                                     {
 
 

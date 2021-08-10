@@ -410,7 +410,7 @@ namespace Ahmsville_Dial
         #region Serial Data Received Event
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
-            char[] inChar = new char[19];
+            char[] inChar = new char[30];
             filteredSerialData.Clear();
             if (_serialPort.IsOpen)
             {
@@ -420,7 +420,7 @@ namespace Ahmsville_Dial
                 {
                     try
                     {
-                        _serialPort.Read(inChar, 0, 19);
+                        _serialPort.Read(inChar, 0, 30);
                         inputstring = new string(inChar);
 
                         if (inputstring.Contains("<"))
@@ -482,10 +482,10 @@ namespace Ahmsville_Dial
                         detectedwirelessdials = (inputstring.Replace("|", "")).ToArray();
                     }
 
-                    else if (inputstring.StartsWith("app is in charge"))  //in app operation data
+                    else if (inputstring.StartsWith("the app is in charge of ths"))  //in app operation data
                     {
                         // _serialPort.DiscardInBuffer();
-                        receivedlineindex = Int32.Parse(inputstring.Replace("app is in charge", ""));
+                        receivedlineindex = Int32.Parse(inputstring.Replace("the app is in charge of ths", ""));
                         //MessageBox.Show(inputstring);
                         InApp_Operation(receivedlineindex);
 
@@ -574,7 +574,7 @@ namespace Ahmsville_Dial
                             //i = filteredSerialData.Count;
                         }
                         //System.Console.WriteLine(activeapp);
-                        //System.Console.WriteLine("planar =  " + P_xyrad[0] + "   " + P_xyrad[1] + "   " + P_xyrad[2]);
+                       // System.Console.WriteLine("planar =  " + P_xyrad[0] + "   " + P_xyrad[1] + "   " + P_xyrad[2]);
                         // MessageBox.Show(G_xyrad[2] + "   " + P_xyrad[2]);
                     }
                 }
@@ -734,7 +734,7 @@ namespace Ahmsville_Dial
 
             Action action = getSerialDevicesCallback;
 
-            if (GetSerialDevices._getSerialDevices.getDevices(tomatch, 19, "a", action))
+            if (GetSerialDevices._getSerialDevices.getDevices(tomatch, 30, "a", action))
             {
                 // MessageBox.Show("released");
             }
@@ -1349,118 +1349,122 @@ namespace Ahmsville_Dial
         {
 
             //checked for directly connected dial
-            if (wired_diallist.SelectedItem.ToString().Contains("Absolute"))
+            if (wired_diallist.SelectedItem != null)
             {
-                //modify header file
-                try
+                if (wired_diallist.SelectedItem.ToString().Contains("Absolute"))
                 {
-                    string headerfilepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\";
-                    string[] headerfile = System.IO.File.ReadAllLines(headerfilepath + "AhmsvilleDial_v2.h");
-                    // string[] maincodefile = Directory.GetFiles(selecteddialfilepath, "*main.ino"); // <-- Case-insensitive
-                    //  string[] maincode = System.IO.File.ReadAllLines(maincodefile[0]);
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(headerfilepath + "AhmsvilleDial_v2.h"))
+                    //modify header file
+                    try
                     {
-                        for (int i = 0; i < headerfile.Length; i++)
+                        string headerfilepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\";
+                        string[] headerfile = System.IO.File.ReadAllLines(headerfilepath + "AhmsvilleDial_v2.h");
+                        // string[] maincodefile = Directory.GetFiles(selecteddialfilepath, "*main.ino"); // <-- Case-insensitive
+                        //  string[] maincode = System.IO.File.ReadAllLines(maincodefile[0]);
+                        using (System.IO.StreamWriter file = new System.IO.StreamWriter(headerfilepath + "AhmsvilleDial_v2.h"))
                         {
-                            if (i == 5) //Write to line 5
+                            for (int i = 0; i < headerfile.Length; i++)
                             {
-                                headerfile[i] = "";
+                                if (i == 5) //Write to line 5
+                                {
+                                    headerfile[i] = "";
 
-                                headerfile[i] = "#define DIAL_VERSION 4 //v2 Samd21 Absolute";
+                                    headerfile[i] = "#define DIAL_VERSION 4 //v2 Samd21 Absolute";
+                                }
+                                file.WriteLine(headerfile[i]);
                             }
-                            file.WriteLine(headerfile[i]);
                         }
                     }
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-            else if (wired_diallist.SelectedItem.ToString().Contains("Base"))
-            {
-                //modify header file
-                try
-                {
-                    string headerfilepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\";
-                    string[] headerfile = System.IO.File.ReadAllLines(headerfilepath + "AhmsvilleDial_v2.h");
-                    // string[] maincodefile = Directory.GetFiles(selecteddialfilepath, "*main.ino"); // <-- Case-insensitive
-                    //  string[] maincode = System.IO.File.ReadAllLines(maincodefile[0]);
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(headerfilepath + "AhmsvilleDial_v2.h"))
+                    catch (Exception)
                     {
-                        for (int i = 0; i < headerfile.Length; i++)
-                        {
-                            if (i == 5) //Write to line 5
-                            {
-                                headerfile[i] = "";
 
-                                headerfile[i] = "#define DIAL_VERSION 1 //v2 Samd21 Base";
-                            }
-                            file.WriteLine(headerfile[i]);
-                        }
                     }
                 }
-                catch (Exception)
+                else if (wired_diallist.SelectedItem.ToString().Contains("Base"))
                 {
-
-                }
-            }
-            else if (wired_diallist.SelectedItem.ToString().Contains("MacroKey"))
-            {
-                //modify header file
-                try
-                {
-                    string headerfilepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\";
-                    string[] headerfile = System.IO.File.ReadAllLines(headerfilepath + "AhmsvilleDial_v2.h");
-                    // string[] maincodefile = Directory.GetFiles(selecteddialfilepath, "*main.ino"); // <-- Case-insensitive
-                    //  string[] maincode = System.IO.File.ReadAllLines(maincodefile[0]);
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(headerfilepath + "AhmsvilleDial_v2.h"))
+                    //modify header file
+                    try
                     {
-                        for (int i = 0; i < headerfile.Length; i++)
+                        string headerfilepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\";
+                        string[] headerfile = System.IO.File.ReadAllLines(headerfilepath + "AhmsvilleDial_v2.h");
+                        // string[] maincodefile = Directory.GetFiles(selecteddialfilepath, "*main.ino"); // <-- Case-insensitive
+                        //  string[] maincode = System.IO.File.ReadAllLines(maincodefile[0]);
+                        using (System.IO.StreamWriter file = new System.IO.StreamWriter(headerfilepath + "AhmsvilleDial_v2.h"))
                         {
-                            if (i == 5) //Write to line 5
+                            for (int i = 0; i < headerfile.Length; i++)
                             {
-                                headerfile[i] = "";
+                                if (i == 5) //Write to line 5
+                                {
+                                    headerfile[i] = "";
 
-                                headerfile[i] = "#define DIAL_VERSION 2 //v2 Samd21 Macro";
+                                    headerfile[i] = "#define DIAL_VERSION 1 //v2 Samd21 Base";
+                                }
+                                file.WriteLine(headerfile[i]);
                             }
-                            file.WriteLine(headerfile[i]);
                         }
                     }
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-            else if (wired_diallist.SelectedItem.ToString().Contains("SpaceNav"))
-            {
-                //modify header file
-                try
-                {
-                    string headerfilepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\";
-                    string[] headerfile = System.IO.File.ReadAllLines(headerfilepath + "AhmsvilleDial_v2.h");
-                    // string[] maincodefile = Directory.GetFiles(selecteddialfilepath, "*main.ino"); // <-- Case-insensitive
-                    //  string[] maincode = System.IO.File.ReadAllLines(maincodefile[0]);
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(headerfilepath + "AhmsvilleDial_v2.h"))
+                    catch (Exception)
                     {
-                        for (int i = 0; i < headerfile.Length; i++)
-                        {
-                            if (i == 5) //Write to line 5
-                            {
-                                headerfile[i] = "";
 
-                                headerfile[i] = "#define DIAL_VERSION 3 //v2 Samd21 SpaceNav";
-                            }
-                            file.WriteLine(headerfile[i]);
-                        }
                     }
                 }
-                catch (Exception)
+                else if (wired_diallist.SelectedItem.ToString().Contains("MacroKey"))
                 {
+                    //modify header file
+                    try
+                    {
+                        string headerfilepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\";
+                        string[] headerfile = System.IO.File.ReadAllLines(headerfilepath + "AhmsvilleDial_v2.h");
+                        // string[] maincodefile = Directory.GetFiles(selecteddialfilepath, "*main.ino"); // <-- Case-insensitive
+                        //  string[] maincode = System.IO.File.ReadAllLines(maincodefile[0]);
+                        using (System.IO.StreamWriter file = new System.IO.StreamWriter(headerfilepath + "AhmsvilleDial_v2.h"))
+                        {
+                            for (int i = 0; i < headerfile.Length; i++)
+                            {
+                                if (i == 5) //Write to line 5
+                                {
+                                    headerfile[i] = "";
 
+                                    headerfile[i] = "#define DIAL_VERSION 2 //v2 Samd21 Macro";
+                                }
+                                file.WriteLine(headerfile[i]);
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+                else if (wired_diallist.SelectedItem.ToString().Contains("SpaceNav"))
+                {
+                    //modify header file
+                    try
+                    {
+                        string headerfilepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\";
+                        string[] headerfile = System.IO.File.ReadAllLines(headerfilepath + "AhmsvilleDial_v2.h");
+                        // string[] maincodefile = Directory.GetFiles(selecteddialfilepath, "*main.ino"); // <-- Case-insensitive
+                        //  string[] maincode = System.IO.File.ReadAllLines(maincodefile[0]);
+                        using (System.IO.StreamWriter file = new System.IO.StreamWriter(headerfilepath + "AhmsvilleDial_v2.h"))
+                        {
+                            for (int i = 0; i < headerfile.Length; i++)
+                            {
+                                if (i == 5) //Write to line 5
+                                {
+                                    headerfile[i] = "";
+
+                                    headerfile[i] = "#define DIAL_VERSION 3 //v2 Samd21 SpaceNav";
+                                }
+                                file.WriteLine(headerfile[i]);
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
             }
+           
 
         }
         private void selectdialversionFromLibrary(int index)

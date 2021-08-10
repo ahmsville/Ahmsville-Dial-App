@@ -20,9 +20,10 @@ namespace Ahmsville_Dial
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        Gdata[i] = double.Parse(gyrodata[i]);
+                        Gdata[i] = double.Parse(gyrodata[i]) / 57.296;
                         Pdata[i] = double.Parse(planedata[i]);
                     }
+                    //System.Console.WriteLine("planar =  " + Gdata[0] + "   " + Gdata[1] + "   " + Gdata[2]);
                     InApp_Operations.SOLIDWORKS.swObj.setRawValues(Gdata, Pdata);
                 }
                 catch (Exception)
@@ -42,7 +43,7 @@ namespace Ahmsville_Dial
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        Gdata[i] = double.Parse(gyrodata[i]);
+                        Gdata[i] = double.Parse(gyrodata[i])/57.296;
                         Pdata[i] = double.Parse(planedata[i]);
                     }
                     InApp_Operations.FUSION360.f360Obj.setRawValues(Gdata, Pdata);

@@ -12,6 +12,7 @@ using System.ComponentModel;
 using Ahmsville_Dial_SOLIDWORKS_AddIn.Properties;
 using CodeStack.SwEx.AddIn.Enums;
 using System.Threading;
+using System.Timers;
 
 namespace Ahmsville_Dial_SOLIDWORKS_AddIn
 {
@@ -29,13 +30,13 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
 
         ModelDoc model = null;
         ModelView myModelView = null;
-
+        System.Timers.Timer pipecontimer;
         private enum addinCommands  //create list of addin functions/commands
         {
             [Title("Ahmsville Dial")]
             [Description("Ahmsville Dial SolidWorks AddIn")]
             [Icon(typeof(Resources), nameof(Resources.DialLogo))]
-           // [CommandItemInfo(true,true,swWorkspaceTypes_e.All, true)]
+            // [CommandItemInfo(true,true,swWorkspaceTypes_e.All, true)]
             AhmsvilleDial
         }
         public override bool OnConnect()  //detect when functions are clicked
@@ -78,135 +79,70 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
         string activeFunctionID = "";
         public bool registerCallback_InSW(Ito_AhmDialApp callreturn, string functionIdentifier)
         {
-            activeFunctionID = functionIdentifier;
-            if (activeFunctionID == "default")
+            if (to_callback != callreturn)
             {
-                if (to_callback != callreturn)
-                {
-                    poolingStarted = false;
-                    to_callback = callreturn;
-
-                }
+                to_callback = callreturn;
             }
-            else if (activeFunctionID == "raw")
-            {
-                if (to_callback2 != callreturn)
-                {
-                    poolingStarted2 = false;
-                    to_callback2 = callreturn;
 
-                }
-            }
-            
-           
+
             return true;
         }
 
-        bool poolingStarted = false;
-        bool poolingStarted2 = false;
-
+        static bool loopstarted = false;
         public bool queueIN()
         {
-            while (poolingStarted)
+            while (to_callback != null)
             {
-                while (to_callback != null)
+                loopstarted = true;
+                try
                 {
-                    try
-                    {
-                        to_callback.processInApp_Queue();
-                    }
-                    catch (Exception)
-                    {
-                        poolingStarted = false;
-                        // to_callback = null;
-                    }
+                    to_callback.processInApp_Queue();
                 }
-                
+                catch (Exception)
+                {
+                    to_callback = null;
+                    loopstarted = false;
+                }
             }
-            
-            
-           
+
             return true;
         }
 
-        public bool queueIN2()
-        {
-            while (poolingStarted2)
-            {
-                while (to_callback2 != null)
-                {
-                    try
-                    {
-                        to_callback2.processInApp_Raw();
-
-                    }
-                    catch (Exception)
-                    {
-                        poolingStarted2 = false;
-                        // to_callback = null;
-                    }
-                }
-                
-            }
-
-
-
-            return true;
-        }
 
         public async void breakoffOperationAsync()
         {
+
             if (to_callback != null)
             {
-                Task<bool> invokeQueue = new Task<bool>(queueIN);
-                poolingStarted = true;
-                invokeQueue.Start();
-                //App.SendMsgToUser(poolingStarted.ToString());
-                bool ret = await invokeQueue;
-                if (ret)
+                if (!loopstarted)
                 {
-                    to_callback = null;
-                    poolingStarted = false;
-                    //App.SendMsgToUser("endedloop");
+                    Task<bool> invokeQueue = new Task<bool>(queueIN);
+                    invokeQueue.Start();
+                    //App.SendMsgToUser(poolingStarted.ToString());
+                    bool ret = await invokeQueue;
+                    if (ret)
+                    {
+                        to_callback = null;
+                        //App.SendMsgToUser("endedloop");
+                    }
                 }
             }
-        }
 
-        public async void breakoffOperationAsync2()
-        {
-            if (to_callback2 != null)
-            {
-                Task<bool> invokeQueue2 = new Task<bool>(queueIN2);
-                poolingStarted2 = true;
-                invokeQueue2.Start();
-                //App.SendMsgToUser(poolingStarted.ToString());
-                bool ret2 = await invokeQueue2;
-                if (ret2)
-                {
-                    to_callback2 = null;
-                    poolingStarted2 = false;
-                    //App.SendMsgToUser("endedloop");
-                }
-            }
         }
 
         private int OnIdleNotify()
         {
-            if (!poolingStarted)
-            {
-                breakoffOperationAsync();
-                
-            }
-            if (!poolingStarted2)
-            {
-                
-                breakoffOperationAsync2();
-            }
+
+            breakoffOperationAsync();
+
 
             return 0;
             // App.SendMsgToUser($"debug");
-            
+
         }
-    }
+       
+        }
+
+
 
 }

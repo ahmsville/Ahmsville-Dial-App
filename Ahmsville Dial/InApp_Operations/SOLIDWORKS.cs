@@ -116,8 +116,19 @@ namespace Ahmsville_Dial.InApp_Operations
             bool boolstatus = false;
             int longstatus = 0;
             int longwarnings = 0;
-            swDoc = ((ModelDoc2)(swApp.ActiveDoc));
-            myModelView = ((ModelView)(swDoc.ActiveView));
+
+
+            try
+            {
+                swDoc = ((ModelDoc2)(swApp.ActiveDoc));
+                myModelView = ((ModelView)(swDoc.ActiveView));
+            }
+            catch (Exception)
+            {
+
+
+            }
+
 
             //get ahmsville dial addin
 
@@ -126,8 +137,10 @@ namespace Ahmsville_Dial.InApp_Operations
             if (addin != null)
             {
                 addin.registerCallback_InSW(callbackfunction, funcid);
+                addin.breakoffOperationAsync();
                 activeFunctionID = funcid;
             }
+
 
         }
 
@@ -141,21 +154,22 @@ namespace Ahmsville_Dial.InApp_Operations
         {
             if (SW_InApp_Op_queue.Count > 0)
             {
-                string methodname = SW_InApp_Op_queue.ElementAt(0);
-                SW_InApp_Op_queue.RemoveAt(0);
-                _MethodInfo _Method = swObj.GetType().GetMethod(methodname);
+
                 try
                 {
+                    string methodname = SW_InApp_Op_queue.ElementAt(0);
+                    SW_InApp_Op_queue.RemoveAt(0);
+                    _MethodInfo _Method = swObj.GetType().GetMethod(methodname);
                     _Method.Invoke(swObj, null);
                 }
                 catch (Exception)
                 {
 
-                    throw;
+
                 }
             }
 
-            return defaultAddinTimer.Enabled;
+            return defaultAddinTimer.Enabled | SOLIDWORKS.RotateModel();
         }
         #region inapp functions
         public void SW_roll_xpos()
@@ -206,16 +220,17 @@ namespace Ahmsville_Dial.InApp_Operations
         }
         public void SW_move_yneg()
         {
-           myModelView.TranslateBy(0, -0.005);
-            
+            myModelView.TranslateBy(0, -0.005);
+
         }
         public void SW_zoomToFit()
         {
             swDoc.ViewZoomtofit();
+
         }
         public void SW_measure()
         {
-
+            //myModelView
         }
 
 
@@ -233,6 +248,18 @@ namespace Ahmsville_Dial.InApp_Operations
                 prevgyroQuadrant = 0;
                 prevplaneQuadrant = 0;
                 //System.Console.WriteLine("Auto locking disabled");
+            }
+        }
+        public static int viewmode = 0;
+        public void SW_change_viewmode()
+        {
+            if (viewmode < 3)
+            {
+                viewmode += 1;
+            }
+            else
+            {
+                viewmode = 0;
             }
         }
         #endregion
@@ -279,6 +306,8 @@ namespace Ahmsville_Dial.InApp_Operations
 
         }
 
+
+
         private void defaultAddinTimerEvent(Object source, ElapsedEventArgs e)
         {
             //System.Console.WriteLine("timer elapsed");
@@ -308,16 +337,19 @@ namespace Ahmsville_Dial.InApp_Operations
 
         }
 
+
         public static bool RotateModel()
         {
+            #region MyRegion
 
             //gyro control
             if (!processedGyro)
             {
+
                 int maxgyrocnt = 5;
-                double jitterrange = 0.008;
-                double fixedrange = 0.02;
-                double gyrodamprate = 0.2;
+                double jitterrange = 0.005;
+                double fixedrange = 0.01;
+                double gyrodamprate = 1;
                 if (inGyrodata[0] > 0 && inGyrodata[1] > 0)//Q1
                 {
                     //System.Console.WriteLine(">>>Q1 " + previnGyrodata[0].ToString() + " , " + previnGyrodata[1].ToString());
@@ -392,7 +424,7 @@ namespace Ahmsville_Dial.InApp_Operations
                                 }
                                 fixedgyroposcounter += 1;
                             }
-                            
+
                         }
                         else
                         {
@@ -665,11 +697,12 @@ namespace Ahmsville_Dial.InApp_Operations
             //planar control
             if (!processedPlane)
             {
+
                 int maxplanecnt = 4;
-                double jitterrange = 0.01;
-                double jitterrangetranslate = 0.01;
-                double fixedrange = 0.02;
-                double planedamprate = 0.07;
+                double jitterrange = 0.008;
+                double jitterrangetranslate = 0.008;
+                double fixedrange = 0.01;
+                double planedamprate = 1;
                 if (inPlanedata[0] > 0 && inPlanedata[1] > 0)//Q1
                 {
                     //System.Console.WriteLine(">>>Q1 " + previnPlanedata[0].ToString() + " , " + previnPlanedata[1].ToString());
@@ -1016,9 +1049,11 @@ namespace Ahmsville_Dial.InApp_Operations
 
                 processedPlane = true;
 
+
             }
-            ///////////////////////////////////////
-            
+            /////////////////////////////////////// 
+            #endregion
+
 
             return spacenavMasterTimer.Enabled | spacenavGyroTimer.Enabled | spacenavPlaneTimer.Enabled;
         }
@@ -1074,7 +1109,11 @@ namespace Ahmsville_Dial.InApp_Operations
                 }
                 else
                 {
-                    processedGyro = false;
+                    if (viewmode == 0 || viewmode == 1)
+                    {
+                        processedGyro = false;
+                    }
+                    
 
                     if (gyrolocked)
                     {
@@ -1113,7 +1152,11 @@ namespace Ahmsville_Dial.InApp_Operations
                 }
                 else
                 {
-                    processedPlane = false;
+                    if (viewmode == 0 || viewmode == 2)
+                    {
+                        processedPlane = false;
+                    }
+                        
                     if (planelocked)
                     {
                         if (inPlanedata[2] <= 1)
@@ -1141,6 +1184,9 @@ namespace Ahmsville_Dial.InApp_Operations
                     else
                     {
                         getApplication();
+                        SetTimer();
+                        connectToSolidworks(swObj.InApp_Queue_InCall, "raw");
+
                     }
 
                 }
