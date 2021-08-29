@@ -19,6 +19,7 @@ using System.Timers;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
+using System.Diagnostics;
 
 namespace Ahmsville_Dial
 {
@@ -366,7 +367,7 @@ namespace Ahmsville_Dial
             _serialPort.ReadTimeout = 500;
             _serialPort.WriteTimeout = 500;
             _serialPort.DataReceived += DataReceivedHandler;
-            // _serialPort.ReadBufferSize = 19 * 2;
+            //_serialPort.ReadBufferSize = 30 * 2;
 
 
         }
@@ -408,8 +409,13 @@ namespace Ahmsville_Dial
         }
 
         #region Serial Data Received Event
+       
+        
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
+
+          
+            
             char[] inChar = new char[30];
             filteredSerialData.Clear();
             if (_serialPort.IsOpen)
@@ -543,7 +549,7 @@ namespace Ahmsville_Dial
                             
                             
                             
-                            ProcessSpaceNavData.ProcessSpaceNavDataOBJ.process(activeapp, G_xyrad, P_xyrad);
+                            ProcessSpaceNavData.process(activeapp, G_xyrad, P_xyrad);
                             
                         }
                         //System.Console.WriteLine(activeapp);
@@ -583,7 +589,8 @@ namespace Ahmsville_Dial
 
 
 
-
+            
+         
 
 
         }
@@ -669,6 +676,17 @@ namespace Ahmsville_Dial
                     {
                         InApp_Operations.FUSION360.f360Obj.fusion360(classname, operationtoperform); //call appropriate inapp operation class
                                                                                      
+
+                    }
+
+                }
+                else if (classname == "VirtualKeys") //spacenav operation interface
+                {
+                    Type stringtotype = Type.GetType("Ahmsville_Dial.InApp_Operations." + classname);
+                    if (stringtotype != null)
+                    {
+                        var temptype = (InApp_Operations.VirtualKeys_INTERFACE)Activator.CreateInstance(stringtotype);
+                        temptype.virtualkeypress(classname, operationtoperform); //call appropriate inapp operation class
 
                     }
 
@@ -1732,23 +1750,32 @@ namespace Ahmsville_Dial
             {
                 try
                 {
-                    Directory.CreateDirectory(System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Extracted"); //create temp directory
-                    ZipFile.ExtractToDirectory(System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Ahmsville Dial Libraries.zip", System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Extracted"); //extract libraries to temp directory
-                    string librarylocation = System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Extracted";
-                    string libraryfolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries";
-                    string[] libraries = Directory.GetDirectories(librarylocation);
-
-
-                    foreach (string s in libraries)
+                    string[] libfiles = Directory.GetFiles(System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries");
+                    if (libfiles.Count() == 1)
                     {
-                        string dest = libraryfolder + s.Replace(librarylocation, "");
-                        Directory.CreateDirectory(dest);
-                        copyfilesRecursively(s, dest);
-                        // MessageBox.Show(System.IO.Path.GetFileName(s));
-                        //File.Copy(s, libraryfolder);
+                        Directory.CreateDirectory(System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Extracted"); //create temp directory
+                        ZipFile.ExtractToDirectory(libfiles[0], System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Extracted"); //extract libraries to temp directory
+                        string librarylocation = System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Extracted";
+                        string libraryfolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries";
+                        string[] libraries = Directory.GetDirectories(librarylocation);
+
+
+                        foreach (string s in libraries)
+                        {
+                            string dest = libraryfolder + s.Replace(librarylocation, "");
+                            Directory.CreateDirectory(dest);
+                            copyfilesRecursively(s, dest);
+                            // MessageBox.Show(System.IO.Path.GetFileName(s));
+                            //File.Copy(s, libraryfolder);
+                        }
+                        Directory.Delete(System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Extracted", true);
+                        MessageBox.Show("Libraries Updated", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
-                    Directory.Delete(System.AppDomain.CurrentDomain.BaseDirectory + @"\Libraries\Extracted", true);
-                    MessageBox.Show("Libraries Updated", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Information);
+                    else
+                    {
+                        MessageBox.Show("Multiple packaged libraries found", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    
                 }
                 catch (Exception)
                 {

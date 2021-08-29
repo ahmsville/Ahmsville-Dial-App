@@ -1,0 +1,15 @@
+{
+	"autodeskProduct":	"Fusion360",
+	"type":	"addin",
+	"author":	"Ahmsville Labs",
+	"description":	{
+		"":	"Addin to enable fusion360 support for the Ahmsville Dial V2."
+	},
+	"supportedOS":	"windows|mac",
+	"editEnabled":	true,
+	"id":	"abc60e07-8618-4533-a892-21f9087e3ab5",
+	"version":	"v1",
+	"runOnStartup":	true,
+	"sourcewindows":	"Ahmsville Dial_Fusion360.vcxproj",
+	"sourcemac":	"Ahmsville Dial_Fusion360.xcodeproj"
+}

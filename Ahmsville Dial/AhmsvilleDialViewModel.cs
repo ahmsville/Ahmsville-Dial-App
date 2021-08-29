@@ -149,7 +149,7 @@ namespace Ahmsville_Dial
             specialkeys = new List<string>
             {
              "null","KEY_LEFT_CTRL","KEY_LEFT_SHIFT","KEY_LEFT_ALT","KEY_LEFT_GUI", "KEY_RIGHT_CTRL", "KEY_RIGHT_SHIFT", "KEY_RIGHT_ALT", "KEY_RIGHT_GUI"
-            ,"KEY_UP_ARROW","KEY_DOWN_ARROW","KEY_RIGHT_ARROW","KEY_LEFT_ARROW","KEY_BACKSPACE","KEY_SPACEBAR","KEY_TAB","KEY_RETURN","KEY_ESC","KEY_INSERT","KEY_DELETE","KEY_PAGE_UP","KEY_PAGE_DOWN"
+            ,"KEY_UP_ARROW","KEY_DOWN_ARROW","KEY_RIGHT_ARROW","KEY_LEFT_ARROW","KEY_BACKSPACE","KEY_SPACEBAR","NUMPAD_MULTIPLY","KEY_TAB","KEY_RETURN","KEY_ESC","KEY_INSERT","KEY_DELETE","KEY_PAGE_UP","KEY_PAGE_DOWN"
             ,"KEY_HOME","KEY_END","KEY_CAPS_LOCK","KEY_F1","KEY_F2","KEY_F3","KEY_F4","KEY_F5","KEY_F6","KEY_F7","KEY_F8","KEY_F9","KEY_F10","KEY_F11","KEY_F12","KEY_F13","KEY_F14","KEY_F15","KEY_F16","KEY_F17","KEY_F18","KEY_F19","KEY_F20","KEY_F21","KEY_F22","KEY_F23","KEY_F24"
             ,"MOUSE_LEFT","MOUSE_RIGHT","MOUSE_MIDDLE","MOUSEMOVE_UP","MOUSEMOVE_DOWN","MOUSEMOVE_RIGHT","MOUSEMOVE_LEFT"
             };
@@ -189,12 +189,16 @@ namespace Ahmsville_Dial
             new inapp {operationname = "SW_move_xneg", operationclass = "SOLIDWORKS"},
             new inapp {operationname = "SW_move_ypos", operationclass = "SOLIDWORKS"},
             new inapp {operationname = "SW_move_yneg", operationclass = "SOLIDWORKS"},
-            new inapp {operationname = "SW_auto_orientationLock", operationclass = "SOLIDWORKS"},
-            new inapp {operationname = "SW_change_viewmode", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "_SW_auto_orientationLock", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "_SW_change_viewmode", operationclass = "SOLIDWORKS"},
             new inapp {operationname = "SW_zoomToFit", operationclass = "SOLIDWORKS"},
 
-            new inapp {operationname = "Fusion_test", operationclass = "FUSION360"}
+            new inapp {operationname = "Fusion_test", operationclass = "FUSION360"},
+            new inapp {operationname = "_FU360_auto_orientationLock", operationclass = "FUSION360"},
+            new inapp {operationname = "_FU360_change_viewmode", operationclass = "FUSION360"},
+            new inapp {operationname = "FU360_zoomToFit", operationclass = "FUSION360"},
 
+            new inapp {operationname = "numpad_multiply", operationclass = "VirtualKeys"}
             };
 
             inappOperationClasses = new List<string>

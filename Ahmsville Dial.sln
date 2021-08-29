@@ -9,22 +9,44 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Ahmsville Dial Installer", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ahmsville Dial_SOLIDWORKS AddIn", "Ahmsville Dial_SOLIDWORKS AddIn\Ahmsville Dial_SOLIDWORKS AddIn.csproj", "{5B2F9A8E-415E-4EF4-8AA9-3138648EC3B7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ahmsville Dial_Fusion360", "Ahmsville Dial_Fusion360\Ahmsville Dial_Fusion360.vcxproj", "{D7CBB035-8CC0-4576-9C72-5076E079586B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0BD2CEF4-A3D1-4C92-9C88-EED27CC69727}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0BD2CEF4-A3D1-4C92-9C88-EED27CC69727}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD2CEF4-A3D1-4C92-9C88-EED27CC69727}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0BD2CEF4-A3D1-4C92-9C88-EED27CC69727}.Debug|x64.Build.0 = Debug|Any CPU
 		{0BD2CEF4-A3D1-4C92-9C88-EED27CC69727}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{0BD2CEF4-A3D1-4C92-9C88-EED27CC69727}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{0BD2CEF4-A3D1-4C92-9C88-EED27CC69727}.Release|x64.ActiveCfg = Release|Any CPU
+		{0BD2CEF4-A3D1-4C92-9C88-EED27CC69727}.Release|x64.Build.0 = Release|Any CPU
 		{0A92F4EB-2591-48CA-8E96-EDED4099A495}.Debug|Any CPU.ActiveCfg = Release
+		{0A92F4EB-2591-48CA-8E96-EDED4099A495}.Debug|x64.ActiveCfg = Debug
+		{0A92F4EB-2591-48CA-8E96-EDED4099A495}.Debug|x64.Build.0 = Debug
 		{0A92F4EB-2591-48CA-8E96-EDED4099A495}.Release|Any CPU.ActiveCfg = Release
+		{0A92F4EB-2591-48CA-8E96-EDED4099A495}.Release|x64.ActiveCfg = Release
+		{0A92F4EB-2591-48CA-8E96-EDED4099A495}.Release|x64.Build.0 = Release
 		{5B2F9A8E-415E-4EF4-8AA9-3138648EC3B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5B2F9A8E-415E-4EF4-8AA9-3138648EC3B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B2F9A8E-415E-4EF4-8AA9-3138648EC3B7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5B2F9A8E-415E-4EF4-8AA9-3138648EC3B7}.Debug|x64.Build.0 = Debug|Any CPU
 		{5B2F9A8E-415E-4EF4-8AA9-3138648EC3B7}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{5B2F9A8E-415E-4EF4-8AA9-3138648EC3B7}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{5B2F9A8E-415E-4EF4-8AA9-3138648EC3B7}.Release|x64.ActiveCfg = Release|Any CPU
+		{5B2F9A8E-415E-4EF4-8AA9-3138648EC3B7}.Release|x64.Build.0 = Release|Any CPU
+		{D7CBB035-8CC0-4576-9C72-5076E079586B}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{D7CBB035-8CC0-4576-9C72-5076E079586B}.Debug|x64.ActiveCfg = Debug|x64
+		{D7CBB035-8CC0-4576-9C72-5076E079586B}.Debug|x64.Build.0 = Debug|x64
+		{D7CBB035-8CC0-4576-9C72-5076E079586B}.Release|Any CPU.ActiveCfg = Release|x64
+		{D7CBB035-8CC0-4576-9C72-5076E079586B}.Release|x64.ActiveCfg = Release|x64
+		{D7CBB035-8CC0-4576-9C72-5076E079586B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
