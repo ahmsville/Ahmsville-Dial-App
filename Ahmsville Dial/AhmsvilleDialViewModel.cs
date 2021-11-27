@@ -32,11 +32,55 @@ namespace Ahmsville_Dial
             public string operationclass { get; set; }
         }
 
+        public static string[] availableconfigs = { };
+       
+        public struct availableconfigsforapp
+        {
+            public string[] linesforappfunctions;
+            public List<string> comments;
+        }
+        public static availableconfigsforapp[] loadedappfunctions = new availableconfigsforapp[0];
+        
+        private static int _active_loaded_inappfunctions_index = 0;
+        public static int active_loaded_inappfunctions_index
+        {
+            get { return _active_loaded_inappfunctions_index; }
 
+            set
+            {
+                _active_loaded_inappfunctions_index = value;
+                instance.OnPropertyChanged();
+                instance.changePopup();    
+            }
+        }
+        private void changePopup()
+        {
+            popupConfigID = active_loaded_inappfunctions_index.ToString();
+            popupConfigColor = loadedappfunctions[active_loaded_inappfunctions_index].comments.ElementAt(0);
+            popupConfigName = availableconfigs[active_loaded_inappfunctions_index];
+            popupConfigComment = "";
+            for (int i = 1; i < loadedappfunctions[active_loaded_inappfunctions_index].comments.Count; i++)
+            {
+                popupConfigComment += loadedappfunctions[active_loaded_inappfunctions_index].comments.ElementAt(i) + "\n";
+            }
+        }
+
+       private string _geometrydata = "M12 13c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6-5h-1V6c0-2.76-2.24-5-5-5-2.28 0-4.27 1.54-4.84 3.75-.14.54.18 1.08.72 1.22.53.14 1.08-.18 1.22-.72C9.44 3.93 10.63 3 12 3c1.65 0 3 1.35 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 11c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-8c0-.55.45-1 1-1h10c.55 0 1 .45 1 1v8z";
+        public string geometrydata
+        {
+            get { return _geometrydata; }
+
+            set
+            {
+                _geometrydata = value;
+                OnPropertyChanged();
+            }
+        }
         public List<string> inappOperationClasses { get; set; }
 
 
         public List<inapp> inappoperations { get; set; }
+
 
 
         public List<inapp> GetInapps()
@@ -44,7 +88,52 @@ namespace Ahmsville_Dial
             return inappoperations;
         }
 
+        private string _popupConfigID;
+        public string popupConfigID
+        {
+            get { return _popupConfigID; }
 
+            set
+            {
+                _popupConfigID = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _popupConfigName;
+        public string popupConfigName
+        {
+            get { return _popupConfigName; }
+
+            set
+            {
+                _popupConfigName = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _popupConfigColor;
+        public string popupConfigColor
+        {
+            get { return _popupConfigColor; }
+
+            set
+            {
+                _popupConfigColor = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _popupConfigComment;
+        public string popupConfigComment
+        {
+            get { return _popupConfigComment; }
+
+            set
+            {
+                _popupConfigComment = value;
+                OnPropertyChanged();
+            }
+        }
 
         private string _activeappname;
         public string activeappname
@@ -168,7 +257,10 @@ namespace Ahmsville_Dial
             };
 
             inappoperations = new List<inapp>
-            { 
+            {
+            new inapp {operationname = "Open_PopUp", operationclass = "PopUp"},
+            //new inapp {operationname = "Close_PopUp", operationclass = "PopUp"},
+
             new inapp {operationname = "volume_up", operationclass = "MediaControl"},
             new inapp {operationname = "volume_down", operationclass = "MediaControl"},
             new inapp {operationname = "volume_mute", operationclass = "MediaControl"},
@@ -192,13 +284,43 @@ namespace Ahmsville_Dial
             new inapp {operationname = "_SW_auto_orientationLock", operationclass = "SOLIDWORKS"},
             new inapp {operationname = "_SW_change_viewmode", operationclass = "SOLIDWORKS"},
             new inapp {operationname = "SW_zoomToFit", operationclass = "SOLIDWORKS"},
+            new inapp {operationname = "SW_translate_zoom", operationclass = "SOLIDWORKS"},
 
-            new inapp {operationname = "Fusion_test", operationclass = "FUSION360"},
             new inapp {operationname = "_FU360_auto_orientationLock", operationclass = "FUSION360"},
             new inapp {operationname = "_FU360_change_viewmode", operationclass = "FUSION360"},
             new inapp {operationname = "FU360_zoomToFit", operationclass = "FUSION360"},
+            new inapp {operationname = "FU360_translate_zoom", operationclass = "FUSION360"},
 
-            new inapp {operationname = "numpad_multiply", operationclass = "VirtualKeys"}
+            new inapp {operationname = "_BLENDER_auto_orientationLock", operationclass = "BLENDER"},
+            new inapp {operationname = "_BLENDER_change_viewmode", operationclass = "BLENDER"},
+            new inapp {operationname = "BLENDER_zoomToFit", operationclass = "BLENDER"},
+            new inapp {operationname = "BLENDER_translate_zoom", operationclass = "BLENDER"},
+
+            new inapp {operationname = "numpad_multiply", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F1", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F2", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F3", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F4", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F5", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F6", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F7", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F8", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F9", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F10", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F11", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F12", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F13", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F14", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F15", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F16", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F17", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F18", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F19", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F20", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F21", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F22", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F23", operationclass = "VirtualKeys"},
+            new inapp {operationname = "F24", operationclass = "VirtualKeys"}
             };
 
             inappOperationClasses = new List<string>
@@ -220,7 +342,11 @@ namespace Ahmsville_Dial
             new Dial_information {name = "Absolute Variant", filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Absolute_Variant_main\", imagepath = softwarepath + @"\absolute\default.jpg" }
             };
 
-            
+            popupConfigID = "0";
+            popupConfigName = "No Active Config";
+            popupConfigColor = "Purple";
+            popupConfigComment = "Hello";
+           
             
         }
 

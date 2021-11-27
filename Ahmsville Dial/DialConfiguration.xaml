@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ahmsville_Dial"
         mc:Ignorable="d"
-        Title="Dial Configuration" SizeToContent="Width" Height="720" >
+        Title="Dial Configuration" SizeToContent="Width" Height="720" Loaded="configWindow_Loaded">
 
     <Grid x:Name="pagecontent0">
 
@@ -194,6 +194,10 @@
                             </StackPanel>
 
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="knob1_CW_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock VerticalAlignment="Center"  Text="CCW"
@@ -227,7 +231,10 @@
                             </StackPanel>
 
                         </StackPanel>
-
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="knob1_CCW_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                        </StackPanel>
                     </StackPanel>
 
 
@@ -278,6 +285,10 @@
                             </StackPanel>
 
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="knob2_CW_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock VerticalAlignment="Center"  Text="CCW"
@@ -310,7 +321,10 @@
                             </StackPanel>
 
                         </StackPanel>
-
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="knob2_CCW_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                        </StackPanel>
                     </StackPanel>
 
 
@@ -325,137 +339,156 @@
                    Margin="10" Style="{DynamicResource defaulttittle}"/>
                             <Rectangle Width="200" Height="1" Style="{DynamicResource rectangle}" />
                         </StackPanel>
-
-                        <StackPanel Orientation="Horizontal" >
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock VerticalAlignment="Center"  Text="Single Tap"
+                        
+                            <StackPanel Orientation="Horizontal" >
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center"  Text="Single Tap"
                    Margin="10" Style="{DynamicResource defaultsubtittle}" Name="SingleTap" />
-                                <CheckBox Margin="20,10" Content="Use APP" VerticalAlignment="Center" Name="use_APP_captouch_singletap_SHORTCUT1"
+                                    <CheckBox Margin="20,10" Content="Use APP" VerticalAlignment="Center" Name="use_APP_captouch_singletap_SHORTCUT1"
                                   Unchecked="Use_APP_captouch_singletap_SHORTCUT1_checked"  Checked="Use_APP_captouch_singletap_SHORTCUT1_checked"/>
-                            </StackPanel>
+                                </StackPanel>
 
-                            <StackPanel Orientation="Horizontal" x:Name="SHORTCUT1_captouch_singletap">
-                                <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
+                                <StackPanel Orientation="Horizontal" x:Name="SHORTCUT1_captouch_singletap">
+                                    <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
                   Margin="10" HorizontalAlignment="Left" x:Name="singletap_1" 
                       ItemsSource="{Binding specialkeys}" Style="{DynamicResource ComboBoxStyle1}"/>
-                                <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
+                                    <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
                   Margin="10" HorizontalAlignment="Left" x:Name="singletap_2" 
                       ItemsSource="{Binding specialkeys}" Style="{DynamicResource ComboBoxStyle1}"/>
-                                <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter"
+                                    <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter"
                   Margin="10"  x:Name="singletap_3" HorizontalContentAlignment="Center"
                       ItemsSource="{Binding specialkeys}" Style="{DynamicResource ComboBoxStyle1}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" x:Name="APP_captouch_singletap_SHORTCUT1" Visibility="Collapsed">
-                                <RadioButton x:Name="inbuiltfunc_captouch_singletap_SHORTCUT1" Margin="10" Content="InBuilt Function" Template="{DynamicResource RadioButton_MyStyle}" 
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" x:Name="APP_captouch_singletap_SHORTCUT1" Visibility="Collapsed">
+                                    <RadioButton x:Name="inbuiltfunc_captouch_singletap_SHORTCUT1" Margin="10" Content="InBuilt Function" Template="{DynamicResource RadioButton_MyStyle}" 
                                          Checked="Inbuiltfunc_captouch_singletap_SHORTCUT1_Checked"/>
-                                <RadioButton x:Name="file_captouch_singletap_SHORTCUT1" Margin="10" Content="File/Script" Template="{DynamicResource RadioButton_MyStyle}"
+                                    <RadioButton x:Name="file_captouch_singletap_SHORTCUT1" Margin="10" Content="File/Script" Template="{DynamicResource RadioButton_MyStyle}"
                                          Checked="Inbuiltfunc_captouch_singletap_SHORTCUT1_Checked"/>
-                                <ComboBox ItemsSource="{Binding inappoperations}" DisplayMemberPath="operationname" x:Name="functionscombobox_captouch_singletap_SHORTCUT1" Margin="10" Width="200"
+                                    <ComboBox ItemsSource="{Binding inappoperations}" DisplayMemberPath="operationname" x:Name="functionscombobox_captouch_singletap_SHORTCUT1" Margin="10" Width="200"
                                   Style="{DynamicResource ComboBoxStyle1}"/>
-                                <Button Click="Browsebutton_captouch_singletap_SHORTCUT1_Click"  x:Name="browsebutton_captouch_singletap_SHORTCUT1" Margin="10" Width="70
+                                    <Button Click="Browsebutton_captouch_singletap_SHORTCUT1_Click"  x:Name="browsebutton_captouch_singletap_SHORTCUT1" Margin="10" Width="70
                                 " Content="Browse" Template="{DynamicResource ButtonBase_MyStyle}"/>
-                            </StackPanel>
-                            <CheckBox Content="Dual Shortcut"  
+                                </StackPanel>
+                                <CheckBox Content="Dual Shortcut"  
                            Unchecked="singletap_dualfunc" Checked="singletap_dualfunc" 
                                   VerticalAlignment="Center" x:Name="singletap_dualshortcut"/>
-                        </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" Visibility="Collapsed" x:Name="singletap_shortcut2" HorizontalAlignment="Center">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock VerticalAlignment="Center"  Text="Shortcut 2"
-                   Margin="10" Style="{DynamicResource defaultsubtittle}"/>
-                                <CheckBox Margin="20,10" Content="Use APP" VerticalAlignment="Center" Name="use_APP_captouch_singletap_SHORTCUT2"
-                                  Unchecked="Use_APP_captouch_singletap_SHORTCUT2_checked" Checked="Use_APP_captouch_singletap_SHORTCUT2_checked"/>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" x:Name="SHORTCUT2_captouch_singletap">
-                                <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
+                            
+                     
+
+
+                        
+                            <StackPanel Orientation="Horizontal" Visibility="Collapsed" x:Name="singletap_shortcut2"  HorizontalAlignment="Center">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center"  Text="Shortcut 2"
+                   Margin="10" Style="{DynamicResource defaultsubtittle}"/>
+                                    <CheckBox Margin="20,10" Content="Use APP" VerticalAlignment="Center" Name="use_APP_captouch_singletap_SHORTCUT2"
+                                  Unchecked="Use_APP_captouch_singletap_SHORTCUT2_checked" Checked="Use_APP_captouch_singletap_SHORTCUT2_checked"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" x:Name="SHORTCUT2_captouch_singletap">
+                                    <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
                   Margin="10" HorizontalAlignment="Left" x:Name="singletap_21" 
                       ItemsSource="{Binding specialkeys}" Style="{DynamicResource ComboBoxStyle1}"/>
-                                <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
+                                    <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
                   Margin="10" HorizontalAlignment="Left" x:Name="singletap_22" 
                       ItemsSource="{Binding specialkeys}" Style="{DynamicResource ComboBoxStyle1}"/>
-                                <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter"
+                                    <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter"
                   Margin="10"  x:Name="singletap_23" HorizontalContentAlignment="Center"
                       ItemsSource="{Binding specialkeys}" Style="{DynamicResource ComboBoxStyle1}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" x:Name="APP_captouch_singletap_SHORTCUT2" Visibility="Collapsed">
-                                <RadioButton x:Name="inbuiltfunc_captouch_singletap_SHORTCUT2" Margin="10" Content="InBuilt Function" Template="{DynamicResource RadioButton_MyStyle}" 
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" x:Name="APP_captouch_singletap_SHORTCUT2" Visibility="Collapsed">
+                                    <RadioButton x:Name="inbuiltfunc_captouch_singletap_SHORTCUT2" Margin="10" Content="InBuilt Function" Template="{DynamicResource RadioButton_MyStyle}" 
                                          Checked="Inbuiltfunc_captouch_singletap_SHORTCUT2_Checked"/>
-                                <RadioButton x:Name="file_captouch_singletap_SHORTCUT2" Margin="10" Content="File/Script" Template="{DynamicResource RadioButton_MyStyle}"
+                                    <RadioButton x:Name="file_captouch_singletap_SHORTCUT2" Margin="10" Content="File/Script" Template="{DynamicResource RadioButton_MyStyle}"
                                          Checked="Inbuiltfunc_captouch_singletap_SHORTCUT2_Checked"/>
-                                <ComboBox ItemsSource="{Binding inappoperations}" DisplayMemberPath="operationname" x:Name="functionscombobox_captouch_singletap_SHORTCUT2" Margin="10" Width="200"
+                                    <ComboBox ItemsSource="{Binding inappoperations}" DisplayMemberPath="operationname" x:Name="functionscombobox_captouch_singletap_SHORTCUT2" Margin="10" Width="200"
                                   Style="{DynamicResource ComboBoxStyle1}"/>
-                                <Button Click="Browsebutton_captouch_singletap_SHORTCUT2_Click"  x:Name="browsebutton_captouch_singletap_SHORTCUT2" Margin="10" Width="70
+                                    <Button Click="Browsebutton_captouch_singletap_SHORTCUT2_Click"  x:Name="browsebutton_captouch_singletap_SHORTCUT2" Margin="10" Width="70
                                 " Content="Browse" Template="{DynamicResource ButtonBase_MyStyle}"/>
-                            </StackPanel>
+                                </StackPanel>
 
+                            </StackPanel>
+                            
+                        
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="singletap_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
                         </StackPanel>
-
-                        <StackPanel Orientation="Horizontal" >
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock VerticalAlignment="Center"  Text="Double Tap"
+                        
+                            <StackPanel Orientation="Horizontal" >
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center"  Text="Double Tap"
                    Margin="10" Style="{DynamicResource defaultsubtittle}" Name="DoubleTap" />
-                                <CheckBox Margin="20,10" Content="Use APP" VerticalAlignment="Center" Name="use_APP_captouch_doubletap_SHORTCUT1"
+                                    <CheckBox Margin="20,10" Content="Use APP" VerticalAlignment="Center" Name="use_APP_captouch_doubletap_SHORTCUT1"
                                   Unchecked="Use_APP_captouch_doubletap_SHORTCUT1_checked"  Checked="Use_APP_captouch_doubletap_SHORTCUT1_checked"/>
-                            </StackPanel>
+                                </StackPanel>
 
-                            <StackPanel Orientation="Horizontal" x:Name="SHORTCUT1_captouch_doubletap">
-                                <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
+                                <StackPanel Orientation="Horizontal" x:Name="SHORTCUT1_captouch_doubletap">
+                                    <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
                   Margin="10" HorizontalAlignment="Left" x:Name="doubletap_1" 
                       ItemsSource="{Binding specialkeys}" Style="{DynamicResource ComboBoxStyle1}"/>
-                                <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
+                                    <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
                   Margin="10" HorizontalAlignment="Left" x:Name="doubletap_2" 
                       ItemsSource="{Binding specialkeys}" Style="{DynamicResource ComboBoxStyle1}"/>
-                                <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter"
+                                    <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter"
                   Margin="10"  x:Name="doubletap_3" HorizontalContentAlignment="Center"
                       ItemsSource="{Binding specialkeys}" Style="{DynamicResource ComboBoxStyle1}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" x:Name="APP_captouch_doubletap_SHORTCUT1" Visibility="Collapsed">
-                                <RadioButton x:Name="inbuiltfunc_captouch_doubletap_SHORTCUT1" Margin="10" Content="InBuilt Function" Template="{DynamicResource RadioButton_MyStyle}" 
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" x:Name="APP_captouch_doubletap_SHORTCUT1" Visibility="Collapsed">
+                                    <RadioButton x:Name="inbuiltfunc_captouch_doubletap_SHORTCUT1" Margin="10" Content="InBuilt Function" Template="{DynamicResource RadioButton_MyStyle}" 
                                          Checked="Inbuiltfunc_captouch_doubletap_SHORTCUT1_Checked"/>
-                                <RadioButton x:Name="file_captouch_doubletap_SHORTCUT1" Margin="10" Content="File/Script" Template="{DynamicResource RadioButton_MyStyle}"
+                                    <RadioButton x:Name="file_captouch_doubletap_SHORTCUT1" Margin="10" Content="File/Script" Template="{DynamicResource RadioButton_MyStyle}"
                                          Checked="Inbuiltfunc_captouch_doubletap_SHORTCUT1_Checked"/>
-                                <ComboBox ItemsSource="{Binding inappoperations}" DisplayMemberPath="operationname" x:Name="functionscombobox_captouch_doubletap_SHORTCUT1" Margin="10" Width="200"
+                                    <ComboBox ItemsSource="{Binding inappoperations}" DisplayMemberPath="operationname" x:Name="functionscombobox_captouch_doubletap_SHORTCUT1" Margin="10" Width="200"
                                   Style="{DynamicResource ComboBoxStyle1}"/>
-                                <Button Click="Browsebutton_captouch_doubletap_SHORTCUT1_Click"  x:Name="browsebutton_captouch_doubletap_SHORTCUT1" Margin="10" Width="70
+                                    <Button Click="Browsebutton_captouch_doubletap_SHORTCUT1_Click"  x:Name="browsebutton_captouch_doubletap_SHORTCUT1" Margin="10" Width="70
                                 " Content="Browse" Template="{DynamicResource ButtonBase_MyStyle}"/>
-                            </StackPanel>
-                            <CheckBox Content="Dual Shortcut"  
+                                </StackPanel>
+                                <CheckBox Content="Dual Shortcut"  
                            Unchecked="doubletap_dualfunc" Checked="doubletap_dualfunc" 
                                   VerticalAlignment="Center" x:Name="doubletap_dualshortcut"/>
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal" Visibility="Collapsed" x:Name="doubletap_shortcut2" HorizontalAlignment="Center">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock VerticalAlignment="Center"  Text="Shortcut 2"
-                   Margin="10" Style="{DynamicResource defaultsubtittle}"/>
-                                <CheckBox Margin="20,10" Content="Use APP" VerticalAlignment="Center" Name="use_APP_captouch_doubletap_SHORTCUT2"
-                                  Unchecked="Use_APP_captouch_doubletap_SHORTCUT2_checked" Checked="Use_APP_captouch_doubletap_SHORTCUT2_checked"/>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" x:Name="SHORTCUT2_captouch_doubletap">
-                                <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
+                            
+                        
+
+                        
+                            <StackPanel Orientation="Horizontal"  Visibility="Collapsed" x:Name="doubletap_shortcut2"  HorizontalAlignment="Center">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center"  Text="Shortcut 2"
+                   Margin="10" Style="{DynamicResource defaultsubtittle}"/>
+                                    <CheckBox Margin="20,10" Content="Use APP" VerticalAlignment="Center" Name="use_APP_captouch_doubletap_SHORTCUT2"
+                                  Unchecked="Use_APP_captouch_doubletap_SHORTCUT2_checked" Checked="Use_APP_captouch_doubletap_SHORTCUT2_checked"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" x:Name="SHORTCUT2_captouch_doubletap">
+                                    <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
                   Margin="10" HorizontalAlignment="Left" x:Name="doubletap_21" 
                       ItemsSource="{Binding specialkeys}" Style="{DynamicResource ComboBoxStyle1}"/>
-                                <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
+                                    <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter" HorizontalContentAlignment="Center"
                   Margin="10" HorizontalAlignment="Left" x:Name="doubletap_22" 
                       ItemsSource="{Binding specialkeys}" Style="{DynamicResource ComboBoxStyle1}"/>
-                                <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter"
+                                    <ComboBox  Width="110" IsEditable="True" PreviewTextInput="ValidateCharacter"
                   Margin="10"  x:Name="doubletap_23" HorizontalContentAlignment="Center"
                       ItemsSource="{Binding specialkeys}" Style="{DynamicResource ComboBoxStyle1}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" x:Name="APP_captouch_doubletap_SHORTCUT2" Visibility="Collapsed">
-                                <RadioButton x:Name="inbuiltfunc_captouch_doubletap_SHORTCUT2" Margin="10" Content="InBuilt Function" Template="{DynamicResource RadioButton_MyStyle}" 
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" x:Name="APP_captouch_doubletap_SHORTCUT2" Visibility="Collapsed">
+                                    <RadioButton x:Name="inbuiltfunc_captouch_doubletap_SHORTCUT2" Margin="10" Content="InBuilt Function" Template="{DynamicResource RadioButton_MyStyle}" 
                                          Checked="Inbuiltfunc_captouch_doubletap_SHORTCUT2_Checked"/>
-                                <RadioButton x:Name="file_captouch_doubletap_SHORTCUT2" Margin="10" Content="File/Script" Template="{DynamicResource RadioButton_MyStyle}"
+                                    <RadioButton x:Name="file_captouch_doubletap_SHORTCUT2" Margin="10" Content="File/Script" Template="{DynamicResource RadioButton_MyStyle}"
                                          Checked="Inbuiltfunc_captouch_doubletap_SHORTCUT2_Checked"/>
-                                <ComboBox ItemsSource="{Binding inappoperations}" DisplayMemberPath="operationname" x:Name="functionscombobox_captouch_doubletap_SHORTCUT2" Margin="10" Width="200"
+                                    <ComboBox ItemsSource="{Binding inappoperations}" DisplayMemberPath="operationname" x:Name="functionscombobox_captouch_doubletap_SHORTCUT2" Margin="10" Width="200"
                                   Style="{DynamicResource ComboBoxStyle1}"/>
-                                <Button Click="Browsebutton_captouch_doubletap_SHORTCUT2_Click"  x:Name="browsebutton_captouch_doubletap_SHORTCUT2" Margin="10" Width="70
+                                    <Button Click="Browsebutton_captouch_doubletap_SHORTCUT2_Click"  x:Name="browsebutton_captouch_doubletap_SHORTCUT2" Margin="10" Width="70
                                 " Content="Browse" Template="{DynamicResource ButtonBase_MyStyle}"/>
+                                </StackPanel>
+
                             </StackPanel>
-
+                            
+                        
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="doubletap_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
                         </StackPanel>
-
 
                         <StackPanel Orientation="Horizontal" >
                             <TextBlock VerticalAlignment="Center"  Text="Short Press" 
@@ -486,6 +519,10 @@
                             </StackPanel>
 
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="shortpress_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock VerticalAlignment="Center"  Text="Long Press" 
                    Margin="10" Style="{DynamicResource defaultsubtittle}"/>
@@ -514,6 +551,10 @@
                                 " Content="Browse" Template="{DynamicResource ButtonBase_MyStyle}"/>
                             </StackPanel>
 
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="longpress_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
                         </StackPanel>
                     </StackPanel>
 
@@ -632,6 +673,10 @@
                  Margin="10" x:Name="mk1tap_4" TextChanged="MacroKey_ConfigMode" 
                                   Template="{DynamicResource TextBoxBase_MyStyle}" VerticalAlignment="Center" Height="21"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="mk1tap_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal" >
                             <TextBlock VerticalAlignment="Center"  Text="Hold" 
                    Margin="10" Style="{DynamicResource defaultsubtittle}"/>
@@ -667,6 +712,10 @@
                             <TextBox  Width="270" TextWrapping="Wrap" AcceptsReturn="True" MouseDoubleClick="previewtextboxstring"
                  Margin="10" x:Name="mk1hold_4" TextChanged="MacroKey_ConfigMode"
                                   Template="{DynamicResource TextBoxBase_MyStyle}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="mk1hold_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
                         </StackPanel>
                     </StackPanel>
 
@@ -786,6 +835,10 @@
                  Margin="10" x:Name="mk2tap_4" TextChanged="MacroKey_ConfigMode" 
                                   Template="{DynamicResource TextBoxBase_MyStyle}" VerticalAlignment="Center" Height="21"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="mk2tap_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal" >
                             <TextBlock VerticalAlignment="Center"  Text="Hold" 
                    Margin="10" Style="{DynamicResource defaultsubtittle}"/>
@@ -821,6 +874,10 @@
                             <TextBox  Width="270" TextWrapping="Wrap" AcceptsReturn="True" MouseDoubleClick="previewtextboxstring"
                  Margin="10" x:Name="mk2hold_4" TextChanged="MacroKey_ConfigMode"
                                   Template="{DynamicResource TextBoxBase_MyStyle}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="mk2hold_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
                         </StackPanel>
                     </StackPanel>
 
@@ -940,6 +997,10 @@
                  Margin="10" x:Name="mk3tap_4" TextChanged="MacroKey_ConfigMode" 
                                   Template="{DynamicResource TextBoxBase_MyStyle}" VerticalAlignment="Center" Height="21"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="mk3tap_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal" >
                             <TextBlock VerticalAlignment="Center"  Text="Hold" 
                    Margin="10" Style="{DynamicResource defaultsubtittle}"/>
@@ -975,6 +1036,10 @@
                             <TextBox  Width="270" TextWrapping="Wrap" AcceptsReturn="True" MouseDoubleClick="previewtextboxstring"
                  Margin="10" x:Name="mk3hold_4" TextChanged="MacroKey_ConfigMode"
                                   Template="{DynamicResource TextBoxBase_MyStyle}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="mk3hold_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
                         </StackPanel>
                     </StackPanel>
 
@@ -1097,6 +1162,10 @@
                  Margin="10" x:Name="mk4tap_4" TextChanged="MacroKey_ConfigMode" 
                                   Template="{DynamicResource TextBoxBase_MyStyle}" VerticalAlignment="Center" Height="21"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="mk4tap_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal" >
                             <TextBlock VerticalAlignment="Center"  Text="Hold" 
                    Margin="10" Style="{DynamicResource defaultsubtittle}"/>
@@ -1132,6 +1201,10 @@
                             <TextBox  Width="270" TextWrapping="Wrap" AcceptsReturn="True" MouseDoubleClick="previewtextboxstring"
                  Margin="10" x:Name="mk4hold_4" TextChanged="MacroKey_ConfigMode"
                                   Template="{DynamicResource TextBoxBase_MyStyle}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="mk4hold_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
                         </StackPanel>
                     </StackPanel>
 
@@ -1254,6 +1327,10 @@
                  Margin="10" x:Name="mk5tap_4" TextChanged="MacroKey_ConfigMode" 
                                   Template="{DynamicResource TextBoxBase_MyStyle}" VerticalAlignment="Center" Height="21"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="mk5tap_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal" >
                             <TextBlock VerticalAlignment="Center"  Text="Hold" 
                    Margin="10" Style="{DynamicResource defaultsubtittle}"/>
@@ -1290,6 +1367,10 @@
                  Margin="10" x:Name="mk5hold_4" TextChanged="MacroKey_ConfigMode"
                                   Template="{DynamicResource TextBoxBase_MyStyle}"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                            <TextBox Foreground="OrangeRed" x:Name="mk5hold_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                        </StackPanel>
                     </StackPanel>
 
 
@@ -1310,7 +1391,7 @@
                             <RadioButton Content="SOLIDWORKS" Margin="10" Tag="2" x:Name="spacenav_1" Template="{DynamicResource RadioButton_MyStyle}"/>
                             <RadioButton Content="FUSION 360" Margin="10" Tag="3" x:Name="spacenav_2" Template="{DynamicResource RadioButton_MyStyle}"/>
                             <RadioButton Content="ALTIUM" Margin="10" Tag="4" x:Name="spacenav_3" Template="{DynamicResource RadioButton_MyStyle}"/>
-                            <RadioButton Content="3D" Margin="10" Tag="5" x:Name="spacenav_4" Template="{DynamicResource RadioButton_MyStyle}"/>
+                            <RadioButton Content="BLENDER" Margin="10" Tag="5" x:Name="spacenav_4" Template="{DynamicResource RadioButton_MyStyle}"/>
                             <RadioButton Content="MOUSE" Margin="10" Tag="6" x:Name="spacenav_5" Template="{DynamicResource RadioButton_MyStyle}"/>
                             <RadioButton Content="DISABLE" Margin="10" Tag="0" x:Name="spacenav_0" Template="{DynamicResource RadioButton_MyStyle}"/>
                         </StackPanel>
@@ -1361,7 +1442,10 @@
 
 
                             </StackPanel>
-
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                                <TextBox Foreground="OrangeRed" x:Name="tiltup_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                            </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                         x:Name="tiltdown" MouseEnter="tiltdown_MouseEnter">
                                 <TextBlock VerticalAlignment="Center"  Text="Tilt Down" 
@@ -1392,6 +1476,10 @@
                                 </StackPanel>
 
 
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                                <TextBox Foreground="OrangeRed" x:Name="tiltdown_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
@@ -1425,7 +1513,10 @@
 
 
                             </StackPanel>
-
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                                <TextBox Foreground="OrangeRed" x:Name="tiltright_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                            </StackPanel>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                         x:Name="tiltleft" MouseEnter="tiltleft_MouseEnter">
@@ -1458,7 +1549,10 @@
 
 
                             </StackPanel>
-
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                                <TextBox Foreground="OrangeRed" x:Name="tiltleft_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                            </StackPanel>
 
                             <StackPanel Orientation="Horizontal">
                                 <Rectangle Width="150" Height="1"
@@ -1503,7 +1597,10 @@
 
 
                             </StackPanel>
-
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                                <TextBox Foreground="OrangeRed" x:Name="slideup_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                            </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                         x:Name="slidedown" MouseEnter="slidedown_MouseEnter">
                                 <TextBlock VerticalAlignment="Center"  Text="Slide Down" 
@@ -1535,7 +1632,10 @@
 
 
                             </StackPanel>
-
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                                <TextBox Foreground="OrangeRed" x:Name="slidedown_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                            </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                         x:Name="slideright" MouseEnter="slideright_MouseEnter">
                                 <TextBlock VerticalAlignment="Center"  Text="Slide Right" 
@@ -1567,7 +1667,10 @@
 
 
                             </StackPanel>
-
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                                <TextBox Foreground="OrangeRed" x:Name="slideright_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                            </StackPanel>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                         x:Name="slideleft" MouseEnter="slideleft_MouseEnter">
@@ -1600,7 +1703,10 @@
 
 
                             </StackPanel>
-
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Foreground="OrangeRed" Text="Function Note" Margin="10,2"></TextBlock>
+                                <TextBox Foreground="OrangeRed" x:Name="slideleft_funcnote" Width="250" VerticalContentAlignment="Center"></TextBox>
+                            </StackPanel>
 
                         </StackPanel>
                     </StackPanel>

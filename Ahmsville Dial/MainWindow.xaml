@@ -88,6 +88,9 @@
             <Button x:Name="reset_dial" Margin= "10"
                 Content="Reset Dial"  Height="30" VerticalAlignment="Top"
                 Template="{DynamicResource ButtonBase_MyStyle}" Width="auto" Padding="1" FontWeight="Bold" Click="reset_dial_Click" />
+            <Button x:Name="show_popup" Margin= "10"
+                Content="Show PopUp"  Height="30" VerticalAlignment="Top"
+                Template="{DynamicResource ButtonBase_MyStyle}" Width="auto" Padding="1" FontWeight="Bold" Click="show_popup_Click" />
         </StackPanel>
       
         <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
@@ -109,7 +112,7 @@
                    Text="{Binding Path=(local:AhmsvilleDialViewModel.Instance).activeappname, Mode=TwoWay}" />
                 <TextBlock Margin="10" x:Name="activeappid" HorizontalAlignment="Center"
                    Text="{Binding Path=(local:AhmsvilleDialViewModel.Instance).activeappid, Mode=TwoWay}" x:FieldModifier="public"/>
-        
+            <!--<Button Content="showactiveinfo" Click="Button_Click"></Button>-->
 
         </StackPanel>
         <StackPanel Margin="10" x:Name="ManualSwitching" 

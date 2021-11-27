@@ -112,6 +112,52 @@ namespace Ahmsville_Dial
 
 
             }
+            else if (activeapp.Contains("Blender"))
+            {
+                rawCalculations.activeapp = "Blender";
+                double[] Gdata = { 0, 0, 0 };
+                double[] Pdata = { 0, 0, 0 };
+                try
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Gdata[i] = double.Parse(gyrodata[i]) / 57.296;
+                        Pdata[i] = double.Parse(planedata[i]);
+                    }
+                    //System.Console.WriteLine("planar =  " + Gdata[0] + "   " + Gdata[1] + "   " + Gdata[2]);
+                    rawCalculations.setOriginalRawValues(Gdata, Pdata);
+
+                    if (activetask == null)
+                    {
+
+                        //activetask = Task.Run(() => rawCalculations.setOriginalRawValues(Gdata, Pdata));
+                        //activetask = Task.Run(() => InApp_Operations.SOLIDWORKS.setRawValues(Gdata, Pdata));
+                    }
+                    else
+                    {
+                        if (activetask.IsCompleted)
+                        {
+                            //activetask = Task.Run(() => rawCalculations.setOriginalRawValues(Gdata, Pdata));
+                            //activetask = Task.Run(() => InApp_Operations.SOLIDWORKS.setRawValues(Gdata, Pdata));
+                        }
+                        else
+                        {
+                            // activetask.Wait();
+                            //activetask = Task.Run(() => rawCalculations.setOriginalRawValues(Gdata, Pdata));
+                            //activetask = Task.Run(() => InApp_Operations.SOLIDWORKS.setRawValues(Gdata, Pdata));
+                        }
+                    }
+
+
+                }
+                catch (Exception)
+                {
+
+
+                }
+
+
+            }
         }
         public static void closeallpipes()
         {
@@ -160,10 +206,10 @@ namespace Ahmsville_Dial
         public static double acumplanedeltaY = 0;
 
         public static int fixedgyroposcounter = 0;
-        public static bool gyrolocked = false;
+        public static int gyrolocked = 0;
 
         public static int fixedplaneposcounter = 0;
-        public static bool planelocked = false;
+        public static int planelocked = 0;
 
         public static bool orientationlock = false;
 
@@ -177,14 +223,14 @@ namespace Ahmsville_Dial
 
         #region setcalcparam
 
-        static int maxgyrocnt = 5;
-        static double gyrojitterrange = 0.005;
-        static double gyrofixedrange = 0.01;
+        static int maxgyrocnt = 15;
+        static double gyrojitterrange = 0.01;
+        static double gyrofixedrange = 0.02;
         static double gyrodamprate = 1;
 
-        static int maxplanecnt = 4;
-        static double planejitterrange = 0.04;
-        static double planefixedrange = 0.02;
+        static int maxplanecnt = 8;
+        static double planejitterrange = 0.03;
+        static double planefixedrange = 0.05;
         static double planedamprate = 1;
 
         
@@ -214,7 +260,7 @@ namespace Ahmsville_Dial
         private static void SetGyroTimer()
         {
             // Create a timer for com port query
-            spacenavGyroTimer = new System.Timers.Timer(1600);
+            spacenavGyroTimer = new System.Timers.Timer(250);
             spacenavGyroTimer.AutoReset = true;
             spacenavGyroTimer.Enabled = false;
             // Hook up the Elapsed event for the timer. 
@@ -225,7 +271,7 @@ namespace Ahmsville_Dial
         private static void SetPlaneTimer()
         {
             // Create a timer for com port query
-            spacenavPlaneTimer = new System.Timers.Timer(1800);
+            spacenavPlaneTimer = new System.Timers.Timer(300);
             spacenavPlaneTimer.AutoReset = true;
             spacenavPlaneTimer.Enabled = false;
             // Hook up the Elapsed event for the timer. 
@@ -247,18 +293,18 @@ namespace Ahmsville_Dial
         }
         private static void spacenavGyroTimerEvent(Object source, ElapsedEventArgs e)
         {
-            gyrolocked = false;
+            //gyrolocked = false;
             fixedgyroposcounter = 0;
-            prevgyroQuadrant = 0;
+            //prevgyroQuadrant = 0;
             spacenavGyroTimer.Enabled = false;
             setTimersActive();
             //System.Console.WriteLine("gyro timer elapsed");
         }
         private static void spacenavPlaneTimerEvent(Object source, ElapsedEventArgs e)
         {
-            planelocked = false;
+            //planelocked = false;
             fixedplaneposcounter = 0;
-            prevplaneQuadrant = 0;
+            //prevplaneQuadrant = 0;
             //System.Console.WriteLine("plane timer elapsed");
             spacenavPlaneTimer.Enabled = false;
             setTimersActive();
@@ -317,30 +363,9 @@ namespace Ahmsville_Dial
                 {
                     processedPlane = false;
                 }
-                if (gyrolocked)
-                {
-                    if (inGyrodata[2] < 1)
-                    {
-                        gyrolocked = false;
-                        fixedgyroposcounter = 0;
-                        prevgyroQuadrant = 0;
-                        spacenavGyroTimer.Enabled = false;
-                        //System.Console.WriteLine("gyro timer elapsed");
-                    }
+                
 
-                }
-
-                if (planelocked)
-                {
-                    if (inPlanedata[2] <= 1)
-                    {
-                        planelocked = false;
-                        fixedplaneposcounter = 0;
-                        prevplaneQuadrant = 0;
-                        //System.Console.WriteLine("plane timer elapsed");
-                        spacenavPlaneTimer.Enabled = false;
-                    }
-                }
+                
                 if (spacenavMasterTimer == null)
                 {
                     SetMasterTimer();
@@ -361,6 +386,7 @@ namespace Ahmsville_Dial
                 
                 
                 timersActive = forwardFinalData();
+                resetfinalvalues();
                
             }
             catch (Exception)
@@ -426,7 +452,7 @@ namespace Ahmsville_Dial
                             acumgyrodeltaX = 0;
                             acumgyrodeltaY = 0;
                         }
-                        if (!gyrolocked)
+                        if (gyrolocked == 0)
                         {
                             finalGyrodata[0] = deltaY * (-1);
                             finalGyrodata[1] = deltaX;
@@ -440,26 +466,50 @@ namespace Ahmsville_Dial
                     }
                     if (orientationlock)
                     {
+                        //System.Console.WriteLine(gyrolocked + "====" + fixedgyroposcounter);
                         if (Math.Abs(deltaX) <= gyrofixedrange && Math.Abs(deltaY) <= gyrofixedrange)//auto orientation lock
                         {
                             //System.Console.WriteLine("gyrocounter  " + fixedgyroposcounter.ToString());
-                            if (!gyrolocked)
+                            if (gyrolocked == 0)
                             {
                                 if (fixedgyroposcounter >= maxgyrocnt)//fixed long anough to auto lock
                                 {
-                                    spacenavGyroTimer.Enabled = true;
+                                    
                                     spacenavGyroTimer.Stop();
-                                    gyrolocked = true;
+                                    gyrolocked = 1;
                                     spacenavGyroTimer.Start();
+                                    spacenavGyroTimer.Enabled = true;
                                     //System.Console.WriteLine("gyro locked");
                                 }
                                 fixedgyroposcounter += 1;
+                            }
+                            else if (!spacenavGyroTimer.Enabled && gyrolocked == 1)
+                            {
+                                if (fixedgyroposcounter >= maxgyrocnt)//fixed long anough to auto lock
+                                {
+                                    gyrolocked = 2;
+                                    fixedgyroposcounter = 0;
+                                    //System.Console.WriteLine("gyro locked");
+                                }
+                                else
+                                {
+                                    fixedgyroposcounter += 1;
+                                }
+                                
                             }
 
                         }
                         else
                         {
-                            fixedgyroposcounter = 0;
+                            if (gyrolocked == 2)
+                            {
+                                gyrolocked = 0;
+                            }
+                            else if (gyrolocked == 0)
+                            {
+                                fixedgyroposcounter = 0;
+                            }
+                            
                         }
                     }
 
@@ -515,7 +565,7 @@ namespace Ahmsville_Dial
                             acumgyrodeltaX = 0;
                             acumgyrodeltaY = 0;
                         }
-                        if (!gyrolocked)
+                        if (gyrolocked == 0)
                         {
                             finalGyrodata[0] = deltaY * (-1);
                             finalGyrodata[1] = deltaX * (-1);
@@ -530,25 +580,49 @@ namespace Ahmsville_Dial
                     }
                     if (orientationlock)
                     {
+                        //System.Console.WriteLine(gyrolocked + "====" + fixedgyroposcounter);
                         if (Math.Abs(deltaX) <= gyrofixedrange && Math.Abs(deltaY) <= gyrofixedrange)//auto orientation lock
                         {
                             //System.Console.WriteLine("gyrocounter  " + fixedgyroposcounter.ToString());
-                            if (!gyrolocked)
+                            if (gyrolocked == 0)
                             {
                                 if (fixedgyroposcounter >= maxgyrocnt)//fixed long anough to auto lock
                                 {
-                                    spacenavGyroTimer.Enabled = true;
+
                                     spacenavGyroTimer.Stop();
-                                    gyrolocked = true;
+                                    gyrolocked = 1;
                                     spacenavGyroTimer.Start();
+                                    spacenavGyroTimer.Enabled = true;
                                     //System.Console.WriteLine("gyro locked");
                                 }
                                 fixedgyroposcounter += 1;
                             }
+                            else if (!spacenavGyroTimer.Enabled && gyrolocked == 1)
+                            {
+                                if (fixedgyroposcounter >= maxgyrocnt)//fixed long anough to auto lock
+                                {
+                                    gyrolocked = 2;
+                                    fixedgyroposcounter = 0;
+                                    //System.Console.WriteLine("gyro locked");
+                                }
+                                else
+                                {
+                                    fixedgyroposcounter += 1;
+                                }
+
+                            }
+
                         }
                         else
                         {
-                            fixedgyroposcounter = 0;
+                            if (gyrolocked == 2)
+                            {
+                                gyrolocked = 0;
+                            }
+                            else if (gyrolocked == 0)
+                            {
+                                fixedgyroposcounter = 0;
+                            }
                         }
                     }
 
@@ -601,7 +675,7 @@ namespace Ahmsville_Dial
                             acumgyrodeltaX = 0;
                             acumgyrodeltaY = 0;
                         }
-                        if (!gyrolocked)
+                        if (gyrolocked == 0)
                         {
                             finalGyrodata[0] = deltaY;
                             finalGyrodata[1] = deltaX * (-1);
@@ -616,22 +690,49 @@ namespace Ahmsville_Dial
                     }
                     if (orientationlock)
                     {
+                        //System.Console.WriteLine(gyrolocked + "====" + fixedgyroposcounter);
                         if (Math.Abs(deltaX) <= gyrofixedrange && Math.Abs(deltaY) <= gyrofixedrange)//auto orientation lock
                         {
                             //System.Console.WriteLine("gyrocounter  " + fixedgyroposcounter.ToString());
-                            if (fixedgyroposcounter >= maxgyrocnt)//fixed long anough to auto lock
+                            if (gyrolocked == 0)
                             {
-                                spacenavGyroTimer.Enabled = true;
-                                spacenavGyroTimer.Stop();
-                                gyrolocked = true;
-                                spacenavGyroTimer.Start();
-                                //System.Console.WriteLine("gyro locked");
+                                if (fixedgyroposcounter >= maxgyrocnt)//fixed long anough to auto lock
+                                {
+
+                                    spacenavGyroTimer.Stop();
+                                    gyrolocked = 1;
+                                    spacenavGyroTimer.Start();
+                                    spacenavGyroTimer.Enabled = true;
+                                    //System.Console.WriteLine("gyro locked");
+                                }
+                                fixedgyroposcounter += 1;
                             }
-                            fixedgyroposcounter += 1;
+                            else if (!spacenavGyroTimer.Enabled && gyrolocked == 1)
+                            {
+                                if (fixedgyroposcounter >= maxgyrocnt)//fixed long anough to auto lock
+                                {
+                                    gyrolocked = 2;
+                                    fixedgyroposcounter = 0;
+                                    //System.Console.WriteLine("gyro locked");
+                                }
+                                else
+                                {
+                                    fixedgyroposcounter += 1;
+                                }
+
+                            }
+
                         }
                         else
                         {
-                            fixedgyroposcounter = 0;
+                            if (gyrolocked == 2)
+                            {
+                                gyrolocked = 0;
+                            }
+                            else if (gyrolocked == 0)
+                            {
+                                fixedgyroposcounter = 0;
+                            }
                         }
                     }
 
@@ -684,7 +785,7 @@ namespace Ahmsville_Dial
                             acumgyrodeltaX = 0;
                             acumgyrodeltaY = 0;
                         }
-                        if (!gyrolocked)
+                        if (gyrolocked == 0)
                         {
                             finalGyrodata[0] = deltaY;
                             finalGyrodata[1] = deltaX;
@@ -699,25 +800,49 @@ namespace Ahmsville_Dial
                     }
                     if (orientationlock)
                     {
+                        //System.Console.WriteLine(gyrolocked + "====" + fixedgyroposcounter);
                         if (Math.Abs(deltaX) <= gyrofixedrange && Math.Abs(deltaY) <= gyrofixedrange)//auto orientation lock
                         {
                             //System.Console.WriteLine("gyrocounter  " + fixedgyroposcounter.ToString());
-                            if (!gyrolocked)
+                            if (gyrolocked == 0)
                             {
                                 if (fixedgyroposcounter >= maxgyrocnt)//fixed long anough to auto lock
                                 {
-                                    spacenavGyroTimer.Enabled = true;
+
                                     spacenavGyroTimer.Stop();
-                                    gyrolocked = true;
+                                    gyrolocked = 1;
                                     spacenavGyroTimer.Start();
+                                    spacenavGyroTimer.Enabled = true;
                                     //System.Console.WriteLine("gyro locked");
                                 }
                                 fixedgyroposcounter += 1;
                             }
+                            else if (!spacenavGyroTimer.Enabled && gyrolocked == 1)
+                            {
+                                if (fixedgyroposcounter >= maxgyrocnt)//fixed long anough to auto lock
+                                {
+                                    gyrolocked = 2;
+                                    fixedgyroposcounter = 0;
+                                    //System.Console.WriteLine("gyro locked");
+                                }
+                                else
+                                {
+                                    fixedgyroposcounter += 1;
+                                }
+
+                            }
+
                         }
                         else
                         {
-                            fixedgyroposcounter = 0;
+                            if (gyrolocked == 2)
+                            {
+                                gyrolocked = 0;
+                            }
+                            else if (gyrolocked == 0)
+                            {
+                                fixedgyroposcounter = 0;
+                            }
                         }
                     }
 
@@ -780,7 +905,7 @@ namespace Ahmsville_Dial
                             acumplanedeltaX = 0;
                             acumplanedeltaY = 0;
                         }
-                        if (!planelocked)
+                        if (planelocked == 0)
                         {
                             finalPlanedata[0] = deltaY * (-1);
                             finalPlanedata[1] = deltaX;
@@ -796,26 +921,50 @@ namespace Ahmsville_Dial
                     }
                     if (orientationlock)
                     {
+                        //System.Console.WriteLine(planelocked + "====" + fixedplaneposcounter);
                         if (Math.Abs(deltaX) <= planefixedrange && Math.Abs(deltaY) <= planefixedrange)//auto orientation lock
                         {
                             //System.Console.WriteLine("planecounter  " + fixedplaneposcounter.ToString());
-                            if (!planelocked)
+                            if (planelocked == 0)
                             {
                                 if (fixedplaneposcounter >= maxplanecnt)//fixed long anough to auto lock
                                 {
-                                    spacenavPlaneTimer.Enabled = true;
+
                                     spacenavPlaneTimer.Stop();
-                                    planelocked = true;
+                                    planelocked = 1;
                                     spacenavPlaneTimer.Start();
+                                    spacenavPlaneTimer.Enabled = true;
                                     //System.Console.WriteLine("plane locked");
                                 }
                                 fixedplaneposcounter += 1;
+                            }
+                            else if (!spacenavPlaneTimer.Enabled && planelocked == 1)
+                            {
+                                if (fixedplaneposcounter >= maxplanecnt)//fixed long anough to auto lock
+                                {
+                                    planelocked = 2;
+                                    fixedplaneposcounter = 0;
+                                    //System.Console.WriteLine("plane locked");
+                                }
+                                else
+                                {
+                                    fixedplaneposcounter += 1;
+                                }
+
                             }
 
                         }
                         else
                         {
-                            fixedplaneposcounter = 0;
+                            if (planelocked == 2)
+                            {
+                                planelocked = 0;
+                            }
+                            else if (planelocked == 0)
+                            {
+                                fixedplaneposcounter = 0;
+                            }
+
                         }
                     }
 
@@ -871,7 +1020,7 @@ namespace Ahmsville_Dial
                             acumplanedeltaX = 0;
                             acumplanedeltaY = 0;
                         }
-                        if (!planelocked)
+                        if (planelocked == 0)
                         {
                             finalPlanedata[0] = (deltaY * (-1));
                             finalPlanedata[1] = (-1) * deltaX;
@@ -887,25 +1036,50 @@ namespace Ahmsville_Dial
                     }
                     if (orientationlock)
                     {
+                        //System.Console.WriteLine(planelocked + "====" + fixedplaneposcounter);
                         if (Math.Abs(deltaX) <= planefixedrange && Math.Abs(deltaY) <= planefixedrange)//auto orientation lock
                         {
                             //System.Console.WriteLine("planecounter  " + fixedplaneposcounter.ToString());
-                            if (!planelocked)
+                            if (planelocked == 0)
                             {
                                 if (fixedplaneposcounter >= maxplanecnt)//fixed long anough to auto lock
                                 {
-                                    spacenavPlaneTimer.Enabled = true;
+
                                     spacenavPlaneTimer.Stop();
-                                    planelocked = true;
+                                    planelocked = 1;
                                     spacenavPlaneTimer.Start();
+                                    spacenavPlaneTimer.Enabled = true;
                                     //System.Console.WriteLine("plane locked");
                                 }
                                 fixedplaneposcounter += 1;
                             }
+                            else if (!spacenavPlaneTimer.Enabled && planelocked == 1)
+                            {
+                                if (fixedplaneposcounter >= maxplanecnt)//fixed long anough to auto lock
+                                {
+                                    planelocked = 2;
+                                    fixedplaneposcounter = 0;
+                                    //System.Console.WriteLine("plane locked");
+                                }
+                                else
+                                {
+                                    fixedplaneposcounter += 1;
+                                }
+
+                            }
+
                         }
                         else
                         {
-                            fixedplaneposcounter = 0;
+                            if (planelocked == 2)
+                            {
+                                planelocked = 0;
+                            }
+                            else if (planelocked == 0)
+                            {
+                                fixedplaneposcounter = 0;
+                            }
+
                         }
                     }
 
@@ -958,7 +1132,7 @@ namespace Ahmsville_Dial
                             acumplanedeltaX = 0;
                             acumplanedeltaY = 0;
                         }
-                        if (!planelocked)
+                        if (planelocked == 0)
                         {
                             finalPlanedata[0] = deltaY;
                             finalPlanedata[1] = (-1) * deltaX;
@@ -974,25 +1148,50 @@ namespace Ahmsville_Dial
                     }
                     if (orientationlock)
                     {
+                        //System.Console.WriteLine(planelocked + "====" + fixedplaneposcounter);
                         if (Math.Abs(deltaX) <= planefixedrange && Math.Abs(deltaY) <= planefixedrange)//auto orientation lock
                         {
                             //System.Console.WriteLine("planecounter  " + fixedplaneposcounter.ToString());
-                            if (!planelocked)
+                            if (planelocked == 0)
                             {
                                 if (fixedplaneposcounter >= maxplanecnt)//fixed long anough to auto lock
                                 {
-                                    spacenavPlaneTimer.Enabled = true;
+
                                     spacenavPlaneTimer.Stop();
-                                    planelocked = true;
+                                    planelocked = 1;
                                     spacenavPlaneTimer.Start();
+                                    spacenavPlaneTimer.Enabled = true;
                                     //System.Console.WriteLine("plane locked");
                                 }
                                 fixedplaneposcounter += 1;
                             }
+                            else if (!spacenavPlaneTimer.Enabled && planelocked == 1)
+                            {
+                                if (fixedplaneposcounter >= maxplanecnt)//fixed long anough to auto lock
+                                {
+                                    planelocked = 2;
+                                    fixedplaneposcounter = 0;
+                                    //System.Console.WriteLine("plane locked");
+                                }
+                                else
+                                {
+                                    fixedplaneposcounter += 1;
+                                }
+
+                            }
+
                         }
                         else
                         {
-                            fixedplaneposcounter = 0;
+                            if (planelocked == 2)
+                            {
+                                planelocked = 0;
+                            }
+                            else if (planelocked == 0)
+                            {
+                                fixedplaneposcounter = 0;
+                            }
+
                         }
                     }
 
@@ -1045,7 +1244,7 @@ namespace Ahmsville_Dial
                             acumplanedeltaX = 0;
                             acumplanedeltaY = 0;
                         }
-                        if (!planelocked)
+                        if (planelocked == 0)
                         {
                             finalPlanedata[0] = deltaY;
                             finalPlanedata[1] = deltaX;
@@ -1061,25 +1260,50 @@ namespace Ahmsville_Dial
                     }
                     if (orientationlock)
                     {
+                        //System.Console.WriteLine(planelocked + "====" + fixedplaneposcounter);
                         if (Math.Abs(deltaX) <= planefixedrange && Math.Abs(deltaY) <= planefixedrange)//auto orientation lock
                         {
                             //System.Console.WriteLine("planecounter  " + fixedplaneposcounter.ToString());
-                            if (!planelocked)
+                            if (planelocked == 0)
                             {
                                 if (fixedplaneposcounter >= maxplanecnt)//fixed long anough to auto lock
                                 {
-                                    spacenavPlaneTimer.Enabled = true;
+
                                     spacenavPlaneTimer.Stop();
-                                    planelocked = true;
+                                    planelocked = 1;
                                     spacenavPlaneTimer.Start();
+                                    spacenavPlaneTimer.Enabled = true;
                                     //System.Console.WriteLine("plane locked");
                                 }
                                 fixedplaneposcounter += 1;
                             }
+                            else if (!spacenavPlaneTimer.Enabled && planelocked == 1)
+                            {
+                                if (fixedplaneposcounter >= maxplanecnt)//fixed long anough to auto lock
+                                {
+                                    planelocked = 2;
+                                    fixedplaneposcounter = 0;
+                                    //System.Console.WriteLine("plane locked");
+                                }
+                                else
+                                {
+                                    fixedplaneposcounter += 1;
+                                }
+
+                            }
+
                         }
                         else
                         {
-                            fixedplaneposcounter = 0;
+                            if (planelocked == 2)
+                            {
+                                planelocked = 0;
+                            }
+                            else if (planelocked == 0)
+                            {
+                                fixedplaneposcounter = 0;
+                            }
+
                         }
                     }
 
@@ -1090,6 +1314,7 @@ namespace Ahmsville_Dial
 
 
             }
+
             /////////////////////////////////////// 
             #endregion
 
@@ -1098,27 +1323,42 @@ namespace Ahmsville_Dial
         }
         public static bool forwardFinalData()
         {
-            if (finalGyrodata[0] != 0 || finalGyrodata[1] != 0 || finalPlanedata[0] != 0 || finalPlanedata[1] != 0)
+            try
+            {
+                if (finalGyrodata[0] != 0 || finalGyrodata[1] != 0 || finalPlanedata[0] != 0 || finalPlanedata[1] != 0)
+                {
+
+                    if (activeapp == "SOLIDWORKS")
+                    {
+
+                        InApp_Operations.SOLIDWORKS.setRawValues(finalGyrodata, finalPlanedata);
+
+                    }
+                    else if (activeapp == "Fusion 360")
+                    {
+
+                        InApp_Operations.FUSION360.setRawValues(finalGyrodata, finalPlanedata);
+
+                    }
+                    else if (activeapp == "Blender")
+                    {
+
+                        InApp_Operations.BLENDER.setRawValues(finalGyrodata, finalPlanedata);
+
+                    }
+
+
+                }
+            }
+            catch (Exception)
             {
 
-                if (activeapp == "SOLIDWORKS")
-                {
-
-                    InApp_Operations.SOLIDWORKS.setRawValues(finalGyrodata, finalPlanedata);
-
-                }
-                else if (activeapp == "Fusion 360")
-                {
-
-                    InApp_Operations.FUSION360.setRawValues(finalGyrodata, finalPlanedata);
-
-                }
-
-                spacenavRawObj.resetfinalvalues(); 
+               
             }
+           
             return spacenavMasterTimer.Enabled | spacenavGyroTimer.Enabled | spacenavPlaneTimer.Enabled;
         }
-        public void resetfinalvalues()
+        public static void resetfinalvalues()
         {
             for (int i = 0; i < 3; i++)
             {

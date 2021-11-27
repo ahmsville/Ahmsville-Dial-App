@@ -42,6 +42,10 @@ namespace Ahmsville_Dial
         static extern int GetWindowTextLength(IntPtr hWnd);
 
 
+        private ActiveConfigPopup activeConfigPopup;
+        public static bool popupWindowOpened = false;
+
+
         static SerialPort _serialPort = new SerialPort();
         List<string> filteredSerialData = new List<string>();
         // Get a list of serial port names.
@@ -63,12 +67,12 @@ namespace Ahmsville_Dial
         string activeapp;
         string prevactiveapp;
         //path for Dial's config files and library files 
-        string[] dialconfigpath = { Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Base_Variant_main\",
+        public static string[] dialconfigpath = { Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Base_Variant_main\",
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\MacroKey_Variant_main\",
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\SpaceNav_Variant_main\",
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Absolute_Variant_main\"};
 
-        string connecteddialconfigpath = "";
+        public static string connecteddialconfigpath = "";
         string[] dialvariants = { "Base", "MAcroKey", "SpaceNav", "Absolute" };
         char[] detectedwirelessdials = { '0', '0', '0', '0' };
         char[] prevdetectedwirelessdials = { '0', '0', '0', '0' };
@@ -76,14 +80,15 @@ namespace Ahmsville_Dial
             "MacroKey_Variant_main.ino",
             "SpaceNav_Variant_main.ino",
             "Absolute_Variant_main.ino" };
-        string[] availableconfigs = { };
+        //string[] availableconfigs = { };
 
-        struct availableconfigsforapp
-        {
-            public string[] linesforappfunctions;
-        }
-        static availableconfigsforapp[] loadedappfunctions = new availableconfigsforapp[0];
-        static int active_loaded_inappfunctions_index = 0;
+        //struct AhmsvilleDialViewModel.availableconfigsforapp
+        //{
+        //    public string[] linesforappfunctions;
+        //    public List<string> comments;
+        //}
+        //static AhmsvilleDialViewModel.availableconfigsforapp[] AhmsvilleDialViewModel.loadedappfunctions = new AhmsvilleDialViewModel.availableconfigsforapp[0];
+        //static int AhmsvilleDialViewModel.active_loaded_inappfunctions_index = 0;
 
         private IntPtr windowHandle;
         string softwarepath = System.AppDomain.CurrentDomain.BaseDirectory;
@@ -94,7 +99,7 @@ namespace Ahmsville_Dial
         //public AhmsvilleDialViewModel model { get; set; }
 
         InApp_Operations.SOLIDWORKS_INTERFACE solidworksInstance = new InApp_Operations.SOLIDWORKS();
-       // InApp_Operations.SOLIDWORKS_INTERFACE fusion360Instance = new InApp_Operations.FUSION360();
+        // InApp_Operations.SOLIDWORKS_INTERFACE fusion360Instance = new InApp_Operations.FUSION360();
         private bool deviceremoved;
         private bool deviceadded;
 
@@ -409,13 +414,13 @@ namespace Ahmsville_Dial
         }
 
         #region Serial Data Received Event
-       
-        
+
+
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
 
-          
-            
+
+
             char[] inChar = new char[30];
             filteredSerialData.Clear();
             if (_serialPort.IsOpen)
@@ -450,15 +455,17 @@ namespace Ahmsville_Dial
                 filteredSerialData = filteredSerialData.Distinct().ToList();
 
                 //filter for the most current spacenav data
-                
-               
+
+
 
                 for (int i = 0; i < filteredSerialData.Count(); i++)
                 {
+
                     inputstring = filteredSerialData.ElementAt(i);
+                    //System.Console.WriteLine(inputstring);
                     if (inputstring.Contains("*******Base Variant") || inputstring.Contains("***MacroKey Variant") || inputstring.Contains("***SpaceNav Variant") || inputstring.Contains("***Absolute Variant") || inputstring.Contains("***Wireless Adapter"))
                     {
-                        if (AhmsvilleDialViewModel.Instance.constate == 3 && availableconfigs.Length > 0)
+                        if (AhmsvilleDialViewModel.Instance.constate == 3 && AhmsvilleDialViewModel.availableconfigs.Length > 0)
                         {
                             intentionaldisconnect = false;
                             AhmsvilleDialViewModel.Instance.constate = 1;
@@ -493,7 +500,15 @@ namespace Ahmsville_Dial
                         // _serialPort.DiscardInBuffer();
                         receivedlineindex = Int32.Parse(inputstring.Replace("the app is in charge of ths", ""));
                         //MessageBox.Show(inputstring);
-                        InApp_Operation(receivedlineindex);
+                        if (!popupWindowOpened)
+                        {
+                            InApp_Operation(receivedlineindex);
+                        }
+                        else
+                        {
+                            popup_Operation(receivedlineindex);
+                        }
+
 
 
                     }
@@ -516,12 +531,12 @@ namespace Ahmsville_Dial
                         }
                         if (!G_xyrad.Contains(null))
                         {
-                            
+
                             if (i < filteredSerialData.Count - 1)
                             {
                                 inputstring = filteredSerialData.ElementAt(i + 1);
                                 if (inputstring.StartsWith(">"))
-                                {   
+                                {
                                     inputstring = inputstring.Replace(">", "");
                                     floatstrpos = 0;
 
@@ -546,14 +561,14 @@ namespace Ahmsville_Dial
                                 }
 
                             }
-                            
-                            
-                            
+
+
+
                             ProcessSpaceNavData.process(activeapp, G_xyrad, P_xyrad);
-                            
+
                         }
                         //System.Console.WriteLine(activeapp);
-                       //System.Console.WriteLine("gyro =  " + G_xyrad[0] + "   " + G_xyrad[1] + "   " + G_xyrad[2]);
+                        //System.Console.WriteLine("gyro =  " + G_xyrad[0] + "   " + G_xyrad[1] + "   " + G_xyrad[2]);
                         //System.Console.WriteLine("planar =  " + P_xyrad[0] + "   " + P_xyrad[1] + "   " + P_xyrad[2]);
                         // MessageBox.Show(G_xyrad[2] + "   " + P_xyrad[2]);
                     }
@@ -580,7 +595,7 @@ namespace Ahmsville_Dial
                             //i = filteredSerialData.Count;
                         }
                         //System.Console.WriteLine(activeapp);
-                       // System.Console.WriteLine("planar =  " + P_xyrad[0] + "   " + P_xyrad[1] + "   " + P_xyrad[2]);
+                        // System.Console.WriteLine("planar =  " + P_xyrad[0] + "   " + P_xyrad[1] + "   " + P_xyrad[2]);
                         // MessageBox.Show(G_xyrad[2] + "   " + P_xyrad[2]);
                     }
                 }
@@ -589,20 +604,90 @@ namespace Ahmsville_Dial
 
 
 
-            
-         
+
+
 
 
         }
         #endregion
+        private void popup_Operation(int receivedindex)
+        {
+            if (receivedlineindex == 0)//clockwise
+            {
+                if (AhmsvilleDialViewModel.availableconfigs.Length > AhmsvilleDialViewModel.active_loaded_inappfunctions_index + 1)
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        ManualID_Update((AhmsvilleDialViewModel.active_loaded_inappfunctions_index + 1).ToString());
+                    });
 
+                }
+                else if (AhmsvilleDialViewModel.availableconfigs.Length == AhmsvilleDialViewModel.active_loaded_inappfunctions_index + 1)
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        ManualID_Update("0");
+                    });
+                }
+            }
+            else if (receivedlineindex == 1) //counterclockwise
+            {
+                if (AhmsvilleDialViewModel.active_loaded_inappfunctions_index > 0)
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        ManualID_Update((AhmsvilleDialViewModel.active_loaded_inappfunctions_index - 1).ToString());
+                    });
+
+                }
+                else if (AhmsvilleDialViewModel.active_loaded_inappfunctions_index == 0)
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        ManualID_Update((AhmsvilleDialViewModel.availableconfigs.Length - 1).ToString());
+                    });
+                }
+            }
+            else if (receivedlineindex == 222) //counterclockwise
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    bool res = Application.Current.Windows.Cast<Window>().Any(x => x == activeConfigPopup);
+                    if (activeConfigPopup != null && res == true)
+                    {
+                        activeConfigPopup.Close();
+                    }
+
+                });
+            }
+            else if (receivedlineindex == 6) //counterclockwise
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    ActiveConfigPopup.switchlock();
+
+                });
+            }
+            else if (receivedlineindex == 4) //counterclockwise
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    bool res = Application.Current.Windows.Cast<Window>().Any(x => x == activeConfigPopup);
+                    if (activeConfigPopup != null && res == true)
+                    {
+                        activeConfigPopup.Close();
+                    }
+
+                });
+            }
+        }
         #region External code Interface
         private void InApp_Operation(int receivedindex)
         {
             string operationtoperform = "";
             try
             {
-                operationtoperform = loadedappfunctions[active_loaded_inappfunctions_index].linesforappfunctions[receivedindex];
+                operationtoperform = AhmsvilleDialViewModel.loadedappfunctions[AhmsvilleDialViewModel.active_loaded_inappfunctions_index].linesforappfunctions[receivedindex];
             }
             catch (Exception)
             {
@@ -658,8 +743,8 @@ namespace Ahmsville_Dial
                     if (stringtotype != null)
                     {
                         InApp_Operations.SOLIDWORKS.swObj.solidworks(classname, operationtoperform); //call appropriate inapp operation class
-                        //solidworksInstance.solidworks(classname, operationtoperform); //call appropriate inapp operation class
-                                                                                      //MessageBox.Show(temptype.solidworks(classname, operationtoperform)); //call appropriate inapp operation class
+                                                                                                     //solidworksInstance.solidworks(classname, operationtoperform); //call appropriate inapp operation class
+                                                                                                     //MessageBox.Show(temptype.solidworks(classname, operationtoperform)); //call appropriate inapp operation class
 
                     }
 
@@ -675,7 +760,23 @@ namespace Ahmsville_Dial
                     if (stringtotype != null)
                     {
                         InApp_Operations.FUSION360.f360Obj.fusion360(classname, operationtoperform); //call appropriate inapp operation class
-                                                                                     
+
+
+                    }
+
+                }
+                else if (classname == "BLENDER") //spacenav operation interface
+                {
+                    //_MethodInfo classmethod = solidworksInstance.GetType().GetMethod(operationtoperform);
+                    //Type classfunc = Type.GetType(operationtoperform);
+                    //classmethod.Invoke(this, null);
+                    //solidworksInstance.SW_rotatemodel_xpos();
+
+                    Type stringtotype = Type.GetType("Ahmsville_Dial.InApp_Operations." + classname);
+                    if (stringtotype != null)
+                    {
+                        InApp_Operations.BLENDER.blenderObj.blender(classname, operationtoperform); //call appropriate inapp operation class
+
 
                     }
 
@@ -689,6 +790,30 @@ namespace Ahmsville_Dial
                         temptype.virtualkeypress(classname, operationtoperform); //call appropriate inapp operation class
 
                     }
+
+                }
+                else if (classname == "PopUp") //spacenav operation interface
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        bool res = Application.Current.Windows.Cast<Window>().Any(x => x == activeConfigPopup);
+                        if (operationtoperform == "Open_PopUp")
+                        {
+
+                            if (activeConfigPopup == null || res == false)
+                            {
+                                Action action = switchpopupmode;
+                                Action action1 = switchtoManual;
+                                Action action2 = switchtoAuto;
+                                ActiveConfigPopup.setActions(action, action1, action2);
+                                activeConfigPopup = new ActiveConfigPopup();
+                                activeConfigPopup.Show();
+
+                            }
+                        }
+                        
+                    });
+
 
                 }
 
@@ -898,7 +1023,7 @@ namespace Ahmsville_Dial
 
                             }
                         }
-                        
+
 
                     }
                     catch (Exception)
@@ -923,7 +1048,7 @@ namespace Ahmsville_Dial
                     _serialPort.DtrEnable = true;
                     _serialPort.RtsEnable = true;
                 }
-               
+
             }
             catch (Exception)
             {
@@ -992,7 +1117,7 @@ namespace Ahmsville_Dial
             {
                 AhmsvilleDialViewModel.Instance.activeappname = activeapp;
                 configfound = false;
-                foreach (string s in availableconfigs)
+                foreach (string s in AhmsvilleDialViewModel.availableconfigs)
                 {
 
                     //MessageBox.Show(i.ToString());
@@ -1004,8 +1129,8 @@ namespace Ahmsville_Dial
                             try
                             {
 
-                                _serialPort.Write((Array.IndexOf(availableconfigs, s)).ToString()); //change dial's active application index
-                                active_loaded_inappfunctions_index = Array.IndexOf(availableconfigs, s); //change inApp active application index
+                                _serialPort.Write((Array.IndexOf(AhmsvilleDialViewModel.availableconfigs, s)).ToString()); //change dial's active application index
+                                AhmsvilleDialViewModel.active_loaded_inappfunctions_index = Array.IndexOf(AhmsvilleDialViewModel.availableconfigs, s); //change inApp active application index
                                 _serialPort.DtrEnable = true;
                                 _serialPort.RtsEnable = true;
                                 //_serialPort.DiscardInBuffer();
@@ -1019,20 +1144,20 @@ namespace Ahmsville_Dial
                         }
 
 
-                        AhmsvilleDialViewModel.Instance.activeappid = (Array.IndexOf(availableconfigs, s)).ToString();
+                        AhmsvilleDialViewModel.Instance.activeappid = (Array.IndexOf(AhmsvilleDialViewModel.availableconfigs, s)).ToString();
                         configfound = true;
 
 
 
                     }
-                    else if (configfound == false && Array.IndexOf(availableconfigs, s) == (availableconfigs.Length - 1))
+                    else if (configfound == false && Array.IndexOf(AhmsvilleDialViewModel.availableconfigs, s) == (AhmsvilleDialViewModel.availableconfigs.Length - 1))
                     {
                         try
                         {
                             if (AhmsvilleDialViewModel.Instance.constate == 1)
                             {
                                 _serialPort.Write(defaultconfigID.ToString()); //set dial active application to default 
-                                active_loaded_inappfunctions_index = defaultconfigID; //set inapp active application to default index (0)
+                                AhmsvilleDialViewModel.active_loaded_inappfunctions_index = defaultconfigID; //set inapp active application to default index (0)
                                 _serialPort.DtrEnable = true;
                                 _serialPort.RtsEnable = true;
                                 //_serialPort.
@@ -1059,120 +1184,161 @@ namespace Ahmsville_Dial
             bool defaultset = false;
             int cindex = 0;
             string cname = "";
+            string ccolor = "";
+
             // Put all config files in root directory into array.
-            string[] configfiles = Directory.GetFiles(connecteddialconfigpath, "*_.ino"); // <-- Case-insensitive
-
-            loadedappfunctions = new availableconfigsforapp[configfiles.Length];
-
-
-
-            Array.Resize<string>(ref availableconfigs, configfiles.Length);
-
-            for (int i = 0; i < configfiles.Length; i++)
+            try
             {
-                loadedappfunctions[i].linesforappfunctions = new string[40];
-            }
+                string[] configfiles = Directory.GetFiles(connecteddialconfigpath, "*_.ino"); // <-- Case-insensitive
 
-            int cnt = 0;
-            foreach (string s in configfiles)
-            {
-
-                string[] configsettings = System.IO.File.ReadAllLines(configfiles[cnt]);
+                AhmsvilleDialViewModel.loadedappfunctions = new AhmsvilleDialViewModel.availableconfigsforapp[configfiles.Length];
 
 
-                string configline = configsettings[2];  //line for name
-                int substringindex = configline.LastIndexOf("=");
-                if (substringindex > 0)
+
+
+                Array.Resize<string>(ref AhmsvilleDialViewModel.availableconfigs, configfiles.Length);
+
+                for (int i = 0; i < configfiles.Length; i++)
                 {
-                    string sub = configline.Substring(substringindex);
-                    sub = sub.Replace("=", "");
-                    sub = sub.Replace(";", "");
-                    sub = sub.Replace("\"", "");
-                    sub = sub.Replace("'", "");
-                    sub = sub.Replace("CRGB::", "");
-
-                    cname = sub;
-
+                    AhmsvilleDialViewModel.loadedappfunctions[i].linesforappfunctions = new string[40];
+                    AhmsvilleDialViewModel.loadedappfunctions[i].comments = new List<string>();
                 }
-                configline = configsettings[3];  //line for index
-                substringindex = configline.LastIndexOf("=");
-                if (substringindex > 0)
-                {
-                    string sub = configline.Substring(substringindex);
-                    sub = sub.Replace("=", "");
-                    sub = sub.Replace(";", "");
-                    sub = sub.Replace("\"", "");
-                    sub = sub.Replace("'", "");
-                    sub = sub.Replace("CRGB::", "");
 
-                    if (sub.Contains("//default"))
+                int cnt = 0;
+                foreach (string s in configfiles)
+                {
+
+                    string[] configsettings = System.IO.File.ReadAllLines(configfiles[cnt]);
+
+
+                    string configline = configsettings[2];  //line for name
+                    int substringindex = configline.LastIndexOf("=");
+                    if (substringindex > 0)
                     {
-                        if (defaultset == false)
-                        {
-                            sub = sub.Replace("//default", "");
-                            defaultconfigID = Int32.Parse(sub) - 1;
-                            defaultset = true;
-                        }
-                        else
-                        {
-                            AhmsvilleDialViewModel.Instance.connectionstate += "Multiple Defaults Set, Correct this in the configurations" + "\n";
-                            sub = sub.Replace("//default", "");
-                        }
+                        string sub = configline.Substring(substringindex);
+                        sub = sub.Replace("=", "");
+                        sub = sub.Replace(";", "");
+                        sub = sub.Replace("\"", "");
+                        sub = sub.Replace("'", "");
+                        sub = sub.Replace("CRGB::", "");
+
+                        cname = sub;
 
                     }
-
-                    cindex = Int32.Parse(sub);
-
-                }
-
-                if (cindex <= availableconfigs.Length)
-                {
-                    //add read config name to availableconfigs array
-                    availableconfigs[cindex - 1] = cname;
-
-                    //load inapp functions by line from configsettings
-                    int linecnt = 0;
-                    foreach (string line in configsettings)
+                    configline = configsettings[3];  //line for index
+                    substringindex = configline.LastIndexOf("=");
+                    if (substringindex > 0)
                     {
-                        if (line.Contains("functionscombobox"))
-                        {
-                            configline = line;
-                            substringindex = configline.LastIndexOf("=");
-                            if (substringindex > 0)
-                            {
-                                string sub = configline.Substring(substringindex);
-                                sub = sub.Replace("=", "");
-                                sub = sub.Replace(";", "");
-                                sub = sub.Replace("\"", "");
-                                sub = sub.Replace("'", "");
-                                sub = sub.Replace("CRGB::", "");
-                                loadedappfunctions[cindex - 1].linesforappfunctions[linecnt] = sub;
+                        string sub = configline.Substring(substringindex);
+                        sub = sub.Replace("=", "");
+                        sub = sub.Replace(";", "");
+                        sub = sub.Replace("\"", "");
+                        sub = sub.Replace("'", "");
+                        sub = sub.Replace("CRGB::", "");
 
-                                linecnt = linecnt + 1;
+                        if (sub.Contains("//default"))
+                        {
+                            if (defaultset == false)
+                            {
+                                sub = sub.Replace("//default", "");
+                                defaultconfigID = Int32.Parse(sub) - 1;
+                                defaultset = true;
+                            }
+                            else
+                            {
+                                AhmsvilleDialViewModel.Instance.connectionstate += "Multiple Defaults Set, Correct this in the configurations" + "\n";
+                                sub = sub.Replace("//default", "");
+                            }
+
+                        }
+
+                        cindex = Int32.Parse(sub);
+
+                    }
+                    configline = configsettings[4];  //line for index
+                    substringindex = configline.LastIndexOf("=");
+                    if (substringindex > 0)
+                    {
+                        string sub = configline.Substring(substringindex);
+                        sub = sub.Replace("=", "");
+                        sub = sub.Replace(";", "");
+                        sub = sub.Replace("\"", "");
+                        sub = sub.Replace("'", "");
+                        sub = sub.Replace("CRGB::", "");
+
+                        ccolor = sub;
+                    }
+                    if (cindex <= AhmsvilleDialViewModel.availableconfigs.Length)
+                    {
+                        //add read config name to AhmsvilleDialViewModel.availableconfigs array
+                        AhmsvilleDialViewModel.availableconfigs[cindex - 1] = cname;
+                        AhmsvilleDialViewModel.loadedappfunctions[cindex - 1].comments.Add(ccolor);
+
+                        //load inapp functions by line from configsettings
+                        int linecnt = 0;
+                        foreach (string line in configsettings)
+                        {
+                            if (line.Contains("functionscombobox"))
+                            {
+                                configline = line;
+                                substringindex = configline.LastIndexOf("=");
+                                if (substringindex > 0)
+                                {
+                                    string sub = configline.Substring(substringindex);
+                                    sub = sub.Replace("=", "");
+                                    sub = sub.Replace(";", "");
+                                    sub = sub.Replace("\"", "");
+                                    sub = sub.Replace("'", "");
+                                    sub = sub.Replace("CRGB::", "");
+                                    AhmsvilleDialViewModel.loadedappfunctions[cindex - 1].linesforappfunctions[linecnt] = sub;
+
+                                    linecnt = linecnt + 1;
+                                }
+                            }
+                            if (line.Contains("//note"))
+                            {
+                                string commentstr = line;
+                                commentstr = commentstr.Replace("appconfig[index].useapp", "");
+
+                                string tempstr = commentstr.Remove(commentstr.IndexOf("="));
+                                commentstr = commentstr.Replace(tempstr, "");
+                                int notesubindex = commentstr.LastIndexOf("//note");
+                                if (commentstr.Substring(notesubindex) != "//note")
+                                {
+                                    commentstr = tempstr + "  -->  " + commentstr.Substring(notesubindex).Replace("//note", "");
+                                    AhmsvilleDialViewModel.loadedappfunctions[cindex - 1].comments.Add(commentstr);
+                                }
+                                
                             }
                         }
+                        cnt = cnt + 1;
+                        //MessageBox.Show(cname + "@" + cindex.ToString());
                     }
-                    cnt = cnt + 1;
-                    //MessageBox.Show(cname + "@" + cindex.ToString());
+                    else
+                    {
+                        MessageBox.Show("Invalid ID among configurations", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Error);
+                        // reorder config ID
+                        /* PopulateConfigList();
+                         for (int i = 0; i < configlist.Items.Count; i++)
+                         {
+                             configlist.SelectedIndex = i;
+                             ReOrderConfigID(i + 1);
+                         }*/
+                        //Rewrite_ConfigLoader();
+
+                        // MessageBox.Show("Re-order configurations ???");
+
+                    }
+
+
                 }
-                else
-                {
-                    MessageBox.Show("Invalid ID among configurations", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Error);
-                    // reorder config ID
-                    /* PopulateConfigList();
-                     for (int i = 0; i < configlist.Items.Count; i++)
-                     {
-                         configlist.SelectedIndex = i;
-                         ReOrderConfigID(i + 1);
-                     }*/
-                    //Rewrite_ConfigLoader();
-
-                    // MessageBox.Show("Re-order configurations ???");
-
-                }
-
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Configuration path failure, use the update library button", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Error);
 
             }
+
 
 
 
@@ -1482,7 +1648,7 @@ namespace Ahmsville_Dial
                     }
                 }
             }
-           
+
 
         }
         private void selectdialversionFromLibrary(int index)
@@ -1635,24 +1801,33 @@ namespace Ahmsville_Dial
 
         private void SwitchButton_Click(object sender, RoutedEventArgs e)
         {
-            ManualID_Update();
+            ManualID_Update("");
         }
 
         private void manualid_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
             {
-                ManualID_Update();
+                ManualID_Update("");
             }
         }
-        private void ManualID_Update()
+        public void ManualID_Update(string inm_ID)
         {
-            string m_ID = manualid.Text;
+            string m_ID = "";
+            if (inm_ID == "")
+            {
+                m_ID = manualid.Text;
+            }
+            else
+            {
+                m_ID = inm_ID;
+            }
+
             int IDint = 0;
             try
             {
                 IDint = Int32.Parse(m_ID);
-                if (IDint < availableconfigs.Length)
+                if (IDint < AhmsvilleDialViewModel.availableconfigs.Length)
                 {
                     if (AhmsvilleDialViewModel.Instance.constate == 1)
                     {
@@ -1661,7 +1836,7 @@ namespace Ahmsville_Dial
                         {
 
                             _serialPort.Write(m_ID); //change dial's active application index
-                            active_loaded_inappfunctions_index = IDint; //change inApp active application index
+                            AhmsvilleDialViewModel.active_loaded_inappfunctions_index = IDint; //change inApp active application index
                             _serialPort.DtrEnable = true;
                             _serialPort.RtsEnable = true;
                             //_serialPort.DiscardInBuffer();
@@ -1682,7 +1857,7 @@ namespace Ahmsville_Dial
             catch (Exception)
             {
                 bool strconffound = false;
-                foreach (string s in availableconfigs)
+                foreach (string s in AhmsvilleDialViewModel.availableconfigs)
                 {
 
                     if (s.Contains(m_ID))
@@ -1693,8 +1868,8 @@ namespace Ahmsville_Dial
                             try
                             {
 
-                                _serialPort.Write((Array.IndexOf(availableconfigs, s)).ToString()); //change dial's active application index
-                                active_loaded_inappfunctions_index = Array.IndexOf(availableconfigs, s); //change inApp active application index
+                                _serialPort.Write((Array.IndexOf(AhmsvilleDialViewModel.availableconfigs, s)).ToString()); //change dial's active application index
+                                AhmsvilleDialViewModel.active_loaded_inappfunctions_index = Array.IndexOf(AhmsvilleDialViewModel.availableconfigs, s); //change inApp active application index
                                 _serialPort.DtrEnable = true;
                                 _serialPort.RtsEnable = true;
                                 //_serialPort.DiscardInBuffer();
@@ -1775,7 +1950,7 @@ namespace Ahmsville_Dial
                     {
                         MessageBox.Show("Multiple packaged libraries found", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    
+
                 }
                 catch (Exception)
                 {
@@ -1823,6 +1998,8 @@ namespace Ahmsville_Dial
                     try
                     {
                         _serialPort.Write("r");
+                        _serialPort.DtrEnable = true;
+                        _serialPort.RtsEnable = true;
                     }
                     catch (Exception)
                     {
@@ -1833,6 +2010,72 @@ namespace Ahmsville_Dial
                 }
             }
         }
+
+        private void set_dialtoPopupMode(string modecode)
+        {
+            if (_serialPort != null)
+            {
+                if (_serialPort.IsOpen)
+                {
+                    try
+                    {
+                        _serialPort.Write(modecode);
+                        _serialPort.DtrEnable = true;
+                        _serialPort.RtsEnable = true;
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+
+                }
+            }
+        }
+
+        private void show_popup_Click(object sender, RoutedEventArgs e)
+        {
+            bool res = Application.Current.Windows.Cast<Window>().Any(x => x == activeConfigPopup);
+          
+                if (activeConfigPopup == null || res == false)
+                {
+                    Action action = switchpopupmode;
+                    Action action1 = switchtoManual;
+                    Action action2 = switchtoAuto;
+                    ActiveConfigPopup.setActions(action, action1, action2);
+                    activeConfigPopup = new ActiveConfigPopup();
+                    activeConfigPopup.Show();
+
+                }
+            
+           
+        }
+      
+        public void switchpopupmode()
+        {
+            if (popupWindowOpened)
+            {
+                set_dialtoPopupMode("s");
+            }
+            else
+            {
+                set_dialtoPopupMode("t");
+            }
+        }
+        public void switchtoManual()
+        {
+
+            ManualSW.IsChecked = true;
+
+        }
+        public void switchtoAuto()
+        {
+
+            AutoSW.IsChecked = true;
+
+        }
+
+       
     }
     /*************************************************************************************************************************************/
     internal static class UsbNotification

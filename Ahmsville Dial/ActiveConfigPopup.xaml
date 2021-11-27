@@ -1,0 +1,47 @@
+﻿<Window x:Class="Ahmsville_Dial.ActiveConfigPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ahmsville_Dial"
+        mc:Ignorable="d"
+        Title="Active Configuration" SizeToContent="WidthAndHeight"  Background="{x:Null}" Loaded="popupWindow_Loaded" Closed="popupWindow_Closed" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Foreground="{x:Null}" WindowStyle="None" AllowsTransparency="True"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"  MouseRightButtonDown="Window_MouseRightButtonDown">
+
+    <Border  CornerRadius="80" HorizontalAlignment="Center" Padding="12">
+        <Border.Background>
+            <SolidColorBrush Color="Black" Opacity="0.4"/>
+        </Border.Background>
+        <Border.Effect>
+            <DropShadowEffect/>
+        </Border.Effect>
+        <StackPanel x:Name="slidercontainer">
+            <Grid>
+                <Ellipse x:Name="icon" Width="200" Height="200" Fill="{Binding Path=(local:AhmsvilleDialViewModel.Instance).popupConfigColor, Mode=TwoWay}" Opacity="0.3"></Ellipse>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" >
+                    <TextBlock x:Name="configtitle" Text="{Binding Path=(local:AhmsvilleDialViewModel.Instance).popupConfigName, Mode=TwoWay}" FontSize="22" FontWeight="DemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    <TextBlock x:Name="configid" Text="{Binding Path=(local:AhmsvilleDialViewModel.Instance).popupConfigID, Mode=TwoWay}" FontSize="22" FontWeight="DemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" ></TextBlock>
+
+                </StackPanel>
+                <StackPanel MouseLeftButtonDown="StackPanel_MouseLeftButtonDown" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,30" Background="Transparent">
+                    <Path x:Name="locksymbol"  Fill="White" Data="{Binding Path=(local:AhmsvilleDialViewModel.Instance).geometrydata}"
+                           RenderTransformOrigin="0.5,0.5">
+                        <Path.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="2" ScaleY="2"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform X="-2"/>
+                            </TransformGroup>
+                        </Path.RenderTransform>
+                    </Path>
+                </StackPanel>
+            </Grid>
+            <TextBlock x:Name="configcomments" Text="{Binding Path=(local:AhmsvilleDialViewModel.Instance).popupConfigComment, Mode=TwoWay}" FontSize="16" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,5">
+
+
+            </TextBlock>
+
+        </StackPanel>
+    </Border>
+</Window>

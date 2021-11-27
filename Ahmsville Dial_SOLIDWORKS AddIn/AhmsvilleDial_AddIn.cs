@@ -36,7 +36,8 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
 
         static ModelDoc model = null;
         static ModelView myModelView = null;
-
+        //static List<string> outlist = new List<string>();
+        static string outlist = "";
         double rollmodelStep = 0.05;
 
         private enum addinCommands  //create list of addin functions/commands
@@ -85,53 +86,33 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
         }
 
 
-        public bool registerCallback_InSW(ITo_AhmDialApp callreturn, string functionIdentifier)
-        {
-            if (to_callback != callreturn)
-            {
-                to_callback = callreturn;
-            }
+        private readonly object outputLock = new object();
 
-
-            return true;
-        }
-
-        static bool loopstarted = false;
-        private bool queueIN()
-        {
-            loopstarted = true;
-            while (to_callback != null)
-            {
-                testfunc();
-                try
-                {
-                    to_callback.processInApp_Queue();
-                }
-                catch (Exception)
-                {
-                    to_callback = null;
-                    loopstarted = false;
-                }
-            }
-
-            return true;
-        }
-
-        Task<bool> invokeQueue;
+        static bool pipethreadstarted = false;
+        
+  
         public async void breakoffOperationAsync()
         {
 
-            if (!loopstarted)
+            if (!pipethreadstarted)
             {
-                invokeQueue = new Task<bool>(createpipe);
+                Task<bool> invokeQueue = new Task<bool>(createpipe);
                 invokeQueue.Start();
+                
                 bool ret = await invokeQueue;
+                if (!ret)
+                {
+                    
+                }
             }
+           
+            
+           
 
         }
         public bool testfunc()
         {
-            if (to_callback != null)
+            if (connectSwDoc())
             {
                 ModelDoc2 swDoc = null;
                 PartDoc swPart = null;
@@ -343,6 +324,7 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
         }
         public bool createpipe()
         {
+            pipethreadstarted = true;
             if (pipeServer == null)
             {
                 pipeServer = new NamedPipeServerStream("SOLIDWORKS", PipeDirection.In);
@@ -355,19 +337,21 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
 
                 while (pipeServer.IsConnected)
                 {
+                    //testfunc();
                     //startreading
-                    loopstarted = true;
                     string output = reader.ReadStringUntil("*");
                     //App.SendMsgToUser(output);
                     processdata(output);
+                   
                 }
 
                 pipeServer.Disconnect();
                 pipeServer.Dispose();
                 pipeServer = null;
-                loopstarted = false;
+                pipethreadstarted = false;
+                
             }
-            return true;
+            return pipethreadstarted;
 
 
         }
@@ -403,11 +387,15 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
                 }
                 if (connectSwDoc())
                 {
+                    //Mouse mymouse = myModelView.GetMouse();
+                    //mymouse.Move(1,1,0);
+                    
                     myModelView.RotateAboutCenter(dataflt[0], dataflt[1]);
                     myModelView.EnableGraphicsUpdate = false;
-                    myModelView.ZoomByFactor(1 + (dataflt[2]/3));
-                    myModelView.TranslateBy(dataflt[3]/4, 0);
+                    myModelView.ZoomByFactor(1 + (dataflt[2] / 3));
+                    myModelView.TranslateBy(dataflt[3] / 4, 0);
                     myModelView.EnableGraphicsUpdate = true;
+                    //myModelView = ((ModelView)App.IActiveDoc.IActiveView);
 
                 }
             }
@@ -415,11 +403,12 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
             {
                 if (connectSwDoc())
                 {
-                    finaloutput = finaloutput.Replace("//", "");
-                    finaloutput = finaloutput.Replace("*", "");
+                    string funcname = finaloutput;
+                    funcname = funcname.Replace("//", "");
+                    funcname = funcname.Replace("*", "");
                     try
                     {
-                        _MethodInfo _Method = addInObj.GetType().GetMethod(finaloutput);
+                        _MethodInfo _Method = addInObj.GetType().GetMethod(funcname);
                         _Method.Invoke(addInObj, null);
                     }
                     catch (Exception)
@@ -453,14 +442,19 @@ namespace Ahmsville_Dial_SOLIDWORKS_AddIn
             return true;
 
         }
-        private int OnIdleNotify()
+        public int OnIdleNotify()
         {
-
-            breakoffOperationAsync();
-
-
+            if (connectSwDoc())
+            {
+                breakoffOperationAsync();
+            }
+            //dynamic addin = App.GetAddInObject("AhmsvilleDial.SWAddIn");
+            
+            //Task.Run(() => addin.testfunc());
+            //testfunc();
+            //App.SendMsgToUser($"debug");
             return 0;
-            // App.SendMsgToUser($"debug");
+           
 
         }
         #region inapp functions

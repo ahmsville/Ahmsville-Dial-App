@@ -22,7 +22,7 @@
 #include <windows.h>
 #include <iostream>
 #include <list>
-
+#include <vector>
 
 
 #include <random>
@@ -66,7 +66,8 @@ BOOL fSuccess, fConnected = false;
 LPCWSTR lpszPipename = L"\\\\.\\pipe\\FUSION360";
 static int getpipedatastate = 0;
 static bool donereading = false;
-static string finaloutput = "";
+static vector<string> finaloutput;
+
 static bool disconnect = false;
 
 Ptr<Application> app;
@@ -79,6 +80,14 @@ Ptr<Point3D> target;
 Ptr<Vector3D> upvector;
 Ptr<Point3D> finalpt;
 Ptr<Viewport> openedview;
+
+Ptr<BoolValueCommandInput> transmode;
+Ptr<IntegerSliderCommandInput> tiltsense_slider;
+Ptr<IntegerSliderCommandInput> slidesense_slider;
+bool defaulttransmode = false;
+int defaulttiltsensevalue = 100;
+int defaultslidesensevalue = 100;
+
 
 static string output = "";
 static char recmsg[1];
@@ -505,6 +514,20 @@ public:
 		transview_target = finaltargetpt;
 	}
 
+	Ptr<Point3D> zoomby(float zf) {
+		//get target to new eye vector
+		Vector3d vecTE = Vector3d::pointstovector(view_eye, view_target);
+		//get vector magnitude
+		float mag = vecTE.length();
+		//add to vector magnitude
+		mag = mag + zf;
+		Vector3d finalvecTE = vecTE.normalize();
+		finalvecTE = finalvecTE.scale(mag);
+		//get new eye point
+		Ptr<Point3D> neweyept = finalvecTE.gettermpoint(view_target);
+		return neweyept;
+	}
+
 	void setviewpoints(Ptr<Point3D> cam_eye, Ptr<Point3D> cam_target, Ptr<Vector3D> cam_upvector) {
 		view_eye = cam_eye;
 		view_target = cam_target;
@@ -550,7 +573,7 @@ void getpipeData() {
 	chrono::steady_clock::time_point t_start = chrono::high_resolution_clock::now();
 	chrono::steady_clock::time_point t_end;
 	double elapsed_time_ms = 0;
-	while (elapsed_time_ms < 5000)
+	while (elapsed_time_ms < 1000)
 	{
 		if (fConnected)
 		{
@@ -594,12 +617,15 @@ void getpipeData() {
 				{
 					if (!donereading)
 					{
-						finaloutput = output;
+						finaloutput.push_back(output);
 						donereading = true;
 					}
 					// cout << output << endl;
 				}
-
+				if (disconnect)
+				{
+					break;
+				}
 
 
 
@@ -616,47 +642,49 @@ void getpipeData() {
 }
 
 bool restartPipe() {
-
-	hPipe = CreateNamedPipe(
-		lpszPipename,            // pipe name 
-		PIPE_ACCESS_INBOUND,     // read/write access  
-		PIPE_TYPE_BYTE |      // message-type pipe 
-		PIPE_TYPE_BYTE |  // message-read mode 
-		PIPE_WAIT,               // blocking mode 
-		INSTANCES,               // number of instances 
-		BUFSIZE * sizeof(TCHAR),   // output buffer size 
-		BUFSIZE * sizeof(TCHAR),   // input buffer size 
-		PIPE_TIMEOUT,            // client time-out 
-		NULL);                   // default security attributes 
-
-	if (hPipe == INVALID_HANDLE_VALUE)
+	if (!disconnect)
 	{
-		//debug("CreateNamedPipe failed with %d. " + GetLastError());
+		hPipe = CreateNamedPipe(
+			lpszPipename,            // pipe name 
+			PIPE_ACCESS_INBOUND,     // read/write access  
+			PIPE_TYPE_BYTE |      // message-type pipe 
+			PIPE_TYPE_BYTE |  // message-read mode 
+			PIPE_WAIT,               // blocking mode 
+			INSTANCES,               // number of instances 
+			BUFSIZE * sizeof(TCHAR),   // output buffer size 
+			BUFSIZE * sizeof(TCHAR),   // input buffer size 
+			PIPE_TIMEOUT,            // client time-out 
+			NULL);                   // default security attributes 
 
-	}
-	else {
-		// Start a connection for this pipe. 
-		//debug("waiting for connection");
-
-		fConnected = ConnectNamedPipe(hPipe, NULL);
-		if (!fConnected)
+		if (hPipe == INVALID_HANDLE_VALUE)
 		{
-			//debug("ConnectNamedPipe failed with %d. " + GetLastError());
+			//debug("CreateNamedPipe failed with %d. " + GetLastError());
 
 		}
 		else {
-			//debug("client connected");
-			if (!disconnect)
+			// Start a connection for this pipe. 
+			//debug("waiting for connection");
+
+			fConnected = ConnectNamedPipe(hPipe, NULL);
+			if (!fConnected)
 			{
-				getpipeData();
+				//debug("ConnectNamedPipe failed with %d. " + GetLastError());
+
 			}
-			else
-			{
-				DisconnectNamedPipe(hPipe);//Named Pipe Handle
-				disconnect = false;
+			else {
+				getpipeData();
+				if (disconnect) {
+					DisconnectNamedPipe(hPipe);//Named Pipe Handle
+					CloseHandle(hPipe);
+				}
 			}
 		}
 	}
+	else {
+		DisconnectNamedPipe(hPipe);//Named Pipe Handle
+		CloseHandle(hPipe);
+	}
+
 	return true;
 }
 bool forcefullyDisconnectPipe() {
@@ -732,76 +760,106 @@ void myThreadRun()
 		if (donereading)
 		{
 			//debug(finaloutput);
-			string substr = ">>";
-			string substr2 = "//";
-			if (finaloutput.rfind(substr, 0) == 0) { // pos=0 limits the search to the prefix
-				string datastr[4] = { "","","","" };
-				float dataflt[4] = { 0,0,0,0 };
-				int floatstrpos = 0;
-				for (size_t i = 0; i < finaloutput.length(); i++)
-				{
-					char c = finaloutput[i];
-					if (c != '\0' && c != '*' && c != '>')
+			vector<string> copyoutput = finaloutput;
+			finaloutput.clear();
+			for (size_t i = 0; i < copyoutput.size(); i++)
+			{
+				string currentdatastr = copyoutput[i];
+				string substr = ">>";
+				string substr2 = "//";
+				if (currentdatastr.rfind(substr, 0) == 0) { // pos=0 limits the search to the prefix
+					string datastr[4] = { "","","","" };
+					float dataflt[4] = { 0,0,0,0 };
+					int floatstrpos = 0;
+					for (size_t i = 0; i < currentdatastr.length(); i++)
 					{
-						if (c == '|')
+						char c = currentdatastr[i];
+						if (c != '\0' && c != '*' && c != '>')
 						{
-							floatstrpos += 1;
+							if (c == '|')
+							{
+								floatstrpos += 1;
+							}
+							else
+							{
+								datastr[floatstrpos] += c;
+							}
 						}
-						else
+
+					}
+					for (size_t i = 0; i < size(dataflt); i++)
+					{
+						//debug(datastr[i]);
+						dataflt[i] = atof(datastr[i].c_str());
+
+					}
+
+					if (dataflt[0] != 0 || dataflt[1] != 0 || dataflt[2] != 0 || dataflt[3] != 0)
+					{
+						eye = app->activeViewport()->camera()->eye();
+						target = app->activeViewport()->camera()->target();
+						upvector = app->activeViewport()->camera()->upVector();
+						myView.setviewpoints(eye, target, upvector);
+						float scalef = float(defaultslidesensevalue) * 0.01;
+						if (!defaulttransmode)
 						{
-							datastr[floatstrpos] += c;
+							myView.translateviewby(dataflt[3] * scalef, dataflt[2] * scalef);
+							myView.setviewpoints(eye, myView.gettranslatedtarget(), upvector);
+							scalef = float(defaulttiltsensevalue) * 0.01;
+							finalpt = myView.rotateviewby(-dataflt[0] * scalef, -dataflt[1] * scalef);
+
+							cam->viewExtents(app->activeViewport()->camera()->viewExtents());
+							cam->eye(finalpt);
+							cam->upVector(myView.getrotateupvector());
+							cam->target(myView.gettranslatedtarget());
+
+							app->activeViewport()->camera(cam);
+							app->activeViewport()->refresh();
 						}
+						else {
+							myView.translateviewby(dataflt[3], 0);
+							myView.setviewpoints(eye, myView.gettranslatedtarget(), upvector);
+							scalef = float(defaulttiltsensevalue) * 0.01;
+							finalpt = myView.rotateviewby(-dataflt[0] * scalef, -dataflt[1] * scalef);
+							//myView.setviewpoints(finalpt, myView.gettranslatedtarget(), upvector);
+							//finalpt = myView.zoomby(dataflt[2] * scalef);
+							float newviewextent = (app->activeViewport()->camera()->viewExtents() + (dataflt[2] * scalef)) / app->activeViewport()->camera()->viewExtents();
+							cam->viewExtents(app->activeViewport()->camera()->viewExtents() * newviewextent);
+							cam->eye(finalpt);
+							cam->upVector(myView.getrotateupvector());
+							cam->target(myView.gettranslatedtarget());
+
+							app->activeViewport()->camera(cam);
+							app->activeViewport()->refresh();
+						}
+
+
 					}
 
 				}
-				for (size_t i = 0; i < size(dataflt); i++)
-				{
-					//debug(datastr[i]);
-					dataflt[i] = atof(datastr[i].c_str());
-
-				}
-
-				if (dataflt[0] != 0 || dataflt[1] != 0 || dataflt[2] != 0 || dataflt[3] != 0)
-				{
-					eye = app->activeViewport()->camera()->eye();
-					target = app->activeViewport()->camera()->target();
-					upvector = app->activeViewport()->camera()->upVector();
-					myView.setviewpoints(eye, target, upvector);
-					myView.translateviewby(dataflt[3], 0);
-					myView.setviewpoints(myView.gettranslatedeye(), myView.gettranslatedtarget(), upvector);
-					finalpt = myView.rotateviewby(-dataflt[0], -dataflt[1]);
-
-					cam->viewExtents(app->activeViewport()->camera()->viewExtents() + (-2 * dataflt[2]));
-					cam->eye(finalpt);
-					cam->upVector(myView.getrotateupvector());
-					cam->target(myView.gettranslatedtarget());
-
-					app->activeViewport()->camera(cam);
-					app->activeViewport()->refresh();
-				}
-
-			}
-			else if (finaloutput.rfind(substr2, 0) == 0) { // pos=0 limits the search to the prefix
-				//debug(finaloutput);
-				string functionname = "";
-				for (size_t i = 0; i < finaloutput.length(); i++)
-				{
-					if (finaloutput[i] != '/' && finaloutput[i] != '*')
+				else if (currentdatastr.rfind(substr2, 0) == 0) { // pos=0 limits the search to the prefix
+					//debug(currentdatastr);
+					string functionname = "";
+					for (size_t i = 0; i < currentdatastr.length(); i++)
 					{
-						functionname += finaloutput[i];
+						if (currentdatastr[i] != '/' && currentdatastr[i] != '*')
+						{
+							functionname += currentdatastr[i];
+						}
+					}
+					if (functionname == "FU360_zoomToFit")
+					{
+						cam = app->activeViewport()->camera();
+						cam->isFitView(true);
+						cam->isSmoothTransition(false);
+						app->activeViewport()->camera(cam);
+						app->activeViewport()->refresh();
+						cam->isFitView(false);
 					}
 				}
-				if (functionname == "FU360_zoomToFit")
-				{
-					cam = app->activeViewport()->camera();
-					cam->isFitView(true);
-					cam->isSmoothTransition(false);
-					app->activeViewport()->camera(cam);
-					app->activeViewport()->refresh();
-					cam->isFitView(false);
-				}
 			}
-			finaloutput = "";
+
+
 			donereading = false;
 		}
 
@@ -833,6 +891,103 @@ void myThreadRun()
 	//return "";
 }
 
+// InputChange event handler.
+class OnInputChangedEventHander : public adsk::core::InputChangedEventHandler
+{
+public:
+	void notify(const Ptr<InputChangedEventArgs>& eventArgs) override
+	{
+
+		Ptr<CommandInputs> inputs = eventArgs->inputs();
+		if (!inputs)
+			return;
+
+		Ptr<CommandInput> cmdInput = eventArgs->input();
+		if (!cmdInput)
+			return;
+		//std::string outd = std::to_string(tiltsense_slider->valueOne()) + "/////" + std::to_string(tiltsense_slider->valueTwo());
+
+		defaulttransmode = transmode->value();
+		defaulttiltsensevalue = tiltsense_slider->valueOne();
+		defaultslidesensevalue = slidesense_slider->valueOne();
+		std::string outd = std::to_string(transmode->value());
+		//ui->messageBox(outd);
+
+
+	}
+};
+
+// CommandExecuted event handler.
+class OnExecuteEventHander : public adsk::core::CommandEventHandler
+{
+public:
+	void notify(const Ptr<CommandEventArgs>& eventArgs) override
+	{
+
+	}
+};
+
+// CommandDestroyed event handler
+class OnDestroyEventHandler : public adsk::core::CommandEventHandler
+{
+public:
+	void notify(const Ptr<CommandEventArgs>& eventArgs) override
+	{
+		adsk::terminate();
+	}
+};
+
+// CommandCreated event handler.
+class CommandCreatedEventHandler : public adsk::core::CommandCreatedEventHandler
+{
+public:
+	void notify(const Ptr<CommandCreatedEventArgs>& eventArgs) override
+	{
+		if (eventArgs)
+		{
+			// Get the command that was created.
+			Ptr<Command> command = eventArgs->command();
+			if (command)
+			{
+
+
+				// Connect to the input changed event.
+				Ptr<InputChangedEvent> onInputChanged = command->inputChanged();
+				if (!onInputChanged)
+					return;
+				bool isOk = onInputChanged->add(&onInputChangedHandler);
+				if (!isOk)
+					return;
+
+				// Get the CommandInputs collection associated with the command.
+				Ptr<CommandInputs> inputs = command->commandInputs();
+				if (!inputs)
+					return;
+
+
+				command->execute();
+
+				// Create bool value input with checkbox style.
+				transmode = inputs->addBoolValueInput("trans_zoom", "Translate and Zoom", true, "", false);
+				transmode->value(defaulttransmode);
+
+				// Create float slider input with two sliders and visible texts
+				tiltsense_slider = inputs->addIntegerSliderCommandInput("tiltsense", "Tilt Sensitivity", 1, 400, false);
+				tiltsense_slider->valueOne(defaulttiltsensevalue);
+				slidesense_slider = inputs->addIntegerSliderCommandInput("slidsense", "Slide Sensitivity", 1, 400, false);
+				slidesense_slider->valueOne(defaultslidesensevalue);
+
+
+			}
+		}
+	}
+private:
+	OnExecuteEventHander onExecuteHandler;
+	OnDestroyEventHandler onDestroyHandler;
+	OnInputChangedEventHander onInputChangedHandler;
+} _cmdCreatedHandler;
+
+
 
 extern "C" XI_EXPORT bool run(const char* context)
 {
@@ -846,6 +1001,31 @@ extern "C" XI_EXPORT bool run(const char* context)
 	if (!ui)
 		return false;
 
+
+	// Create the command definition.
+	Ptr<CommandDefinitions> commandDefinitions = ui->commandDefinitions();
+	if (!commandDefinitions)
+		return nullptr;
+
+	// Create a command definition and add a button to the CREATE panel.
+	Ptr<CommandDefinition> cmdDef = ui->commandDefinitions()->addButtonDefinition("ahmsvilledialpanel", "Ahmsville Dial Fusion 360", "Ahmsville dial space navigator configuration panel", "");
+	if (!cmdDef)
+		return false;
+
+	Ptr<ToolbarPanel> createPanel = ui->allToolbarPanels()->itemById("SolidCreatePanel");
+	if (!createPanel)
+		return false;
+
+	Ptr<CommandControl> ahmsvilledialButton = createPanel->controls()->addCommand(cmdDef);
+	if (!ahmsvilledialButton)
+		return false;
+
+
+	// Connect to the command created event.
+	Ptr<CommandCreatedEvent> commandCreatedEvent = cmdDef->commandCreated();
+	if (!commandCreatedEvent)
+		return false;
+	commandCreatedEvent->add(&_cmdCreatedHandler);
 
 	customEvent = app->registerCustomEvent(myCustomEvent);
 	if (!customEvent)
@@ -867,7 +1047,22 @@ extern "C" XI_EXPORT bool stop(const char* context)
 		customEvent->remove(&onCustomEvent_);
 		stopFlag = true;
 		app->unregisterCustomEvent(myCustomEvent);
+		disconnect = true;
+		DisconnectNamedPipe(hPipe);
 		forcefullyDisconnectPipe();
+
+		Ptr<ToolbarPanel> createPanel = ui->allToolbarPanels()->itemById("SolidCreatePanel");
+		if (!createPanel)
+			return false;
+
+		Ptr<CommandControl> gearButton = createPanel->controls()->itemById("ahmsvilledialpanel");
+		if (gearButton)
+			gearButton->deleteMe();
+
+		Ptr<CommandDefinition> cmdDef = ui->commandDefinitions()->itemById("ahmsvilledialpanel");
+		if (cmdDef)
+			cmdDef->deleteMe();
+
 		//ui->messageBox("Terminating Ahmsville Dial Addin");
 		ui = nullptr;
 	}

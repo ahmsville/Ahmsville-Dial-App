@@ -66,7 +66,15 @@ namespace Ahmsville_Dial
 */
             spacenav_manual.IsChecked = true;   //select default space navigator mode
             configname.Text = "NewAppConfig";
-            PopulateConfigList();  //load configuration selection
+            try
+            {
+                PopulateConfigList("");  //load configuration selection
+            }
+            catch (Exception)
+            {
+
+              
+            }
             configid.IsEnabled = false;
         }
 
@@ -86,7 +94,15 @@ namespace Ahmsville_Dial
                 selecteddialimagepath = selecteddial.imagepath.Replace(@"\default.jpg","");
 
             }
-            PopulateConfigList();  //load configuration selection
+            try
+            {
+                PopulateConfigList("");  //load configuration selection
+            }
+            catch (Exception)
+            {
+
+
+            }
 
         }
 
@@ -167,7 +183,7 @@ namespace Ahmsville_Dial
 
         }
 
-        private void PopulateConfigList()
+        private void PopulateConfigList(string selectedval)
         {
             // Put all config files in root directory into array.
             configlist.Items.Clear();
@@ -181,9 +197,11 @@ namespace Ahmsville_Dial
 
             }
             //string[] configfiles = Directory.GetFiles(selecteddialfilepath, "*_.ino"); // <-- Case-insensitive
-                                                                           // fill configuration name combobox
-            foreach (string fullconfigpath in configfiles)
+            int indexcnt = 0;
+            string fullconfigpath = "";
+            for (int j = 0; j < configfiles.Length; j++)
             {
+                fullconfigpath = configfiles[j];
                 string configname = fullconfigpath.Replace(selecteddialfilepath, "");
                 configname = configname.Replace("_.ino", "");
                 bool contains = false;
@@ -201,6 +219,10 @@ namespace Ahmsville_Dial
                     temp.Content = configname;
                     temp.Tag = fullconfigpath;
                     configlist.Items.Add(temp);
+                }
+                if (configname == selectedval)
+                {
+                    indexcnt = j;
                 }
             }
             configcount = configfiles.Length;
@@ -230,10 +252,338 @@ namespace Ahmsville_Dial
                 Rewrite_ConfigLoader();
                 MessageBox.Show("ID has been Re-ordered", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-
-
+            if (selectedval != "")
+            {
+                configlist.SelectedIndex = indexcnt;
+            }
+            
+          
         }
 
+        private bool writeConfigurations(int Id,string configpath,string defaulttxt)
+        {
+            try
+            {
+                string defaultstring = "";
+                if (defaulttxt == "")
+                {
+                    defaultstring = Is_defaultConfig();
+                }
+                else
+                {
+                    defaultstring = defaulttxt;
+                }
+               
+                // Create the file, or overwrite if the file exists.
+                using (FileStream fs = File.Create(configpath))
+                {
+                    byte[] info = new UTF8Encoding(true).GetBytes("void " + GetControlContent(configname.Text) + "() {" + "\n"
+                        + "int index=" + (Id - 1).ToString() + ";" + "\n"
+                        + ConstuctCodeLine("appname", GetControlContent(configname.Text), 1)
+                        + ConstuctCodeLine("ID", Id.ToString(), 0).Replace("\n", "") + defaultstring
+                        + ConstuctCodeLine("appcolor", GetControlContent_Led(appledcolor.SelectedItem), 4)
+                        + ConstuctCodeLine("appanimation", GetControlContent_LedAnimation(appledanimation.SelectedItem), 5)
+                        + "\n"
+                        + ConstuctCodeLine("knob1_res", knob1res.Value.ToString(), 0)
+                        + appendcomment(ConstuctCodeLine("useapp_knob1_CW", GetControlContent(use_APP_knob1_CW.IsChecked).ToLower(), 0), knob1_CW_funcnote.Text)
+                        + "// inbuiltfunc_knob1_CW =" + inbuiltfunc_knob1_CW.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_knob1_CW =" + file_knob1_CW.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_knob1_CW =" + functionscombobox_knob1_CW.Text + "\n"
+                        + ConstuctCodeLine("knob1_CW[0]", GetControlContent(knob1CW_1.Text), 3)
+                        + ConstuctCodeLine("knob1_CW[1]", GetControlContent(knob1CW_2.Text), 3)
+                        + ConstuctCodeLine("knob1_CW[2]", GetControlContent(knob1CW_3.Text), 3)
+                        + appendcomment(ConstuctCodeLine("useapp_knob1_CCW", GetControlContent(use_APP_knob1_CCW.IsChecked).ToLower(), 0), knob1_CCW_funcnote.Text)
+                        + "// inbuiltfunc_knob1_CCW =" + inbuiltfunc_knob1_CCW.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_knob1_CCW =" + file_knob1_CCW.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_knob1_CCW =" + functionscombobox_knob1_CCW.Text + "\n"
+                        + ConstuctCodeLine("knob1_CCW[0]", GetControlContent(knob1CCW_1.Text), 3)
+                        + ConstuctCodeLine("knob1_CCW[1]", GetControlContent(knob1CCW_2.Text), 3)
+                        + ConstuctCodeLine("knob1_CCW[2]", GetControlContent(knob1CCW_3.Text), 3)
+                        + fileversionModifier("secenc", true)
+                        + ConstuctCodeLine("knob2_res", knob2res.Value.ToString(), 0)
+                        + appendcomment(ConstuctCodeLine("useapp_knob2_CW", GetControlContent(use_APP_knob2_CW.IsChecked).ToLower(), 0), knob2_CW_funcnote.Text)
+                        + "// inbuiltfunc_knob2_CW =" + inbuiltfunc_knob2_CW.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_knob2_CW =" + file_knob2_CW.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_knob2_CW =" + functionscombobox_knob2_CW.Text + "\n"
+                        + ConstuctCodeLine("knob2_CW[0]", GetControlContent(knob2CW_1.Text), 3)
+                        + ConstuctCodeLine("knob2_CW[1]", GetControlContent(knob2CW_2.Text), 3)
+                        + ConstuctCodeLine("knob2_CW[2]", GetControlContent(knob2CW_3.Text), 3)
+                        + appendcomment(ConstuctCodeLine("useapp_knob2_CCW", GetControlContent(use_APP_knob2_CCW.IsChecked).ToLower(), 0), knob2_CCW_funcnote.Text)
+                        + "// inbuiltfunc_knob2_CCW =" + inbuiltfunc_knob2_CCW.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_knob2_CCW =" + file_knob2_CCW.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_knob2_CCW =" + functionscombobox_knob2_CCW.Text + "\n"
+                        + ConstuctCodeLine("knob2_CCW[0]", GetControlContent(knob2CCW_1.Text), 3)
+                        + ConstuctCodeLine("knob2_CCW[1]", GetControlContent(knob2CCW_2.Text), 3)
+                        + ConstuctCodeLine("knob2_CCW[2]", GetControlContent(knob2CCW_3.Text), 3)
+                        + fileversionModifier("secenc", false)
+                        + ConstuctCodeLine("captouch_dualtapfunc[0]", GetControlContent(singletap_dualshortcut.IsChecked).ToLower(), 0)
+                        + ConstuctCodeLine("captouch_dualtapfunc[1]", GetControlContent(doubletap_dualshortcut.IsChecked).ToLower(), 0)
+                        + appendcomment(ConstuctCodeLine("useapp_captouch_singletap", GetControlContent(use_APP_captouch_singletap_SHORTCUT1.IsChecked).ToLower(), 0), singletap_funcnote.Text)
+                        + "// inbuiltfunc_captouch_singletap =" + inbuiltfunc_captouch_singletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_captouch_singletap =" + file_captouch_singletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_captouch_singletap =" + functionscombobox_captouch_singletap_SHORTCUT1.Text + "\n"
+                        + ConstuctCodeLine("singletap[0]", GetControlContent(singletap_1.Text), 3)
+                        + ConstuctCodeLine("singletap[1]", GetControlContent(singletap_2.Text), 3)
+                        + ConstuctCodeLine("singletap[2]", GetControlContent(singletap_3.Text), 3)
+                        + ConstuctCodeLine("useapp_captouch_singletap2", GetControlContent(use_APP_captouch_singletap_SHORTCUT2.IsChecked).ToLower(), 0)
+                        + "// inbuiltfunc_captouch_singletap2 =" + inbuiltfunc_captouch_singletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_captouch_singletap2 =" + file_captouch_singletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_captouch_singletap2 =" + functionscombobox_captouch_singletap_SHORTCUT2.Text + "\n"
+                        + ConstuctCodeLine("singletap2[0]", GetControlContent(singletap_21.Text), 3)
+                        + ConstuctCodeLine("singletap2[1]", GetControlContent(singletap_22.Text), 3)
+                        + ConstuctCodeLine("singletap2[2]", GetControlContent(singletap_23.Text), 3)
+                        + appendcomment(ConstuctCodeLine("useapp_captouch_doubletap", GetControlContent(use_APP_captouch_doubletap_SHORTCUT1.IsChecked).ToLower(), 0), doubletap_funcnote.Text)
+                        + "// inbuiltfunc_captouch_doubletap =" + inbuiltfunc_captouch_doubletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_captouch_doubletap =" + file_captouch_doubletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_captouch_doubletap =" + functionscombobox_captouch_doubletap_SHORTCUT1.Text + "\n"
+                        + ConstuctCodeLine("doubletap[0]", GetControlContent(doubletap_1.Text), 3)
+                        + ConstuctCodeLine("doubletap[1]", GetControlContent(doubletap_2.Text), 3)
+                        + ConstuctCodeLine("doubletap[2]", GetControlContent(doubletap_3.Text), 3)
+                        + ConstuctCodeLine("useapp_captouch_doubletap2", GetControlContent(use_APP_captouch_doubletap_SHORTCUT2.IsChecked).ToLower(), 0)
+                        + "// inbuiltfunc_captouch_doubletap2 =" + inbuiltfunc_captouch_doubletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_captouch_doubletap2 =" + file_captouch_doubletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_captouch_doubletap2 =" + functionscombobox_captouch_doubletap_SHORTCUT2.Text + "\n"
+                        + ConstuctCodeLine("doubletap2[0]", GetControlContent(doubletap_21.Text), 3)
+                        + ConstuctCodeLine("doubletap2[1]", GetControlContent(doubletap_22.Text), 3)
+                        + ConstuctCodeLine("doubletap2[2]", GetControlContent(doubletap_23.Text), 3)
+                        + appendcomment(ConstuctCodeLine("useapp_captouch_shortpress", GetControlContent(use_APP_captouch_shortpress.IsChecked).ToLower(), 0), shortpress_funcnote.Text)
+                        + "// inbuiltfunc_captouch_shortpress =" + inbuiltfunc_captouch_shortpress.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_captouch_shortpress =" + file_captouch_shortpress.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_captouch_shortpress =" + functionscombobox_captouch_shortpress.Text + "\n"
+                        + ConstuctCodeLine("shortpress[0]", GetControlContent(shortpress_1.Text), 3)
+                        + ConstuctCodeLine("shortpress[1]", GetControlContent(shortpress_2.Text), 3)
+                        + ConstuctCodeLine("shortpress[2]", GetControlContent(shortpress_3.Text), 3)
+                        + appendcomment(ConstuctCodeLine("useapp_captouch_longpress", GetControlContent(use_APP_captouch_longpress.IsChecked).ToLower(), 0), longpress_funcnote.Text)
+                        + "// inbuiltfunc_captouch_longpress =" + inbuiltfunc_captouch_longpress.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_captouch_longpress =" + file_captouch_longpress.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_captouch_longpress =" + functionscombobox_captouch_longpress.Text + "\n"
+                        + ConstuctCodeLine("longpress[0]", GetControlContent(longpress_1.Text), 3)
+                        + ConstuctCodeLine("longpress[1]", GetControlContent(longpress_2.Text), 3)
+                        + ConstuctCodeLine("longpress[2]", GetControlContent(longpress_3.Text), 3)
+                        + fileversionModifier("mk", true)
+                        + ConstuctCodeLine("MK_dualtapfunc[0]", GetControlContent(mk1tap_dualshortcut.IsChecked).ToLower(), 0)
+                        + ConstuctCodeLine("MK_dualtapfunc[1]", GetControlContent(mk2tap_dualshortcut.IsChecked).ToLower(), 0)
+                        + ConstuctCodeLine("MK_dualtapfunc[2]", GetControlContent(mk3tap_dualshortcut.IsChecked).ToLower(), 0)
+                        + ConstuctCodeLine("MK_dualtapfunc[3]", GetControlContent(mk4tap_dualshortcut.IsChecked).ToLower(), 0)
+                        + ConstuctCodeLine("MK_dualtapfunc[4]", GetControlContent(mk5tap_dualshortcut.IsChecked).ToLower(), 0)
+                        + ConstuctCodeLine("MK_tapfunc[0]", GetControlContent(mk1tap_shortcuts.IsEnabled).ToLower(), 0)
+                        + ConstuctCodeLine("MK_tapfunc[1]", GetControlContent(mk2tap_shortcuts.IsEnabled).ToLower(), 0)
+                        + ConstuctCodeLine("MK_tapfunc[2]", GetControlContent(mk3tap_shortcuts.IsEnabled).ToLower(), 0)
+                        + ConstuctCodeLine("MK_tapfunc[3]", GetControlContent(mk4tap_shortcuts.IsEnabled).ToLower(), 0)
+                        + ConstuctCodeLine("MK_tapfunc[4]", GetControlContent(mk5tap_shortcuts.IsEnabled).ToLower(), 0)
+                        + ConstuctCodeLine("MK_holdfunc[0]", GetControlContent(mk1hold_shortcuts.IsEnabled).ToLower(), 0)
+                        + ConstuctCodeLine("MK_holdfunc[1]", GetControlContent(mk2hold_shortcuts.IsEnabled).ToLower(), 0)
+                        + ConstuctCodeLine("MK_holdfunc[2]", GetControlContent(mk3hold_shortcuts.IsEnabled).ToLower(), 0)
+                        + ConstuctCodeLine("MK_holdfunc[3]", GetControlContent(mk4hold_shortcuts.IsEnabled).ToLower(), 0)
+                        + ConstuctCodeLine("MK_holdfunc[4]", GetControlContent(mk5hold_shortcuts.IsEnabled).ToLower(), 0)
+                        + "\n"
+                        + ConstuctCodeLine("MK_colors[0]", GetControlContent_Led(mk1ledcolor.SelectedItem), 4)
+                        + ConstuctCodeLine("MK_colors[1]", GetControlContent_Led(mk2ledcolor.SelectedItem), 4)
+                        + ConstuctCodeLine("MK_colors[2]", GetControlContent_Led(mk3ledcolor.SelectedItem), 4)
+                        + ConstuctCodeLine("MK_colors[3]", GetControlContent_Led(mk4ledcolor.SelectedItem), 4)
+                        + ConstuctCodeLine("MK_colors[4]", GetControlContent_Led(mk5ledcolor.SelectedItem), 4)
+                        + ConstuctCodeLine("MK_animation[0]", GetControlContent_LedAnimation(mk1ledanimation.SelectedItem), 5)
+                        + ConstuctCodeLine("MK_animation[1]", GetControlContent_LedAnimation(mk2ledanimation.SelectedItem), 5)
+                        + ConstuctCodeLine("MK_animation[2]", GetControlContent_LedAnimation(mk3ledanimation.SelectedItem), 5)
+                        + ConstuctCodeLine("MK_animation[3]", GetControlContent_LedAnimation(mk4ledanimation.SelectedItem), 5)
+                        + ConstuctCodeLine("MK_animation[4]", GetControlContent_LedAnimation(mk5ledanimation.SelectedItem), 5)
+                        + "\n"
+                        + appendcomment(ConstuctCodeLine("useapp_MK1_tap", GetControlContent(use_APP_MK1tap_SHORTCUT1.IsChecked).ToLower(), 0), mk1tap_funcnote.Text)
+                        + "// inbuiltfunc_MK1tap_SHORTCUT1 =" + inbuiltfunc_MK1tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK1tap_SHORTCUT1 =" + file_MK1tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK1tap_SHORTCUT1 =" + functionscombobox_MK1tap_SHORTCUT1.Text + "\n"
+                        + ConstuctCodeLine("MK1_tap[0]", GetControlContent(mk1tap_1.Text), 3)
+                        + ConstuctCodeLine("MK1_tap[1]", GetControlContent(mk1tap_2.Text), 3)
+                        + ConstuctCodeLine("MK1_tap[2]", GetControlContent(mk1tap_3.Text), 3)
+                        + ConstuctCodeLine("useapp_MK1_tap2", GetControlContent(use_APP_MK1tap_SHORTCUT2.IsChecked).ToLower(), 0)
+                        + "// inbuiltfunc_MK1tap_SHORTCUT2 =" + inbuiltfunc_MK1tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK1tap_SHORTCUT2 =" + file_MK1tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK1tap_SHORTCUT2 =" + functionscombobox_MK1tap_SHORTCUT2.Text + "\n"
+                        + ConstuctCodeLine("MK1_tap2[0]", GetControlContent(mk1tap_21.Text), 3)
+                        + ConstuctCodeLine("MK1_tap2[1]", GetControlContent(mk1tap_22.Text), 3)
+                        + ConstuctCodeLine("MK1_tap2[2]", GetControlContent(mk1tap_23.Text), 3)
+                        + ConstuctCodeLine("MK1_taptext", GetControlContent(mk1tap_4.Text), 1)
+                        + appendcomment(ConstuctCodeLine("useapp_MK1_hold", GetControlContent(use_APP_MK1hold.IsChecked).ToLower(), 0), mk1hold_funcnote.Text)
+                        + "// inbuiltfunc_MK1_hold =" + inbuiltfunc_MK1hold.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK1_hold =" + file_MK1hold.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK1hold =" + functionscombobox_MK1hold.Text + "\n"
+                        + ConstuctCodeLine("MK1_hold[0]", GetControlContent(mk1hold_1.Text), 3)
+                        + ConstuctCodeLine("MK1_hold[1]", GetControlContent(mk1hold_2.Text), 3)
+                        + ConstuctCodeLine("MK1_hold[2]", GetControlContent(mk1hold_3.Text), 3)
+                        + ConstuctCodeLine("MK1_holdtext", GetControlContent(mk1hold_4.Text), 1)
+                        + "\n"
+                        + appendcomment(ConstuctCodeLine("useapp_MK2_tap", GetControlContent(use_APP_MK2tap_SHORTCUT1.IsChecked).ToLower(), 0), mk2tap_funcnote.Text)
+                        + "// inbuiltfunc_MK2tap_SHORTCUT1 =" + inbuiltfunc_MK2tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK2tap_SHORTCUT1 =" + file_MK2tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK2tap_SHORTCUT1 =" + functionscombobox_MK2tap_SHORTCUT1.Text + "\n"
+                        + ConstuctCodeLine("MK2_tap[0]", GetControlContent(mk2tap_1.Text), 3)
+                        + ConstuctCodeLine("MK2_tap[1]", GetControlContent(mk2tap_2.Text), 3)
+                        + ConstuctCodeLine("MK2_tap[2]", GetControlContent(mk2tap_3.Text), 3)
+                        + ConstuctCodeLine("useapp_MK2_tap2", GetControlContent(use_APP_MK2tap_SHORTCUT2.IsChecked).ToLower(), 0)
+                        + "// inbuiltfunc_MK2tap_SHORTCUT2 =" + inbuiltfunc_MK2tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK2tap_SHORTCUT2 =" + file_MK2tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK2tap_SHORTCUT2 =" + functionscombobox_MK2tap_SHORTCUT2.Text + "\n"
+                        + ConstuctCodeLine("MK2_tap2[0]", GetControlContent(mk2tap_21.Text), 3)
+                        + ConstuctCodeLine("MK2_tap2[1]", GetControlContent(mk2tap_22.Text), 3)
+                        + ConstuctCodeLine("MK2_tap2[2]", GetControlContent(mk2tap_23.Text), 3)
+                        + ConstuctCodeLine("MK2_taptext", GetControlContent(mk2tap_4.Text), 1)
+                        + appendcomment(ConstuctCodeLine("useapp_MK2_hold", GetControlContent(use_APP_MK2hold.IsChecked).ToLower(), 0), mk2hold_funcnote.Text)
+                        + "// inbuiltfunc_MK2_hold =" + inbuiltfunc_MK2hold.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK2_hold =" + file_MK2hold.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK2hold =" + functionscombobox_MK2hold.Text + "\n"
+                        + ConstuctCodeLine("MK2_hold[0]", GetControlContent(mk2hold_1.Text), 3)
+                        + ConstuctCodeLine("MK2_hold[1]", GetControlContent(mk2hold_2.Text), 3)
+                        + ConstuctCodeLine("MK2_hold[2]", GetControlContent(mk2hold_3.Text), 3)
+                        + ConstuctCodeLine("MK2_holdtext", GetControlContent(mk2hold_4.Text), 1)
+                        + "\n"
+                        + appendcomment(ConstuctCodeLine("useapp_MK3_tap", GetControlContent(use_APP_MK3tap_SHORTCUT1.IsChecked).ToLower(), 0), mk3tap_funcnote.Text)
+                        + "// inbuiltfunc_MK3tap_SHORTCUT1 =" + inbuiltfunc_MK3tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK3tap_SHORTCUT1 =" + file_MK3tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK3tap_SHORTCUT1 =" + functionscombobox_MK3tap_SHORTCUT1.Text + "\n"
+                        + ConstuctCodeLine("MK3_tap[0]", GetControlContent(mk3tap_1.Text), 3)
+                        + ConstuctCodeLine("MK3_tap[1]", GetControlContent(mk3tap_2.Text), 3)
+                        + ConstuctCodeLine("MK3_tap[2]", GetControlContent(mk3tap_3.Text), 3)
+                        + ConstuctCodeLine("useapp_MK3_tap2", GetControlContent(use_APP_MK3tap_SHORTCUT2.IsChecked).ToLower(), 0)
+                        + "// inbuiltfunc_MK3tap_SHORTCUT2 =" + inbuiltfunc_MK3tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK3tap_SHORTCUT2 =" + file_MK3tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK3tap_SHORTCUT2 =" + functionscombobox_MK3tap_SHORTCUT2.Text + "\n"
+                        + ConstuctCodeLine("MK3_tap2[0]", GetControlContent(mk3tap_21.Text), 3)
+                        + ConstuctCodeLine("MK3_tap2[1]", GetControlContent(mk3tap_22.Text), 3)
+                        + ConstuctCodeLine("MK3_tap2[2]", GetControlContent(mk3tap_23.Text), 3)
+                        + ConstuctCodeLine("MK3_taptext", GetControlContent(mk3tap_4.Text), 1)
+                        + appendcomment(ConstuctCodeLine("useapp_MK3_hold", GetControlContent(use_APP_MK3hold.IsChecked).ToLower(), 0), mk3hold_funcnote.Text)
+                        + "// inbuiltfunc_MK3_hold =" + inbuiltfunc_MK3hold.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK3_hold =" + file_MK3hold.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK3hold =" + functionscombobox_MK3hold.Text + "\n"
+                        + ConstuctCodeLine("MK3_hold[0]", GetControlContent(mk3hold_1.Text), 3)
+                        + ConstuctCodeLine("MK3_hold[1]", GetControlContent(mk3hold_2.Text), 3)
+                        + ConstuctCodeLine("MK3_hold[2]", GetControlContent(mk3hold_3.Text), 3)
+                        + ConstuctCodeLine("MK3_holdtext", GetControlContent(mk3hold_4.Text), 1)
+                        + "\n"
+                        + appendcomment(ConstuctCodeLine("useapp_MK4_tap", GetControlContent(use_APP_MK4tap_SHORTCUT1.IsChecked).ToLower(), 0), mk4tap_funcnote.Text)
+                        + "// inbuiltfunc_MK4tap_SHORTCUT1 =" + inbuiltfunc_MK4tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK4tap_SHORTCUT1 =" + file_MK4tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK4tap_SHORTCUT1 =" + functionscombobox_MK4tap_SHORTCUT1.Text + "\n"
+                        + ConstuctCodeLine("MK4_tap[0]", GetControlContent(mk4tap_1.Text), 3)
+                        + ConstuctCodeLine("MK4_tap[1]", GetControlContent(mk4tap_2.Text), 3)
+                        + ConstuctCodeLine("MK4_tap[2]", GetControlContent(mk4tap_3.Text), 3)
+                        + ConstuctCodeLine("useapp_MK4_tap2", GetControlContent(use_APP_MK4tap_SHORTCUT2.IsChecked).ToLower(), 0)
+                        + "// inbuiltfunc_MK4tap_SHORTCUT2 =" + inbuiltfunc_MK4tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK4tap_SHORTCUT2 =" + file_MK4tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK4tap_SHORTCUT2 =" + functionscombobox_MK4tap_SHORTCUT2.Text + "\n"
+                        + ConstuctCodeLine("MK4_tap2[0]", GetControlContent(mk4tap_21.Text), 3)
+                        + ConstuctCodeLine("MK4_tap2[1]", GetControlContent(mk4tap_22.Text), 3)
+                        + ConstuctCodeLine("MK4_tap2[2]", GetControlContent(mk4tap_23.Text), 3)
+                        + ConstuctCodeLine("MK4_taptext", GetControlContent(mk4tap_4.Text), 1)
+                        + appendcomment(ConstuctCodeLine("useapp_MK4_hold", GetControlContent(use_APP_MK4hold.IsChecked).ToLower(), 0), mk4hold_funcnote.Text)
+                        + "// inbuiltfunc_MK4_hold =" + inbuiltfunc_MK4hold.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK4_hold =" + file_MK4hold.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK4hold =" + functionscombobox_MK4hold.Text + "\n"
+                        + ConstuctCodeLine("MK4_hold[0]", GetControlContent(mk4hold_1.Text), 3)
+                        + ConstuctCodeLine("MK4_hold[1]", GetControlContent(mk4hold_2.Text), 3)
+                        + ConstuctCodeLine("MK4_hold[2]", GetControlContent(mk4hold_3.Text), 3)
+                        + ConstuctCodeLine("MK4_holdtext", GetControlContent(mk4hold_4.Text), 1)
+                        + "\n"
+                        + appendcomment(ConstuctCodeLine("useapp_MK5_tap", GetControlContent(use_APP_MK5tap_SHORTCUT1.IsChecked).ToLower(), 0), mk5tap_funcnote.Text)
+                        + "// inbuiltfunc_MK5tap_SHORTCUT1 =" + inbuiltfunc_MK5tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK5tap_SHORTCUT1 =" + file_MK5tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK5tap_SHORTCUT1 =" + functionscombobox_MK5tap_SHORTCUT1.Text + "\n"
+                        + ConstuctCodeLine("MK5_tap[0]", GetControlContent(mk5tap_1.Text), 3)
+                        + ConstuctCodeLine("MK5_tap[1]", GetControlContent(mk5tap_2.Text), 3)
+                        + ConstuctCodeLine("MK5_tap[2]", GetControlContent(mk5tap_3.Text), 3)
+                        + ConstuctCodeLine("useapp_MK5_tap2", GetControlContent(use_APP_MK5tap_SHORTCUT2.IsChecked).ToLower(), 0)
+                        + "// inbuiltfunc_MK5tap_SHORTCUT2 =" + inbuiltfunc_MK5tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK5tap_SHORTCUT2 =" + file_MK5tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK5tap_SHORTCUT2 =" + functionscombobox_MK5tap_SHORTCUT2.Text + "\n"
+                        + ConstuctCodeLine("MK5_tap2[0]", GetControlContent(mk5tap_21.Text), 3)
+                        + ConstuctCodeLine("MK5_tap2[1]", GetControlContent(mk5tap_22.Text), 3)
+                        + ConstuctCodeLine("MK5_tap2[2]", GetControlContent(mk5tap_23.Text), 3)
+                        + ConstuctCodeLine("MK5_taptext", GetControlContent(mk5tap_4.Text), 1)
+                        + appendcomment(ConstuctCodeLine("useapp_MK5_hold", GetControlContent(use_APP_MK5hold.IsChecked).ToLower(), 0), mk5hold_funcnote.Text)
+                        + "// inbuiltfunc_MK5_hold =" + inbuiltfunc_MK5hold.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_MK5_hold =" + file_MK5hold.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_MK5hold =" + functionscombobox_MK5hold.Text + "\n"
+                        + ConstuctCodeLine("MK5_hold[0]", GetControlContent(mk5hold_1.Text), 3)
+                        + ConstuctCodeLine("MK5_hold[1]", GetControlContent(mk5hold_2.Text), 3)
+                        + ConstuctCodeLine("MK5_hold[2]", GetControlContent(mk5hold_3.Text), 3)
+                        + ConstuctCodeLine("MK5_holdtext", GetControlContent(mk5hold_4.Text), 1)
+                        + fileversionModifier("mk", false)
+                        + fileversionModifier("spacenav", true)
+                        + ConstuctCodeLine("spacenav_func", SpaceNav_Mode().ToString(), 0)
+                        + ConstuctCodeLine("spacenav_continuousmode[0]", GetControlContent(continuoustilt.IsChecked).ToLower(), 0)
+                        + ConstuctCodeLine("spacenav_continuousmode[1]", GetControlContent(continuousslide.IsChecked).ToLower(), 0)
+                        + appendcomment(ConstuctCodeLine("useapp_spacenav_tiltup", GetControlContent(use_APP_Spacenav_tiltup.IsChecked).ToLower(), 0), tiltup_funcnote.Text)
+                        + "// inbuiltfunc_Spacenav_tiltup =" + inbuiltfunc_Spacenav_tiltup.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_Spacenav_tiltup =" + file_Spacenav_tiltup.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_Spacenav_tiltup =" + functionscombobox_Spacenav_tiltup.Text + "\n"
+                        + ConstuctCodeLine("spacenav_tiltup[0]", GetControlContent(tiltup_1.Text), 3)
+                        + ConstuctCodeLine("spacenav_tiltup[1]", GetControlContent(tiltup_2.Text), 3)
+                        + ConstuctCodeLine("spacenav_tiltup[2]", GetControlContent(tiltup_3.Text), 3)
+                        + appendcomment(ConstuctCodeLine("useapp_spacenav_tiltdown", GetControlContent(use_APP_Spacenav_tiltdown.IsChecked).ToLower(), 0), tiltdown_funcnote.Text)
+                        + "// inbuiltfunc_Spacenav_tiltdown =" + inbuiltfunc_Spacenav_tiltdown.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_Spacenav_tiltdown =" + file_Spacenav_tiltdown.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_Spacenav_tiltdown =" + functionscombobox_Spacenav_tiltdown.Text + "\n"
+                        + ConstuctCodeLine("spacenav_tiltdown[0]", GetControlContent(tiltdown_1.Text), 3)
+                        + ConstuctCodeLine("spacenav_tiltdown[1]", GetControlContent(tiltdown_2.Text), 3)
+                        + ConstuctCodeLine("spacenav_tiltdown[2]", GetControlContent(tiltdown_3.Text), 3)
+                        + appendcomment(ConstuctCodeLine("useapp_spacenav_tiltright", GetControlContent(use_APP_Spacenav_tiltright.IsChecked).ToLower(), 0), tiltright_funcnote.Text)
+                        + "// inbuiltfunc_Spacenav_tiltright =" + inbuiltfunc_Spacenav_tiltright.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_Spacenav_tiltright =" + file_Spacenav_tiltright.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_Spacenav_tiltright =" + functionscombobox_Spacenav_tiltright.Text + "\n"
+                        + ConstuctCodeLine("spacenav_tiltright[0]", GetControlContent(tiltright_1.Text), 3)
+                        + ConstuctCodeLine("spacenav_tiltright[1]", GetControlContent(tiltright_2.Text), 3)
+                        + ConstuctCodeLine("spacenav_tiltright[2]", GetControlContent(tiltright_3.Text), 3)
+                        + appendcomment(ConstuctCodeLine("useapp_spacenav_tiltleft", GetControlContent(use_APP_Spacenav_tiltleft.IsChecked).ToLower(), 0), tiltleft_funcnote.Text)
+                        + "// inbuiltfunc_Spacenav_tiltleft =" + inbuiltfunc_Spacenav_tiltleft.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_Spacenav_tiltleft =" + file_Spacenav_tiltleft.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_Spacenav_tiltleft =" + functionscombobox_Spacenav_tiltleft.Text + "\n"
+                        + ConstuctCodeLine("spacenav_tiltleft[0]", GetControlContent(tiltleft_1.Text), 3)
+                        + ConstuctCodeLine("spacenav_tiltleft[1]", GetControlContent(tiltleft_2.Text), 3)
+                        + ConstuctCodeLine("spacenav_tiltleft[2]", GetControlContent(tiltleft_3.Text), 3)
+                        + "\n"
+                        + appendcomment(ConstuctCodeLine("useapp_spacenav_slideup", GetControlContent(use_APP_Spacenav_slideup.IsChecked).ToLower(), 0), slideup_funcnote.Text)
+                        + "// inbuiltfunc_Spacenav_slideup =" + inbuiltfunc_Spacenav_slideup.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_Spacenav_slideup =" + file_Spacenav_slideup.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_Spacenav_slideup =" + functionscombobox_Spacenav_slideup.Text + "\n"
+                        + ConstuctCodeLine("spacenav_slideup[0]", GetControlContent(slideup_1.Text), 3)
+                        + ConstuctCodeLine("spacenav_slideup[1]", GetControlContent(slideup_2.Text), 3)
+                        + ConstuctCodeLine("spacenav_slideup[2]", GetControlContent(slideup_3.Text), 3)
+                        + appendcomment(ConstuctCodeLine("useapp_spacenav_slidedown", GetControlContent(use_APP_Spacenav_slidedown.IsChecked).ToLower(), 0), slidedown_funcnote.Text)
+                        + "// inbuiltfunc_Spacenav_slidedown =" + inbuiltfunc_Spacenav_slidedown.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_Spacenav_slidedown =" + file_Spacenav_slidedown.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_Spacenav_slidedown =" + functionscombobox_Spacenav_slidedown.Text + "\n"
+                        + ConstuctCodeLine("spacenav_slidedown[0]", GetControlContent(slidedown_1.Text), 3)
+                        + ConstuctCodeLine("spacenav_slidedown[1]", GetControlContent(slidedown_2.Text), 3)
+                        + ConstuctCodeLine("spacenav_slidedown[2]", GetControlContent(slidedown_3.Text), 3)
+                        + appendcomment(ConstuctCodeLine("useapp_spacenav_slideright", GetControlContent(use_APP_Spacenav_slideright.IsChecked).ToLower(), 0), slideright_funcnote.Text)
+                        + "// inbuiltfunc_Spacenav_slideright =" + inbuiltfunc_Spacenav_slideright.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_Spacenav_slideright =" + file_Spacenav_slideright.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_Spacenav_slideright =" + functionscombobox_Spacenav_slideright.Text + "\n"
+                        + ConstuctCodeLine("spacenav_slideright[0]", GetControlContent(slideright_1.Text), 3)
+                        + ConstuctCodeLine("spacenav_slideright[1]", GetControlContent(slideright_2.Text), 3)
+                        + ConstuctCodeLine("spacenav_slideright[2]", GetControlContent(slideright_3.Text), 3)
+                        + appendcomment(ConstuctCodeLine("useapp_spacenav_slideleft", GetControlContent(use_APP_Spacenav_slideleft.IsChecked).ToLower(), 0), slideleft_funcnote.Text)
+                        + "// inbuiltfunc_Spacenav_slideleft =" + inbuiltfunc_Spacenav_slideleft.IsChecked.ToString().ToLower() + "\n"
+                        + "// file_Spacenav_slideleft =" + file_Spacenav_slideleft.IsChecked.ToString().ToLower() + "\n"
+                        + "// functionscombobox_Spacenav_slideleft =" + functionscombobox_Spacenav_slideleft.Text + "\n"
+                        + ConstuctCodeLine("spacenav_slideleft[0]", GetControlContent(slideleft_1.Text), 3)
+                        + ConstuctCodeLine("spacenav_slideleft[1]", GetControlContent(slideleft_2.Text), 3)
+                        + ConstuctCodeLine("spacenav_slideleft[2]", GetControlContent(slideleft_3.Text), 3)
+                        + fileversionModifier("spacenav", false)
+                        + "}" + "\n"
+                        );
+                    // Add config settings to the configfile.
+                    fs.Write(info, 0, info.Length);
+                    
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
         private void Button_CreateConfiguration(object sender, RoutedEventArgs e)
         {
             //validate config name for special characters
@@ -243,323 +593,25 @@ namespace Ahmsville_Dial
                 configname.Text = filename;
                 string configpath = selecteddialfilepath + filename + "_.ino"; //generate config's absolute path
 
-                try
-                {
+        
                     int Id = Int32.Parse(GetControlContent(configid.Text));
                     // Create the file, or overwrite if the file exists.
-                    using (FileStream fs = File.Create(configpath))
+                    if (writeConfigurations(Id, configpath,""))
                     {
-                        byte[] info = new UTF8Encoding(true).GetBytes("void " + GetControlContent(configname.Text) + "() {" + "\n"
-                            + "int index=" + (Id - 1).ToString() + ";" + "\n"
-                            + ConstuctCodeLine("appname", GetControlContent(configname.Text), 1)
-                            + ConstuctCodeLine("ID", Id.ToString(), 0).Replace("\n","") + Is_defaultConfig()
-                            + ConstuctCodeLine("appcolor", GetControlContent_Led(appledcolor.SelectedItem), 4)
-                            + ConstuctCodeLine("appanimation", GetControlContent_LedAnimation(appledanimation.SelectedItem), 5)
-                            + "\n"
-                            + ConstuctCodeLine("knob1_res", knob1res.Value.ToString(), 0)
-                            + ConstuctCodeLine("useapp_knob1_CW", GetControlContent(use_APP_knob1_CW.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_knob1_CW =" + inbuiltfunc_knob1_CW.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_knob1_CW =" + file_knob1_CW.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_knob1_CW =" + functionscombobox_knob1_CW.Text + "\n"
-                            + ConstuctCodeLine("knob1_CW[0]", GetControlContent(knob1CW_1.Text), 3)
-                            + ConstuctCodeLine("knob1_CW[1]", GetControlContent(knob1CW_2.Text), 3)
-                            + ConstuctCodeLine("knob1_CW[2]", GetControlContent(knob1CW_3.Text), 3)
-                            + ConstuctCodeLine("useapp_knob1_CCW", GetControlContent(use_APP_knob1_CCW.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_knob1_CCW =" + inbuiltfunc_knob1_CCW.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_knob1_CCW =" + file_knob1_CCW.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_knob1_CCW =" + functionscombobox_knob1_CCW.Text + "\n"
-                            + ConstuctCodeLine("knob1_CCW[0]", GetControlContent(knob1CCW_1.Text), 3)
-                            + ConstuctCodeLine("knob1_CCW[1]", GetControlContent(knob1CCW_2.Text), 3)
-                            + ConstuctCodeLine("knob1_CCW[2]", GetControlContent(knob1CCW_3.Text), 3)
-                            + fileversionModifier("secenc", true)
-                            + ConstuctCodeLine("knob2_res", knob2res.Value.ToString(), 0)
-                            + ConstuctCodeLine("useapp_knob2_CW", GetControlContent(use_APP_knob2_CW.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_knob2_CW =" + inbuiltfunc_knob2_CW.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_knob2_CW =" + file_knob2_CW.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_knob2_CW =" + functionscombobox_knob2_CW.Text + "\n"
-                            + ConstuctCodeLine("knob2_CW[0]", GetControlContent(knob2CW_1.Text), 3)
-                            + ConstuctCodeLine("knob2_CW[1]", GetControlContent(knob2CW_2.Text), 3)
-                            + ConstuctCodeLine("knob2_CW[2]", GetControlContent(knob2CW_3.Text), 3)
-                            + ConstuctCodeLine("useapp_knob2_CCW", GetControlContent(use_APP_knob2_CCW.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_knob2_CCW =" + inbuiltfunc_knob2_CCW.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_knob2_CCW =" + file_knob2_CCW.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_knob2_CCW =" + functionscombobox_knob2_CCW.Text + "\n"
-                            + ConstuctCodeLine("knob2_CCW[0]", GetControlContent(knob2CCW_1.Text), 3)
-                            + ConstuctCodeLine("knob2_CCW[1]", GetControlContent(knob2CCW_2.Text), 3)
-                            + ConstuctCodeLine("knob2_CCW[2]", GetControlContent(knob2CCW_3.Text), 3)
-                            + fileversionModifier("secenc", false)
-                            + ConstuctCodeLine("captouch_dualtapfunc[0]", GetControlContent(singletap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("captouch_dualtapfunc[1]", GetControlContent(doubletap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("useapp_captouch_singletap", GetControlContent(use_APP_captouch_singletap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_captouch_singletap =" + inbuiltfunc_captouch_singletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_captouch_singletap =" + file_captouch_singletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_captouch_singletap =" + functionscombobox_captouch_singletap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("singletap[0]", GetControlContent(singletap_1.Text), 3)
-                            + ConstuctCodeLine("singletap[1]", GetControlContent(singletap_2.Text), 3)
-                            + ConstuctCodeLine("singletap[2]", GetControlContent(singletap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_captouch_singletap2", GetControlContent(use_APP_captouch_singletap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_captouch_singletap2 =" + inbuiltfunc_captouch_singletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_captouch_singletap2 =" + file_captouch_singletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_captouch_singletap2 =" + functionscombobox_captouch_singletap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("singletap2[0]", GetControlContent(singletap_21.Text), 3)
-                            + ConstuctCodeLine("singletap2[1]", GetControlContent(singletap_22.Text), 3)
-                            + ConstuctCodeLine("singletap2[2]", GetControlContent(singletap_23.Text), 3)
-                            + ConstuctCodeLine("useapp_captouch_doubletap", GetControlContent(use_APP_captouch_doubletap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_captouch_doubletap =" + inbuiltfunc_captouch_doubletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_captouch_doubletap =" + file_captouch_doubletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_captouch_doubletap =" + functionscombobox_captouch_doubletap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("doubletap[0]", GetControlContent(doubletap_1.Text), 3)
-                            + ConstuctCodeLine("doubletap[1]", GetControlContent(doubletap_2.Text), 3)
-                            + ConstuctCodeLine("doubletap[2]", GetControlContent(doubletap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_captouch_doubletap2", GetControlContent(use_APP_captouch_doubletap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_captouch_doubletap2 =" + inbuiltfunc_captouch_doubletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_captouch_doubletap2 =" + file_captouch_doubletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_captouch_doubletap2 =" + functionscombobox_captouch_doubletap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("doubletap2[0]", GetControlContent(doubletap_21.Text), 3)
-                            + ConstuctCodeLine("doubletap2[1]", GetControlContent(doubletap_22.Text), 3)
-                            + ConstuctCodeLine("doubletap2[2]", GetControlContent(doubletap_23.Text), 3)
-                            + ConstuctCodeLine("useapp_captouch_shortpress", GetControlContent(use_APP_captouch_shortpress.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_captouch_shortpress =" + inbuiltfunc_captouch_shortpress.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_captouch_shortpress =" + file_captouch_shortpress.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_captouch_shortpress =" + functionscombobox_captouch_shortpress.Text + "\n"
-                            + ConstuctCodeLine("shortpress[0]", GetControlContent(shortpress_1.Text), 3)
-                            + ConstuctCodeLine("shortpress[1]", GetControlContent(shortpress_2.Text), 3)
-                            + ConstuctCodeLine("shortpress[2]", GetControlContent(shortpress_3.Text), 3)
-                            + ConstuctCodeLine("useapp_captouch_longpress", GetControlContent(use_APP_captouch_longpress.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_captouch_longpress =" + inbuiltfunc_captouch_longpress.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_captouch_longpress =" + file_captouch_longpress.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_captouch_longpress =" + functionscombobox_captouch_longpress.Text + "\n"
-                            + ConstuctCodeLine("longpress[0]", GetControlContent(longpress_1.Text), 3)
-                            + ConstuctCodeLine("longpress[1]", GetControlContent(longpress_2.Text), 3)
-                            + ConstuctCodeLine("longpress[2]", GetControlContent(longpress_3.Text), 3)
-                            + fileversionModifier("mk", true)
-                            + ConstuctCodeLine("MK_dualtapfunc[0]", GetControlContent(mk1tap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("MK_dualtapfunc[1]", GetControlContent(mk2tap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("MK_dualtapfunc[2]", GetControlContent(mk3tap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("MK_dualtapfunc[3]", GetControlContent(mk4tap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("MK_dualtapfunc[4]", GetControlContent(mk5tap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("MK_tapfunc[0]", GetControlContent(mk1tap_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_tapfunc[1]", GetControlContent(mk2tap_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_tapfunc[2]", GetControlContent(mk3tap_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_tapfunc[3]", GetControlContent(mk4tap_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_tapfunc[4]", GetControlContent(mk5tap_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_holdfunc[0]", GetControlContent(mk1hold_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_holdfunc[1]", GetControlContent(mk2hold_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_holdfunc[2]", GetControlContent(mk3hold_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_holdfunc[3]", GetControlContent(mk4hold_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_holdfunc[4]", GetControlContent(mk5hold_shortcuts.IsEnabled).ToLower(), 0)
-                            + "\n"
-                            + ConstuctCodeLine("MK_colors[0]", GetControlContent_Led(mk1ledcolor.SelectedItem), 4)
-                            + ConstuctCodeLine("MK_colors[1]", GetControlContent_Led(mk2ledcolor.SelectedItem), 4)
-                            + ConstuctCodeLine("MK_colors[2]", GetControlContent_Led(mk3ledcolor.SelectedItem), 4)
-                            + ConstuctCodeLine("MK_colors[3]", GetControlContent_Led(mk4ledcolor.SelectedItem), 4)
-                            + ConstuctCodeLine("MK_colors[4]", GetControlContent_Led(mk5ledcolor.SelectedItem), 4)
-                            + ConstuctCodeLine("MK_animation[0]", GetControlContent_LedAnimation(mk1ledanimation.SelectedItem), 5)
-                            + ConstuctCodeLine("MK_animation[1]", GetControlContent_LedAnimation(mk2ledanimation.SelectedItem), 5)
-                            + ConstuctCodeLine("MK_animation[2]", GetControlContent_LedAnimation(mk3ledanimation.SelectedItem), 5)
-                            + ConstuctCodeLine("MK_animation[3]", GetControlContent_LedAnimation(mk4ledanimation.SelectedItem), 5)
-                            + ConstuctCodeLine("MK_animation[4]", GetControlContent_LedAnimation(mk5ledanimation.SelectedItem), 5)
-                            + "\n"
-                            + ConstuctCodeLine("useapp_MK1_tap", GetControlContent(use_APP_MK1tap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK1tap_SHORTCUT1 =" + inbuiltfunc_MK1tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK1tap_SHORTCUT1 =" + file_MK1tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK1tap_SHORTCUT1 =" + functionscombobox_MK1tap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("MK1_tap[0]", GetControlContent(mk1tap_1.Text), 3)
-                            + ConstuctCodeLine("MK1_tap[1]", GetControlContent(mk1tap_2.Text), 3)
-                            + ConstuctCodeLine("MK1_tap[2]", GetControlContent(mk1tap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_MK1_tap2", GetControlContent(use_APP_MK1tap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK1tap_SHORTCUT2 =" + inbuiltfunc_MK1tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK1tap_SHORTCUT2 =" + file_MK1tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK1tap_SHORTCUT2 =" + functionscombobox_MK1tap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("MK1_tap2[0]", GetControlContent(mk1tap_21.Text), 3)
-                            + ConstuctCodeLine("MK1_tap2[1]", GetControlContent(mk1tap_22.Text), 3)
-                            + ConstuctCodeLine("MK1_tap2[2]", GetControlContent(mk1tap_23.Text), 3)
-                            + ConstuctCodeLine("MK1_taptext", GetControlContent(mk1tap_4.Text), 1)
-                            + ConstuctCodeLine("useapp_MK1_hold", GetControlContent(use_APP_MK1hold.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK1_hold =" + inbuiltfunc_MK1hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK1_hold =" + file_MK1hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK1hold =" + functionscombobox_MK1hold.Text + "\n"
-                            + ConstuctCodeLine("MK1_hold[0]", GetControlContent(mk1hold_1.Text), 3)
-                            + ConstuctCodeLine("MK1_hold[1]", GetControlContent(mk1hold_2.Text), 3)
-                            + ConstuctCodeLine("MK1_hold[2]", GetControlContent(mk1hold_3.Text), 3)
-                            + ConstuctCodeLine("MK1_holdtext", GetControlContent(mk1hold_4.Text), 1)
-                            + "\n"
-                            + ConstuctCodeLine("useapp_MK2_tap", GetControlContent(use_APP_MK2tap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK2tap_SHORTCUT1 =" + inbuiltfunc_MK2tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK2tap_SHORTCUT1 =" + file_MK2tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK2tap_SHORTCUT1 =" + functionscombobox_MK2tap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("MK2_tap[0]", GetControlContent(mk2tap_1.Text), 3)
-                            + ConstuctCodeLine("MK2_tap[1]", GetControlContent(mk2tap_2.Text), 3)
-                            + ConstuctCodeLine("MK2_tap[2]", GetControlContent(mk2tap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_MK2_tap2", GetControlContent(use_APP_MK2tap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK2tap_SHORTCUT2 =" + inbuiltfunc_MK2tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK2tap_SHORTCUT2 =" + file_MK2tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK2tap_SHORTCUT2 =" + functionscombobox_MK2tap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("MK2_tap2[0]", GetControlContent(mk2tap_21.Text), 3)
-                            + ConstuctCodeLine("MK2_tap2[1]", GetControlContent(mk2tap_22.Text), 3)
-                            + ConstuctCodeLine("MK2_tap2[2]", GetControlContent(mk2tap_23.Text), 3)
-                            + ConstuctCodeLine("MK2_taptext", GetControlContent(mk2tap_4.Text), 1)
-                            + ConstuctCodeLine("useapp_MK2_hold", GetControlContent(use_APP_MK2hold.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK2_hold =" + inbuiltfunc_MK2hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK2_hold =" + file_MK2hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK2hold =" + functionscombobox_MK2hold.Text + "\n"
-                            + ConstuctCodeLine("MK2_hold[0]", GetControlContent(mk2hold_1.Text), 3)
-                            + ConstuctCodeLine("MK2_hold[1]", GetControlContent(mk2hold_2.Text), 3)
-                            + ConstuctCodeLine("MK2_hold[2]", GetControlContent(mk2hold_3.Text), 3)
-                            + ConstuctCodeLine("MK2_holdtext", GetControlContent(mk2hold_4.Text), 1)
-                            + "\n"
-                            + ConstuctCodeLine("useapp_MK3_tap", GetControlContent(use_APP_MK3tap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK3tap_SHORTCUT1 =" + inbuiltfunc_MK3tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK3tap_SHORTCUT1 =" + file_MK3tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK3tap_SHORTCUT1 =" + functionscombobox_MK3tap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("MK3_tap[0]", GetControlContent(mk3tap_1.Text), 3)
-                            + ConstuctCodeLine("MK3_tap[1]", GetControlContent(mk3tap_2.Text), 3)
-                            + ConstuctCodeLine("MK3_tap[2]", GetControlContent(mk3tap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_MK3_tap2", GetControlContent(use_APP_MK3tap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK3tap_SHORTCUT2 =" + inbuiltfunc_MK3tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK3tap_SHORTCUT2 =" + file_MK3tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK3tap_SHORTCUT2 =" + functionscombobox_MK3tap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("MK3_tap2[0]", GetControlContent(mk3tap_21.Text), 3)
-                            + ConstuctCodeLine("MK3_tap2[1]", GetControlContent(mk3tap_22.Text), 3)
-                            + ConstuctCodeLine("MK3_tap2[2]", GetControlContent(mk3tap_23.Text), 3)
-                            + ConstuctCodeLine("MK3_taptext", GetControlContent(mk3tap_4.Text), 1)
-                            + ConstuctCodeLine("useapp_MK3_hold", GetControlContent(use_APP_MK3hold.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK3_hold =" + inbuiltfunc_MK3hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK3_hold =" + file_MK3hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK3hold =" + functionscombobox_MK3hold.Text + "\n"
-                            + ConstuctCodeLine("MK3_hold[0]", GetControlContent(mk3hold_1.Text), 3)
-                            + ConstuctCodeLine("MK3_hold[1]", GetControlContent(mk3hold_2.Text), 3)
-                            + ConstuctCodeLine("MK3_hold[2]", GetControlContent(mk3hold_3.Text), 3)
-                            + ConstuctCodeLine("MK3_holdtext", GetControlContent(mk3hold_4.Text), 1)
-                            + "\n"
-                            + ConstuctCodeLine("useapp_MK4_tap", GetControlContent(use_APP_MK4tap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK4tap_SHORTCUT1 =" + inbuiltfunc_MK4tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK4tap_SHORTCUT1 =" + file_MK4tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK4tap_SHORTCUT1 =" + functionscombobox_MK4tap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("MK4_tap[0]", GetControlContent(mk4tap_1.Text), 3)
-                            + ConstuctCodeLine("MK4_tap[1]", GetControlContent(mk4tap_2.Text), 3)
-                            + ConstuctCodeLine("MK4_tap[2]", GetControlContent(mk4tap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_MK4_tap2", GetControlContent(use_APP_MK4tap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK4tap_SHORTCUT2 =" + inbuiltfunc_MK4tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK4tap_SHORTCUT2 =" + file_MK4tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK4tap_SHORTCUT2 =" + functionscombobox_MK4tap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("MK4_tap2[0]", GetControlContent(mk4tap_21.Text), 3)
-                            + ConstuctCodeLine("MK4_tap2[1]", GetControlContent(mk4tap_22.Text), 3)
-                            + ConstuctCodeLine("MK4_tap2[2]", GetControlContent(mk4tap_23.Text), 3)
-                            + ConstuctCodeLine("MK4_taptext", GetControlContent(mk4tap_4.Text), 1)
-                            + ConstuctCodeLine("useapp_MK4_hold", GetControlContent(use_APP_MK4hold.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK4_hold =" + inbuiltfunc_MK4hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK4_hold =" + file_MK4hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK4hold =" + functionscombobox_MK4hold.Text + "\n"
-                            + ConstuctCodeLine("MK4_hold[0]", GetControlContent(mk4hold_1.Text), 3)
-                            + ConstuctCodeLine("MK4_hold[1]", GetControlContent(mk4hold_2.Text), 3)
-                            + ConstuctCodeLine("MK4_hold[2]", GetControlContent(mk4hold_3.Text), 3)
-                            + ConstuctCodeLine("MK4_holdtext", GetControlContent(mk4hold_4.Text), 1)
-                            + "\n"
-                            + ConstuctCodeLine("useapp_MK5_tap", GetControlContent(use_APP_MK5tap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK5tap_SHORTCUT1 =" + inbuiltfunc_MK5tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK5tap_SHORTCUT1 =" + file_MK5tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK5tap_SHORTCUT1 =" + functionscombobox_MK5tap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("MK5_tap[0]", GetControlContent(mk5tap_1.Text), 3)
-                            + ConstuctCodeLine("MK5_tap[1]", GetControlContent(mk5tap_2.Text), 3)
-                            + ConstuctCodeLine("MK5_tap[2]", GetControlContent(mk5tap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_MK5_tap2", GetControlContent(use_APP_MK5tap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK5tap_SHORTCUT2 =" + inbuiltfunc_MK5tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK5tap_SHORTCUT2 =" + file_MK5tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK5tap_SHORTCUT2 =" + functionscombobox_MK5tap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("MK5_tap2[0]", GetControlContent(mk5tap_21.Text), 3)
-                            + ConstuctCodeLine("MK5_tap2[1]", GetControlContent(mk5tap_22.Text), 3)
-                            + ConstuctCodeLine("MK5_tap2[2]", GetControlContent(mk5tap_23.Text), 3)
-                            + ConstuctCodeLine("MK5_taptext", GetControlContent(mk5tap_4.Text), 1)
-                            + ConstuctCodeLine("useapp_MK5_hold", GetControlContent(use_APP_MK5hold.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK5_hold =" + inbuiltfunc_MK5hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK5_hold =" + file_MK5hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK5hold =" + functionscombobox_MK5hold.Text + "\n"
-                            + ConstuctCodeLine("MK5_hold[0]", GetControlContent(mk5hold_1.Text), 3)
-                            + ConstuctCodeLine("MK5_hold[1]", GetControlContent(mk5hold_2.Text), 3)
-                            + ConstuctCodeLine("MK5_hold[2]", GetControlContent(mk5hold_3.Text), 3)
-                            + ConstuctCodeLine("MK5_holdtext", GetControlContent(mk5hold_4.Text), 1)
-                            + fileversionModifier("mk", false)
-                            + fileversionModifier("spacenav", true)
-                            + ConstuctCodeLine("spacenav_func", SpaceNav_Mode().ToString(), 0)
-                            + ConstuctCodeLine("spacenav_continuousmode[0]", GetControlContent(continuoustilt.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("spacenav_continuousmode[1]", GetControlContent(continuousslide.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("useapp_spacenav_tiltup", GetControlContent(use_APP_Spacenav_tiltup.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_tiltup =" + inbuiltfunc_Spacenav_tiltup.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_tiltup =" + file_Spacenav_tiltup.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_tiltup =" + functionscombobox_Spacenav_tiltup.Text + "\n"
-                            + ConstuctCodeLine("spacenav_tiltup[0]", GetControlContent(tiltup_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltup[1]", GetControlContent(tiltup_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltup[2]", GetControlContent(tiltup_3.Text), 3)
-                            + ConstuctCodeLine("useapp_spacenav_tiltdown", GetControlContent(use_APP_Spacenav_tiltdown.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_tiltdown =" + inbuiltfunc_Spacenav_tiltdown.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_tiltdown =" + file_Spacenav_tiltdown.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_tiltdown =" + functionscombobox_Spacenav_tiltdown.Text + "\n"
-                            + ConstuctCodeLine("spacenav_tiltdown[0]", GetControlContent(tiltdown_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltdown[1]", GetControlContent(tiltdown_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltdown[2]", GetControlContent(tiltdown_3.Text), 3)
-                            + ConstuctCodeLine("useapp_spacenav_tiltright", GetControlContent(use_APP_Spacenav_tiltright.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_tiltright =" + inbuiltfunc_Spacenav_tiltright.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_tiltright =" + file_Spacenav_tiltright.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_tiltright =" + functionscombobox_Spacenav_tiltright.Text + "\n"
-                            + ConstuctCodeLine("spacenav_tiltright[0]", GetControlContent(tiltright_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltright[1]", GetControlContent(tiltright_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltright[2]", GetControlContent(tiltright_3.Text), 3)
-                            + ConstuctCodeLine("useapp_spacenav_tiltleft", GetControlContent(use_APP_Spacenav_tiltleft.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_tiltleft =" + inbuiltfunc_Spacenav_tiltleft.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_tiltleft =" + file_Spacenav_tiltleft.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_tiltleft =" + functionscombobox_Spacenav_tiltleft.Text + "\n"
-                            + ConstuctCodeLine("spacenav_tiltleft[0]", GetControlContent(tiltleft_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltleft[1]", GetControlContent(tiltleft_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltleft[2]", GetControlContent(tiltleft_3.Text), 3)
-                            + "\n"
-                            + ConstuctCodeLine("useapp_spacenav_slideup", GetControlContent(use_APP_Spacenav_slideup.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_slideup =" + inbuiltfunc_Spacenav_slideup.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_slideup =" + file_Spacenav_slideup.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_slideup =" + functionscombobox_Spacenav_slideup.Text + "\n"
-                            + ConstuctCodeLine("spacenav_slideup[0]", GetControlContent(slideup_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_slideup[1]", GetControlContent(slideup_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_slideup[2]", GetControlContent(slideup_3.Text), 3)
-                            + ConstuctCodeLine("useapp_spacenav_slidedown", GetControlContent(use_APP_Spacenav_slidedown.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_slidedown =" + inbuiltfunc_Spacenav_slidedown.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_slidedown =" + file_Spacenav_slidedown.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_slidedown =" + functionscombobox_Spacenav_slidedown.Text + "\n"
-                            + ConstuctCodeLine("spacenav_slidedown[0]", GetControlContent(slidedown_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_slidedown[1]", GetControlContent(slidedown_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_slidedown[2]", GetControlContent(slidedown_3.Text), 3)
-                            + ConstuctCodeLine("useapp_spacenav_slideright", GetControlContent(use_APP_Spacenav_slideright.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_slideright =" + inbuiltfunc_Spacenav_slideright.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_slideright =" + file_Spacenav_slideright.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_slideright =" + functionscombobox_Spacenav_slideright.Text + "\n"
-                            + ConstuctCodeLine("spacenav_slideright[0]", GetControlContent(slideright_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_slideright[1]", GetControlContent(slideright_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_slideright[2]", GetControlContent(slideright_3.Text), 3)
-                            + ConstuctCodeLine("useapp_spacenav_slideleft", GetControlContent(use_APP_Spacenav_slideleft.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_slideleft =" + inbuiltfunc_Spacenav_slideleft.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_slideleft =" + file_Spacenav_slideleft.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_slideleft =" + functionscombobox_Spacenav_slideleft.Text + "\n"
-                            + ConstuctCodeLine("spacenav_slideleft[0]", GetControlContent(slideleft_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_slideleft[1]", GetControlContent(slideleft_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_slideleft[2]", GetControlContent(slideleft_3.Text), 3)
-                            + fileversionModifier("spacenav", false)
-                            + "}" + "\n"
-                            );
-                        // Add config settings to the configfile.
-                        fs.Write(info, 0, info.Length);
                         MessageBox.Show("Configuration Created", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString(), "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                    else
+                    {
+                        
+                    }
+                   
                 Rewrite_ConfigLoader();
             }
             else
             {
                 MessageBox.Show("Enter A Valid Configname \n (No Special Characters Allowed)", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-            PopulateConfigList(); //refresh existing configlist
+            PopulateConfigList(configname.Text); //refresh existing configlist
         }
 
         private void Update_MaxconfigValue(int numberofconfigs)
@@ -887,7 +939,11 @@ namespace Ahmsville_Dial
 
             }
         }
-
+        private string appendcomment(string codeline, string comment)
+        {
+            codeline = codeline.Replace("\n","//note" + comment + "\n");
+            return codeline;
+        }
         private string ConstuctCodeLine(string control, string content, int mode)
         {
             //code line constructing function
@@ -1051,7 +1107,6 @@ namespace Ahmsville_Dial
                     configid.Text = configid.Text.Replace(" ", "");
                     if (configid.Text.Any(x => char.IsLetter(x)))
                     {
-                        //MessageBox.Show("onlyhjjjjjj");
                         configid.Text = (configcount + 1).ToString();
                     }
                 }
@@ -1059,7 +1114,6 @@ namespace Ahmsville_Dial
                 {
                     if (configid.Text.Any(x => char.IsLetter(x)))
                     {
-                        //MessageBox.Show("onlyhjjjjjj");
                         configid.Text = (configcount + 1).ToString();
                     }
                 }
@@ -1103,6 +1157,10 @@ namespace Ahmsville_Dial
                 {
                     ((RadioButton)child1).IsChecked = false;
                 }
+                else if (child1 is Slider)
+                {
+                    ((Slider)child1).Value = 0;
+                }
 
             }
         }
@@ -1116,7 +1174,7 @@ namespace Ahmsville_Dial
                 MessageBox.Show(configname.Text + " Configuration Deleted", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 configlist.Items.Remove(((ComboBoxItem)this.configlist.SelectedItem));
-                PopulateConfigList();
+                PopulateConfigList("");
                 try
                 {
                     configfiles = Directory.GetFiles(selecteddialfilepath, "*_.ino"); // <-- Case-insensitive
@@ -1162,315 +1220,320 @@ namespace Ahmsville_Dial
                 configname.Text = filename;
                 string configpath = selecteddialfilepath + filename + "_.ino"; //generate config's absolute path
 
-                try
+
+                // Create the file, or overwrite if the file exists.
+                #region old write config
+                //using (FileStream fs = File.Create(configpath))
+                //{
+                //    byte[] info = new UTF8Encoding(true).GetBytes("void " + GetControlContent(configname.Text) + "() {" + "\n"
+                //        + "int index=" + (newid - 1).ToString() + ";" + "\n"
+                //        + ConstuctCodeLine("appname", GetControlContent(configname.Text), 1)
+                //        + ConstuctCodeLine("ID", newid.ToString(), 0).Replace("\n","") + defaulttxt
+                //        + ConstuctCodeLine("appcolor", GetControlContent_Led(appledcolor.SelectedItem), 4)
+                //        + ConstuctCodeLine("appanimation", GetControlContent_LedAnimation(appledanimation.SelectedItem), 5)
+                //        + "\n"
+                //        + ConstuctCodeLine("knob1_res", knob1res.Value.ToString(), 0)
+                //        + ConstuctCodeLine("useapp_knob1_CW", GetControlContent(use_APP_knob1_CW.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_knob1_CW =" + inbuiltfunc_knob1_CW.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_knob1_CW =" + file_knob1_CW.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_knob1_CW =" + functionscombobox_knob1_CW.Text + "\n"
+                //        + ConstuctCodeLine("knob1_CW[0]", GetControlContent(knob1CW_1.Text), 3)
+                //        + ConstuctCodeLine("knob1_CW[1]", GetControlContent(knob1CW_2.Text), 3)
+                //        + ConstuctCodeLine("knob1_CW[2]", GetControlContent(knob1CW_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_knob1_CCW", GetControlContent(use_APP_knob1_CCW.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_knob1_CCW =" + inbuiltfunc_knob1_CCW.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_knob1_CCW =" + file_knob1_CCW.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_knob1_CCW =" + functionscombobox_knob1_CCW.Text + "\n"
+                //        + ConstuctCodeLine("knob1_CCW[0]", GetControlContent(knob1CCW_1.Text), 3)
+                //        + ConstuctCodeLine("knob1_CCW[1]", GetControlContent(knob1CCW_2.Text), 3)
+                //        + ConstuctCodeLine("knob1_CCW[2]", GetControlContent(knob1CCW_3.Text), 3)
+                //        + fileversionModifier("secenc", true)
+                //        + ConstuctCodeLine("knob2_res", knob2res.Value.ToString(), 0)
+                //        + ConstuctCodeLine("useapp_knob2_CW", GetControlContent(use_APP_knob2_CW.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_knob2_CW =" + inbuiltfunc_knob2_CW.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_knob2_CW =" + file_knob2_CW.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_knob2_CW =" + functionscombobox_knob2_CW.Text + "\n"
+                //        + ConstuctCodeLine("knob2_CW[0]", GetControlContent(knob2CW_1.Text), 3)
+                //        + ConstuctCodeLine("knob2_CW[1]", GetControlContent(knob2CW_2.Text), 3)
+                //        + ConstuctCodeLine("knob2_CW[2]", GetControlContent(knob2CW_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_knob2_CCW", GetControlContent(use_APP_knob2_CCW.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_knob2_CCW =" + inbuiltfunc_knob2_CCW.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_knob2_CCW =" + file_knob2_CCW.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_knob2_CCW =" + functionscombobox_knob2_CCW.Text + "\n"
+                //        + ConstuctCodeLine("knob2_CCW[0]", GetControlContent(knob2CCW_1.Text), 3)
+                //        + ConstuctCodeLine("knob2_CCW[1]", GetControlContent(knob2CCW_2.Text), 3)
+                //        + ConstuctCodeLine("knob2_CCW[2]", GetControlContent(knob2CCW_3.Text), 3)
+                //        + fileversionModifier("secenc", false)
+                //        + ConstuctCodeLine("captouch_dualtapfunc[0]", GetControlContent(singletap_dualshortcut.IsChecked).ToLower(), 0)
+                //        + ConstuctCodeLine("captouch_dualtapfunc[1]", GetControlContent(doubletap_dualshortcut.IsChecked).ToLower(), 0)
+                //        + ConstuctCodeLine("useapp_captouch_singletap", GetControlContent(use_APP_captouch_singletap_SHORTCUT1.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_captouch_singletap =" + inbuiltfunc_captouch_singletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_captouch_singletap =" + file_captouch_singletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_captouch_singletap =" + functionscombobox_captouch_singletap_SHORTCUT1.Text + "\n"
+                //        + ConstuctCodeLine("singletap[0]", GetControlContent(singletap_1.Text), 3)
+                //        + ConstuctCodeLine("singletap[1]", GetControlContent(singletap_2.Text), 3)
+                //        + ConstuctCodeLine("singletap[2]", GetControlContent(singletap_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_captouch_singletap2", GetControlContent(use_APP_captouch_singletap_SHORTCUT2.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_captouch_singletap2 =" + inbuiltfunc_captouch_singletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_captouch_singletap2 =" + file_captouch_singletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_captouch_singletap2 =" + functionscombobox_captouch_singletap_SHORTCUT2.Text + "\n"
+                //        + ConstuctCodeLine("singletap2[0]", GetControlContent(singletap_21.Text), 3)
+                //        + ConstuctCodeLine("singletap2[1]", GetControlContent(singletap_22.Text), 3)
+                //        + ConstuctCodeLine("singletap2[2]", GetControlContent(singletap_23.Text), 3)
+                //        + ConstuctCodeLine("useapp_captouch_doubletap", GetControlContent(use_APP_captouch_doubletap_SHORTCUT1.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_captouch_doubletap =" + inbuiltfunc_captouch_doubletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_captouch_doubletap =" + file_captouch_doubletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_captouch_doubletap =" + functionscombobox_captouch_doubletap_SHORTCUT1.Text + "\n"
+                //        + ConstuctCodeLine("doubletap[0]", GetControlContent(doubletap_1.Text), 3)
+                //        + ConstuctCodeLine("doubletap[1]", GetControlContent(doubletap_2.Text), 3)
+                //        + ConstuctCodeLine("doubletap[2]", GetControlContent(doubletap_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_captouch_doubletap2", GetControlContent(use_APP_captouch_doubletap_SHORTCUT2.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_captouch_doubletap2 =" + inbuiltfunc_captouch_doubletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_captouch_doubletap2 =" + file_captouch_doubletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_captouch_doubletap2 =" + functionscombobox_captouch_doubletap_SHORTCUT2.Text + "\n"
+                //        + ConstuctCodeLine("doubletap2[0]", GetControlContent(doubletap_21.Text), 3)
+                //        + ConstuctCodeLine("doubletap2[1]", GetControlContent(doubletap_22.Text), 3)
+                //        + ConstuctCodeLine("doubletap2[2]", GetControlContent(doubletap_23.Text), 3)
+                //        + ConstuctCodeLine("useapp_captouch_shortpress", GetControlContent(use_APP_captouch_shortpress.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_captouch_shortpress =" + inbuiltfunc_captouch_shortpress.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_captouch_shortpress =" + file_captouch_shortpress.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_captouch_shortpress =" + functionscombobox_captouch_shortpress.Text + "\n"
+                //        + ConstuctCodeLine("shortpress[0]", GetControlContent(shortpress_1.Text), 3)
+                //        + ConstuctCodeLine("shortpress[1]", GetControlContent(shortpress_2.Text), 3)
+                //        + ConstuctCodeLine("shortpress[2]", GetControlContent(shortpress_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_captouch_longpress", GetControlContent(use_APP_captouch_longpress.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_captouch_longpress =" + inbuiltfunc_captouch_longpress.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_captouch_longpress =" + file_captouch_longpress.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_captouch_longpress =" + functionscombobox_captouch_longpress.Text + "\n"
+                //        + ConstuctCodeLine("longpress[0]", GetControlContent(longpress_1.Text), 3)
+                //        + ConstuctCodeLine("longpress[1]", GetControlContent(longpress_2.Text), 3)
+                //        + ConstuctCodeLine("longpress[2]", GetControlContent(longpress_3.Text), 3)
+                //        + fileversionModifier("mk", true)
+                //        + ConstuctCodeLine("MK_dualtapfunc[0]", GetControlContent(mk1tap_dualshortcut.IsChecked).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_dualtapfunc[1]", GetControlContent(mk2tap_dualshortcut.IsChecked).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_dualtapfunc[2]", GetControlContent(mk3tap_dualshortcut.IsChecked).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_dualtapfunc[3]", GetControlContent(mk4tap_dualshortcut.IsChecked).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_dualtapfunc[4]", GetControlContent(mk5tap_dualshortcut.IsChecked).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_tapfunc[0]", GetControlContent(mk1tap_shortcuts.IsEnabled).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_tapfunc[1]", GetControlContent(mk2tap_shortcuts.IsEnabled).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_tapfunc[2]", GetControlContent(mk3tap_shortcuts.IsEnabled).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_tapfunc[3]", GetControlContent(mk4tap_shortcuts.IsEnabled).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_tapfunc[4]", GetControlContent(mk5tap_shortcuts.IsEnabled).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_holdfunc[0]", GetControlContent(mk1hold_shortcuts.IsEnabled).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_holdfunc[1]", GetControlContent(mk2hold_shortcuts.IsEnabled).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_holdfunc[2]", GetControlContent(mk3hold_shortcuts.IsEnabled).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_holdfunc[3]", GetControlContent(mk4hold_shortcuts.IsEnabled).ToLower(), 0)
+                //        + ConstuctCodeLine("MK_holdfunc[4]", GetControlContent(mk5hold_shortcuts.IsEnabled).ToLower(), 0)
+                //        + "\n"
+                //        + ConstuctCodeLine("MK_colors[0]", GetControlContent_Led(mk1ledcolor.SelectedItem), 4)
+                //        + ConstuctCodeLine("MK_colors[1]", GetControlContent_Led(mk2ledcolor.SelectedItem), 4)
+                //        + ConstuctCodeLine("MK_colors[2]", GetControlContent_Led(mk3ledcolor.SelectedItem), 4)
+                //        + ConstuctCodeLine("MK_colors[3]", GetControlContent_Led(mk4ledcolor.SelectedItem), 4)
+                //        + ConstuctCodeLine("MK_colors[4]", GetControlContent_Led(mk5ledcolor.SelectedItem), 4)
+                //        + ConstuctCodeLine("MK_animation[0]", GetControlContent_LedAnimation(mk1ledanimation.SelectedItem), 5)
+                //        + ConstuctCodeLine("MK_animation[1]", GetControlContent_LedAnimation(mk2ledanimation.SelectedItem), 5)
+                //        + ConstuctCodeLine("MK_animation[2]", GetControlContent_LedAnimation(mk3ledanimation.SelectedItem), 5)
+                //        + ConstuctCodeLine("MK_animation[3]", GetControlContent_LedAnimation(mk4ledanimation.SelectedItem), 5)
+                //        + ConstuctCodeLine("MK_animation[4]", GetControlContent_LedAnimation(mk5ledanimation.SelectedItem), 5)
+                //        + "\n"
+                //        + ConstuctCodeLine("useapp_MK1_tap", GetControlContent(use_APP_MK1tap_SHORTCUT1.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK1tap_SHORTCUT1 =" + inbuiltfunc_MK1tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK1tap_SHORTCUT1 =" + file_MK1tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK1tap_SHORTCUT1 =" + functionscombobox_MK1tap_SHORTCUT1.Text + "\n"
+                //        + ConstuctCodeLine("MK1_tap[0]", GetControlContent(mk1tap_1.Text), 3)
+                //        + ConstuctCodeLine("MK1_tap[1]", GetControlContent(mk1tap_2.Text), 3)
+                //        + ConstuctCodeLine("MK1_tap[2]", GetControlContent(mk1tap_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_MK1_tap2", GetControlContent(use_APP_MK1tap_SHORTCUT2.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK1tap_SHORTCUT2 =" + inbuiltfunc_MK1tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK1tap_SHORTCUT2 =" + file_MK1tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK1tap_SHORTCUT2 =" + functionscombobox_MK1tap_SHORTCUT2.Text + "\n"
+                //        + ConstuctCodeLine("MK1_tap2[0]", GetControlContent(mk1tap_21.Text), 3)
+                //        + ConstuctCodeLine("MK1_tap2[1]", GetControlContent(mk1tap_22.Text), 3)
+                //        + ConstuctCodeLine("MK1_tap2[2]", GetControlContent(mk1tap_23.Text), 3)
+                //        + ConstuctCodeLine("MK1_taptext", GetControlContent(mk1tap_4.Text), 1)
+                //        + ConstuctCodeLine("useapp_MK1_hold", GetControlContent(use_APP_MK1hold.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK1_hold =" + inbuiltfunc_MK1hold.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK1_hold =" + file_MK1hold.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK1hold =" + functionscombobox_MK1hold.Text + "\n"
+                //        + ConstuctCodeLine("MK1_hold[0]", GetControlContent(mk1hold_1.Text), 3)
+                //        + ConstuctCodeLine("MK1_hold[1]", GetControlContent(mk1hold_2.Text), 3)
+                //        + ConstuctCodeLine("MK1_hold[2]", GetControlContent(mk1hold_3.Text), 3)
+                //        + ConstuctCodeLine("MK1_holdtext", GetControlContent(mk1hold_4.Text), 1)
+                //        + "\n"
+                //        + ConstuctCodeLine("useapp_MK2_tap", GetControlContent(use_APP_MK2tap_SHORTCUT1.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK2tap_SHORTCUT1 =" + inbuiltfunc_MK2tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK2tap_SHORTCUT1 =" + file_MK2tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK2tap_SHORTCUT1 =" + functionscombobox_MK2tap_SHORTCUT1.Text + "\n"
+                //        + ConstuctCodeLine("MK2_tap[0]", GetControlContent(mk2tap_1.Text), 3)
+                //        + ConstuctCodeLine("MK2_tap[1]", GetControlContent(mk2tap_2.Text), 3)
+                //        + ConstuctCodeLine("MK2_tap[2]", GetControlContent(mk2tap_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_MK2_tap2", GetControlContent(use_APP_MK2tap_SHORTCUT2.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK2tap_SHORTCUT2 =" + inbuiltfunc_MK2tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK2tap_SHORTCUT2 =" + file_MK2tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK2tap_SHORTCUT2 =" + functionscombobox_MK2tap_SHORTCUT2.Text + "\n"
+                //        + ConstuctCodeLine("MK2_tap2[0]", GetControlContent(mk2tap_21.Text), 3)
+                //        + ConstuctCodeLine("MK2_tap2[1]", GetControlContent(mk2tap_22.Text), 3)
+                //        + ConstuctCodeLine("MK2_tap2[2]", GetControlContent(mk2tap_23.Text), 3)
+                //        + ConstuctCodeLine("MK2_taptext", GetControlContent(mk2tap_4.Text), 1)
+                //        + ConstuctCodeLine("useapp_MK2_hold", GetControlContent(use_APP_MK2hold.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK2_hold =" + inbuiltfunc_MK2hold.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK2_hold =" + file_MK2hold.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK2hold =" + functionscombobox_MK2hold.Text + "\n"
+                //        + ConstuctCodeLine("MK2_hold[0]", GetControlContent(mk2hold_1.Text), 3)
+                //        + ConstuctCodeLine("MK2_hold[1]", GetControlContent(mk2hold_2.Text), 3)
+                //        + ConstuctCodeLine("MK2_hold[2]", GetControlContent(mk2hold_3.Text), 3)
+                //        + ConstuctCodeLine("MK2_holdtext", GetControlContent(mk2hold_4.Text), 1)
+                //        + "\n"
+                //        + ConstuctCodeLine("useapp_MK3_tap", GetControlContent(use_APP_MK3tap_SHORTCUT1.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK3tap_SHORTCUT1 =" + inbuiltfunc_MK3tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK3tap_SHORTCUT1 =" + file_MK3tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK3tap_SHORTCUT1 =" + functionscombobox_MK3tap_SHORTCUT1.Text + "\n"
+                //        + ConstuctCodeLine("MK3_tap[0]", GetControlContent(mk3tap_1.Text), 3)
+                //        + ConstuctCodeLine("MK3_tap[1]", GetControlContent(mk3tap_2.Text), 3)
+                //        + ConstuctCodeLine("MK3_tap[2]", GetControlContent(mk3tap_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_MK3_tap2", GetControlContent(use_APP_MK3tap_SHORTCUT2.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK3tap_SHORTCUT2 =" + inbuiltfunc_MK3tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK3tap_SHORTCUT2 =" + file_MK3tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK3tap_SHORTCUT2 =" + functionscombobox_MK3tap_SHORTCUT2.Text + "\n"
+                //        + ConstuctCodeLine("MK3_tap2[0]", GetControlContent(mk3tap_21.Text), 3)
+                //        + ConstuctCodeLine("MK3_tap2[1]", GetControlContent(mk3tap_22.Text), 3)
+                //        + ConstuctCodeLine("MK3_tap2[2]", GetControlContent(mk3tap_23.Text), 3)
+                //        + ConstuctCodeLine("MK3_taptext", GetControlContent(mk3tap_4.Text), 1)
+                //        + ConstuctCodeLine("useapp_MK3_hold", GetControlContent(use_APP_MK3hold.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK3_hold =" + inbuiltfunc_MK3hold.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK3_hold =" + file_MK3hold.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK3hold =" + functionscombobox_MK3hold.Text + "\n"
+                //        + ConstuctCodeLine("MK3_hold[0]", GetControlContent(mk3hold_1.Text), 3)
+                //        + ConstuctCodeLine("MK3_hold[1]", GetControlContent(mk3hold_2.Text), 3)
+                //        + ConstuctCodeLine("MK3_hold[2]", GetControlContent(mk3hold_3.Text), 3)
+                //        + ConstuctCodeLine("MK3_holdtext", GetControlContent(mk3hold_4.Text), 1)
+                //        + "\n"
+                //        + ConstuctCodeLine("useapp_MK4_tap", GetControlContent(use_APP_MK4tap_SHORTCUT1.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK4tap_SHORTCUT1 =" + inbuiltfunc_MK4tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK4tap_SHORTCUT1 =" + file_MK4tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK4tap_SHORTCUT1 =" + functionscombobox_MK4tap_SHORTCUT1.Text + "\n"
+                //        + ConstuctCodeLine("MK4_tap[0]", GetControlContent(mk4tap_1.Text), 3)
+                //        + ConstuctCodeLine("MK4_tap[1]", GetControlContent(mk4tap_2.Text), 3)
+                //        + ConstuctCodeLine("MK4_tap[2]", GetControlContent(mk4tap_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_MK4_tap2", GetControlContent(use_APP_MK4tap_SHORTCUT2.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK4tap_SHORTCUT2 =" + inbuiltfunc_MK4tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK4tap_SHORTCUT2 =" + file_MK4tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK4tap_SHORTCUT2 =" + functionscombobox_MK4tap_SHORTCUT2.Text + "\n"
+                //        + ConstuctCodeLine("MK4_tap2[0]", GetControlContent(mk4tap_21.Text), 3)
+                //        + ConstuctCodeLine("MK4_tap2[1]", GetControlContent(mk4tap_22.Text), 3)
+                //        + ConstuctCodeLine("MK4_tap2[2]", GetControlContent(mk4tap_23.Text), 3)
+                //        + ConstuctCodeLine("MK4_taptext", GetControlContent(mk4tap_4.Text), 1)
+                //        + ConstuctCodeLine("useapp_MK4_hold", GetControlContent(use_APP_MK4hold.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK4_hold =" + inbuiltfunc_MK4hold.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK4_hold =" + file_MK4hold.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK4hold =" + functionscombobox_MK4hold.Text + "\n"
+                //        + ConstuctCodeLine("MK4_hold[0]", GetControlContent(mk4hold_1.Text), 3)
+                //        + ConstuctCodeLine("MK4_hold[1]", GetControlContent(mk4hold_2.Text), 3)
+                //        + ConstuctCodeLine("MK4_hold[2]", GetControlContent(mk4hold_3.Text), 3)
+                //        + ConstuctCodeLine("MK4_holdtext", GetControlContent(mk4hold_4.Text), 1)
+                //        + "\n"
+                //        + ConstuctCodeLine("useapp_MK5_tap", GetControlContent(use_APP_MK5tap_SHORTCUT1.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK5tap_SHORTCUT1 =" + inbuiltfunc_MK5tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK5tap_SHORTCUT1 =" + file_MK5tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK5tap_SHORTCUT1 =" + functionscombobox_MK5tap_SHORTCUT1.Text + "\n"
+                //        + ConstuctCodeLine("MK5_tap[0]", GetControlContent(mk5tap_1.Text), 3)
+                //        + ConstuctCodeLine("MK5_tap[1]", GetControlContent(mk5tap_2.Text), 3)
+                //        + ConstuctCodeLine("MK5_tap[2]", GetControlContent(mk5tap_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_MK5_tap2", GetControlContent(use_APP_MK5tap_SHORTCUT2.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK5tap_SHORTCUT2 =" + inbuiltfunc_MK5tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK5tap_SHORTCUT2 =" + file_MK5tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK5tap_SHORTCUT2 =" + functionscombobox_MK5tap_SHORTCUT2.Text + "\n"
+                //        + ConstuctCodeLine("MK5_tap2[0]", GetControlContent(mk5tap_21.Text), 3)
+                //        + ConstuctCodeLine("MK5_tap2[1]", GetControlContent(mk5tap_22.Text), 3)
+                //        + ConstuctCodeLine("MK5_tap2[2]", GetControlContent(mk5tap_23.Text), 3)
+                //        + ConstuctCodeLine("MK5_taptext", GetControlContent(mk5tap_4.Text), 1)
+                //        + ConstuctCodeLine("useapp_MK5_hold", GetControlContent(use_APP_MK5hold.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_MK5_hold =" + inbuiltfunc_MK5hold.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_MK5_hold =" + file_MK5hold.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_MK5hold =" + functionscombobox_MK5hold.Text + "\n"
+                //        + ConstuctCodeLine("MK5_hold[0]", GetControlContent(mk5hold_1.Text), 3)
+                //        + ConstuctCodeLine("MK5_hold[1]", GetControlContent(mk5hold_2.Text), 3)
+                //        + ConstuctCodeLine("MK5_hold[2]", GetControlContent(mk5hold_3.Text), 3)
+                //        + ConstuctCodeLine("MK5_holdtext", GetControlContent(mk5hold_4.Text), 1)
+                //        + fileversionModifier("mk", false)
+                //        + fileversionModifier("spacenav", true)
+                //        + ConstuctCodeLine("spacenav_func", SpaceNav_Mode().ToString(), 0)
+                //        + ConstuctCodeLine("spacenav_continuousmode[0]", GetControlContent(continuoustilt.IsChecked).ToLower(), 0)
+                //        + ConstuctCodeLine("spacenav_continuousmode[1]", GetControlContent(continuousslide.IsChecked).ToLower(), 0)
+                //        + ConstuctCodeLine("useapp_spacenav_tiltup", GetControlContent(use_APP_Spacenav_tiltup.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_Spacenav_tiltup =" + inbuiltfunc_Spacenav_tiltup.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_Spacenav_tiltup =" + file_Spacenav_tiltup.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_Spacenav_tiltup =" + functionscombobox_Spacenav_tiltup.Text + "\n"
+                //        + ConstuctCodeLine("spacenav_tiltup[0]", GetControlContent(tiltup_1.Text), 3)
+                //        + ConstuctCodeLine("spacenav_tiltup[1]", GetControlContent(tiltup_2.Text), 3)
+                //        + ConstuctCodeLine("spacenav_tiltup[2]", GetControlContent(tiltup_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_spacenav_tiltdown", GetControlContent(use_APP_Spacenav_tiltdown.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_Spacenav_tiltdown =" + inbuiltfunc_Spacenav_tiltdown.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_Spacenav_tiltdown =" + file_Spacenav_tiltdown.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_Spacenav_tiltdown =" + functionscombobox_Spacenav_tiltdown.Text + "\n"
+                //        + ConstuctCodeLine("spacenav_tiltdown[0]", GetControlContent(tiltdown_1.Text), 3)
+                //        + ConstuctCodeLine("spacenav_tiltdown[1]", GetControlContent(tiltdown_2.Text), 3)
+                //        + ConstuctCodeLine("spacenav_tiltdown[2]", GetControlContent(tiltdown_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_spacenav_tiltright", GetControlContent(use_APP_Spacenav_tiltright.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_Spacenav_tiltright =" + inbuiltfunc_Spacenav_tiltright.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_Spacenav_tiltright =" + file_Spacenav_tiltright.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_Spacenav_tiltright =" + functionscombobox_Spacenav_tiltright.Text + "\n"
+                //        + ConstuctCodeLine("spacenav_tiltright[0]", GetControlContent(tiltright_1.Text), 3)
+                //        + ConstuctCodeLine("spacenav_tiltright[1]", GetControlContent(tiltright_2.Text), 3)
+                //        + ConstuctCodeLine("spacenav_tiltright[2]", GetControlContent(tiltright_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_spacenav_tiltleft", GetControlContent(use_APP_Spacenav_tiltleft.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_Spacenav_tiltleft =" + inbuiltfunc_Spacenav_tiltleft.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_Spacenav_tiltleft =" + file_Spacenav_tiltleft.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_Spacenav_tiltleft =" + functionscombobox_Spacenav_tiltleft.Text + "\n"
+                //        + ConstuctCodeLine("spacenav_tiltleft[0]", GetControlContent(tiltleft_1.Text), 3)
+                //        + ConstuctCodeLine("spacenav_tiltleft[1]", GetControlContent(tiltleft_2.Text), 3)
+                //        + ConstuctCodeLine("spacenav_tiltleft[2]", GetControlContent(tiltleft_3.Text), 3)
+                //        + "\n"
+                //        + ConstuctCodeLine("useapp_spacenav_slideup", GetControlContent(use_APP_Spacenav_slideup.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_Spacenav_slideup =" + inbuiltfunc_Spacenav_slideup.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_Spacenav_slideup =" + file_Spacenav_slideup.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_Spacenav_slideup =" + functionscombobox_Spacenav_slideup.Text + "\n"
+                //        + ConstuctCodeLine("spacenav_slideup[0]", GetControlContent(slideup_1.Text), 3)
+                //        + ConstuctCodeLine("spacenav_slideup[1]", GetControlContent(slideup_2.Text), 3)
+                //        + ConstuctCodeLine("spacenav_slideup[2]", GetControlContent(slideup_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_spacenav_slidedown", GetControlContent(use_APP_Spacenav_slidedown.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_Spacenav_slidedown =" + inbuiltfunc_Spacenav_slidedown.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_Spacenav_slidedown =" + file_Spacenav_slidedown.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_Spacenav_slidedown =" + functionscombobox_Spacenav_slidedown.Text + "\n"
+                //        + ConstuctCodeLine("spacenav_slidedown[0]", GetControlContent(slidedown_1.Text), 3)
+                //        + ConstuctCodeLine("spacenav_slidedown[1]", GetControlContent(slidedown_2.Text), 3)
+                //        + ConstuctCodeLine("spacenav_slidedown[2]", GetControlContent(slidedown_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_spacenav_slideright", GetControlContent(use_APP_Spacenav_slideright.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_Spacenav_slideright =" + inbuiltfunc_Spacenav_slideright.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_Spacenav_slideright =" + file_Spacenav_slideright.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_Spacenav_slideright =" + functionscombobox_Spacenav_slideright.Text + "\n"
+                //        + ConstuctCodeLine("spacenav_slideright[0]", GetControlContent(slideright_1.Text), 3)
+                //        + ConstuctCodeLine("spacenav_slideright[1]", GetControlContent(slideright_2.Text), 3)
+                //        + ConstuctCodeLine("spacenav_slideright[2]", GetControlContent(slideright_3.Text), 3)
+                //        + ConstuctCodeLine("useapp_spacenav_slideleft", GetControlContent(use_APP_Spacenav_slideleft.IsChecked).ToLower(), 0)
+                //        + "// inbuiltfunc_Spacenav_slideleft =" + inbuiltfunc_Spacenav_slideleft.IsChecked.ToString().ToLower() + "\n"
+                //        + "// file_Spacenav_slideleft =" + file_Spacenav_slideleft.IsChecked.ToString().ToLower() + "\n"
+                //        + "// functionscombobox_Spacenav_slideleft =" + functionscombobox_Spacenav_slideleft.Text + "\n"
+                //        + ConstuctCodeLine("spacenav_slideleft[0]", GetControlContent(slideleft_1.Text), 3)
+                //        + ConstuctCodeLine("spacenav_slideleft[1]", GetControlContent(slideleft_2.Text), 3)
+                //        + ConstuctCodeLine("spacenav_slideleft[2]", GetControlContent(slideleft_3.Text), 3)
+                //        + fileversionModifier("spacenav", false)
+                //        + "}" + "\n"
+                //        );
+                //    // Add config settings to the configfile.
+                //    fs.Write(info, 0, info.Length);
+                //    //MessageBox.Show("Configuration Created");
+                //} 
+                #endregion
+                if (writeConfigurations(newid, configpath, defaulttxt))
                 {
-                    // Create the file, or overwrite if the file exists.
-                    using (FileStream fs = File.Create(configpath))
-                    {
-                        byte[] info = new UTF8Encoding(true).GetBytes("void " + GetControlContent(configname.Text) + "() {" + "\n"
-                            + "int index=" + (newid - 1).ToString() + ";" + "\n"
-                            + ConstuctCodeLine("appname", GetControlContent(configname.Text), 1)
-                            + ConstuctCodeLine("ID", newid.ToString(), 0).Replace("\n","") + defaulttxt
-                            + ConstuctCodeLine("appcolor", GetControlContent_Led(appledcolor.SelectedItem), 4)
-                            + ConstuctCodeLine("appanimation", GetControlContent_LedAnimation(appledanimation.SelectedItem), 5)
-                            + "\n"
-                            + ConstuctCodeLine("knob1_res", knob1res.Value.ToString(), 0)
-                            + ConstuctCodeLine("useapp_knob1_CW", GetControlContent(use_APP_knob1_CW.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_knob1_CW =" + inbuiltfunc_knob1_CW.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_knob1_CW =" + file_knob1_CW.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_knob1_CW =" + functionscombobox_knob1_CW.Text + "\n"
-                            + ConstuctCodeLine("knob1_CW[0]", GetControlContent(knob1CW_1.Text), 3)
-                            + ConstuctCodeLine("knob1_CW[1]", GetControlContent(knob1CW_2.Text), 3)
-                            + ConstuctCodeLine("knob1_CW[2]", GetControlContent(knob1CW_3.Text), 3)
-                            + ConstuctCodeLine("useapp_knob1_CCW", GetControlContent(use_APP_knob1_CCW.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_knob1_CCW =" + inbuiltfunc_knob1_CCW.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_knob1_CCW =" + file_knob1_CCW.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_knob1_CCW =" + functionscombobox_knob1_CCW.Text + "\n"
-                            + ConstuctCodeLine("knob1_CCW[0]", GetControlContent(knob1CCW_1.Text), 3)
-                            + ConstuctCodeLine("knob1_CCW[1]", GetControlContent(knob1CCW_2.Text), 3)
-                            + ConstuctCodeLine("knob1_CCW[2]", GetControlContent(knob1CCW_3.Text), 3)
-                            + fileversionModifier("secenc", true)
-                            + ConstuctCodeLine("knob2_res", knob2res.Value.ToString(), 0)
-                            + ConstuctCodeLine("useapp_knob2_CW", GetControlContent(use_APP_knob2_CW.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_knob2_CW =" + inbuiltfunc_knob2_CW.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_knob2_CW =" + file_knob2_CW.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_knob2_CW =" + functionscombobox_knob2_CW.Text + "\n"
-                            + ConstuctCodeLine("knob2_CW[0]", GetControlContent(knob2CW_1.Text), 3)
-                            + ConstuctCodeLine("knob2_CW[1]", GetControlContent(knob2CW_2.Text), 3)
-                            + ConstuctCodeLine("knob2_CW[2]", GetControlContent(knob2CW_3.Text), 3)
-                            + ConstuctCodeLine("useapp_knob2_CCW", GetControlContent(use_APP_knob2_CCW.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_knob2_CCW =" + inbuiltfunc_knob2_CCW.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_knob2_CCW =" + file_knob2_CCW.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_knob2_CCW =" + functionscombobox_knob2_CCW.Text + "\n"
-                            + ConstuctCodeLine("knob2_CCW[0]", GetControlContent(knob2CCW_1.Text), 3)
-                            + ConstuctCodeLine("knob2_CCW[1]", GetControlContent(knob2CCW_2.Text), 3)
-                            + ConstuctCodeLine("knob2_CCW[2]", GetControlContent(knob2CCW_3.Text), 3)
-                            + fileversionModifier("secenc", false)
-                            + ConstuctCodeLine("captouch_dualtapfunc[0]", GetControlContent(singletap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("captouch_dualtapfunc[1]", GetControlContent(doubletap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("useapp_captouch_singletap", GetControlContent(use_APP_captouch_singletap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_captouch_singletap =" + inbuiltfunc_captouch_singletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_captouch_singletap =" + file_captouch_singletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_captouch_singletap =" + functionscombobox_captouch_singletap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("singletap[0]", GetControlContent(singletap_1.Text), 3)
-                            + ConstuctCodeLine("singletap[1]", GetControlContent(singletap_2.Text), 3)
-                            + ConstuctCodeLine("singletap[2]", GetControlContent(singletap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_captouch_singletap2", GetControlContent(use_APP_captouch_singletap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_captouch_singletap2 =" + inbuiltfunc_captouch_singletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_captouch_singletap2 =" + file_captouch_singletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_captouch_singletap2 =" + functionscombobox_captouch_singletap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("singletap2[0]", GetControlContent(singletap_21.Text), 3)
-                            + ConstuctCodeLine("singletap2[1]", GetControlContent(singletap_22.Text), 3)
-                            + ConstuctCodeLine("singletap2[2]", GetControlContent(singletap_23.Text), 3)
-                            + ConstuctCodeLine("useapp_captouch_doubletap", GetControlContent(use_APP_captouch_doubletap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_captouch_doubletap =" + inbuiltfunc_captouch_doubletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_captouch_doubletap =" + file_captouch_doubletap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_captouch_doubletap =" + functionscombobox_captouch_doubletap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("doubletap[0]", GetControlContent(doubletap_1.Text), 3)
-                            + ConstuctCodeLine("doubletap[1]", GetControlContent(doubletap_2.Text), 3)
-                            + ConstuctCodeLine("doubletap[2]", GetControlContent(doubletap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_captouch_doubletap2", GetControlContent(use_APP_captouch_doubletap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_captouch_doubletap2 =" + inbuiltfunc_captouch_doubletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_captouch_doubletap2 =" + file_captouch_doubletap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_captouch_doubletap2 =" + functionscombobox_captouch_doubletap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("doubletap2[0]", GetControlContent(doubletap_21.Text), 3)
-                            + ConstuctCodeLine("doubletap2[1]", GetControlContent(doubletap_22.Text), 3)
-                            + ConstuctCodeLine("doubletap2[2]", GetControlContent(doubletap_23.Text), 3)
-                            + ConstuctCodeLine("useapp_captouch_shortpress", GetControlContent(use_APP_captouch_shortpress.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_captouch_shortpress =" + inbuiltfunc_captouch_shortpress.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_captouch_shortpress =" + file_captouch_shortpress.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_captouch_shortpress =" + functionscombobox_captouch_shortpress.Text + "\n"
-                            + ConstuctCodeLine("shortpress[0]", GetControlContent(shortpress_1.Text), 3)
-                            + ConstuctCodeLine("shortpress[1]", GetControlContent(shortpress_2.Text), 3)
-                            + ConstuctCodeLine("shortpress[2]", GetControlContent(shortpress_3.Text), 3)
-                            + ConstuctCodeLine("useapp_captouch_longpress", GetControlContent(use_APP_captouch_longpress.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_captouch_longpress =" + inbuiltfunc_captouch_longpress.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_captouch_longpress =" + file_captouch_longpress.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_captouch_longpress =" + functionscombobox_captouch_longpress.Text + "\n"
-                            + ConstuctCodeLine("longpress[0]", GetControlContent(longpress_1.Text), 3)
-                            + ConstuctCodeLine("longpress[1]", GetControlContent(longpress_2.Text), 3)
-                            + ConstuctCodeLine("longpress[2]", GetControlContent(longpress_3.Text), 3)
-                            + fileversionModifier("mk", true)
-                            + ConstuctCodeLine("MK_dualtapfunc[0]", GetControlContent(mk1tap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("MK_dualtapfunc[1]", GetControlContent(mk2tap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("MK_dualtapfunc[2]", GetControlContent(mk3tap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("MK_dualtapfunc[3]", GetControlContent(mk4tap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("MK_dualtapfunc[4]", GetControlContent(mk5tap_dualshortcut.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("MK_tapfunc[0]", GetControlContent(mk1tap_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_tapfunc[1]", GetControlContent(mk2tap_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_tapfunc[2]", GetControlContent(mk3tap_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_tapfunc[3]", GetControlContent(mk4tap_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_tapfunc[4]", GetControlContent(mk5tap_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_holdfunc[0]", GetControlContent(mk1hold_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_holdfunc[1]", GetControlContent(mk2hold_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_holdfunc[2]", GetControlContent(mk3hold_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_holdfunc[3]", GetControlContent(mk4hold_shortcuts.IsEnabled).ToLower(), 0)
-                            + ConstuctCodeLine("MK_holdfunc[4]", GetControlContent(mk5hold_shortcuts.IsEnabled).ToLower(), 0)
-                            + "\n"
-                            + ConstuctCodeLine("MK_colors[0]", GetControlContent_Led(mk1ledcolor.SelectedItem), 4)
-                            + ConstuctCodeLine("MK_colors[1]", GetControlContent_Led(mk2ledcolor.SelectedItem), 4)
-                            + ConstuctCodeLine("MK_colors[2]", GetControlContent_Led(mk3ledcolor.SelectedItem), 4)
-                            + ConstuctCodeLine("MK_colors[3]", GetControlContent_Led(mk4ledcolor.SelectedItem), 4)
-                            + ConstuctCodeLine("MK_colors[4]", GetControlContent_Led(mk5ledcolor.SelectedItem), 4)
-                            + ConstuctCodeLine("MK_animation[0]", GetControlContent_LedAnimation(mk1ledanimation.SelectedItem), 5)
-                            + ConstuctCodeLine("MK_animation[1]", GetControlContent_LedAnimation(mk2ledanimation.SelectedItem), 5)
-                            + ConstuctCodeLine("MK_animation[2]", GetControlContent_LedAnimation(mk3ledanimation.SelectedItem), 5)
-                            + ConstuctCodeLine("MK_animation[3]", GetControlContent_LedAnimation(mk4ledanimation.SelectedItem), 5)
-                            + ConstuctCodeLine("MK_animation[4]", GetControlContent_LedAnimation(mk5ledanimation.SelectedItem), 5)
-                            + "\n"
-                            + ConstuctCodeLine("useapp_MK1_tap", GetControlContent(use_APP_MK1tap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK1tap_SHORTCUT1 =" + inbuiltfunc_MK1tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK1tap_SHORTCUT1 =" + file_MK1tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK1tap_SHORTCUT1 =" + functionscombobox_MK1tap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("MK1_tap[0]", GetControlContent(mk1tap_1.Text), 3)
-                            + ConstuctCodeLine("MK1_tap[1]", GetControlContent(mk1tap_2.Text), 3)
-                            + ConstuctCodeLine("MK1_tap[2]", GetControlContent(mk1tap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_MK1_tap2", GetControlContent(use_APP_MK1tap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK1tap_SHORTCUT2 =" + inbuiltfunc_MK1tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK1tap_SHORTCUT2 =" + file_MK1tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK1tap_SHORTCUT2 =" + functionscombobox_MK1tap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("MK1_tap2[0]", GetControlContent(mk1tap_21.Text), 3)
-                            + ConstuctCodeLine("MK1_tap2[1]", GetControlContent(mk1tap_22.Text), 3)
-                            + ConstuctCodeLine("MK1_tap2[2]", GetControlContent(mk1tap_23.Text), 3)
-                            + ConstuctCodeLine("MK1_taptext", GetControlContent(mk1tap_4.Text), 1)
-                            + ConstuctCodeLine("useapp_MK1_hold", GetControlContent(use_APP_MK1hold.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK1_hold =" + inbuiltfunc_MK1hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK1_hold =" + file_MK1hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK1hold =" + functionscombobox_MK1hold.Text + "\n"
-                            + ConstuctCodeLine("MK1_hold[0]", GetControlContent(mk1hold_1.Text), 3)
-                            + ConstuctCodeLine("MK1_hold[1]", GetControlContent(mk1hold_2.Text), 3)
-                            + ConstuctCodeLine("MK1_hold[2]", GetControlContent(mk1hold_3.Text), 3)
-                            + ConstuctCodeLine("MK1_holdtext", GetControlContent(mk1hold_4.Text), 1)
-                            + "\n"
-                            + ConstuctCodeLine("useapp_MK2_tap", GetControlContent(use_APP_MK2tap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK2tap_SHORTCUT1 =" + inbuiltfunc_MK2tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK2tap_SHORTCUT1 =" + file_MK2tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK2tap_SHORTCUT1 =" + functionscombobox_MK2tap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("MK2_tap[0]", GetControlContent(mk2tap_1.Text), 3)
-                            + ConstuctCodeLine("MK2_tap[1]", GetControlContent(mk2tap_2.Text), 3)
-                            + ConstuctCodeLine("MK2_tap[2]", GetControlContent(mk2tap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_MK2_tap2", GetControlContent(use_APP_MK2tap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK2tap_SHORTCUT2 =" + inbuiltfunc_MK2tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK2tap_SHORTCUT2 =" + file_MK2tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK2tap_SHORTCUT2 =" + functionscombobox_MK2tap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("MK2_tap2[0]", GetControlContent(mk2tap_21.Text), 3)
-                            + ConstuctCodeLine("MK2_tap2[1]", GetControlContent(mk2tap_22.Text), 3)
-                            + ConstuctCodeLine("MK2_tap2[2]", GetControlContent(mk2tap_23.Text), 3)
-                            + ConstuctCodeLine("MK2_taptext", GetControlContent(mk2tap_4.Text), 1)
-                            + ConstuctCodeLine("useapp_MK2_hold", GetControlContent(use_APP_MK2hold.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK2_hold =" + inbuiltfunc_MK2hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK2_hold =" + file_MK2hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK2hold =" + functionscombobox_MK2hold.Text + "\n"
-                            + ConstuctCodeLine("MK2_hold[0]", GetControlContent(mk2hold_1.Text), 3)
-                            + ConstuctCodeLine("MK2_hold[1]", GetControlContent(mk2hold_2.Text), 3)
-                            + ConstuctCodeLine("MK2_hold[2]", GetControlContent(mk2hold_3.Text), 3)
-                            + ConstuctCodeLine("MK2_holdtext", GetControlContent(mk2hold_4.Text), 1)
-                            + "\n"
-                            + ConstuctCodeLine("useapp_MK3_tap", GetControlContent(use_APP_MK3tap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK3tap_SHORTCUT1 =" + inbuiltfunc_MK3tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK3tap_SHORTCUT1 =" + file_MK3tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK3tap_SHORTCUT1 =" + functionscombobox_MK3tap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("MK3_tap[0]", GetControlContent(mk3tap_1.Text), 3)
-                            + ConstuctCodeLine("MK3_tap[1]", GetControlContent(mk3tap_2.Text), 3)
-                            + ConstuctCodeLine("MK3_tap[2]", GetControlContent(mk3tap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_MK3_tap2", GetControlContent(use_APP_MK3tap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK3tap_SHORTCUT2 =" + inbuiltfunc_MK3tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK3tap_SHORTCUT2 =" + file_MK3tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK3tap_SHORTCUT2 =" + functionscombobox_MK3tap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("MK3_tap2[0]", GetControlContent(mk3tap_21.Text), 3)
-                            + ConstuctCodeLine("MK3_tap2[1]", GetControlContent(mk3tap_22.Text), 3)
-                            + ConstuctCodeLine("MK3_tap2[2]", GetControlContent(mk3tap_23.Text), 3)
-                            + ConstuctCodeLine("MK3_taptext", GetControlContent(mk3tap_4.Text), 1)
-                            + ConstuctCodeLine("useapp_MK3_hold", GetControlContent(use_APP_MK3hold.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK3_hold =" + inbuiltfunc_MK3hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK3_hold =" + file_MK3hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK3hold =" + functionscombobox_MK3hold.Text + "\n"
-                            + ConstuctCodeLine("MK3_hold[0]", GetControlContent(mk3hold_1.Text), 3)
-                            + ConstuctCodeLine("MK3_hold[1]", GetControlContent(mk3hold_2.Text), 3)
-                            + ConstuctCodeLine("MK3_hold[2]", GetControlContent(mk3hold_3.Text), 3)
-                            + ConstuctCodeLine("MK3_holdtext", GetControlContent(mk3hold_4.Text), 1)
-                            + "\n"
-                            + ConstuctCodeLine("useapp_MK4_tap", GetControlContent(use_APP_MK4tap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK4tap_SHORTCUT1 =" + inbuiltfunc_MK4tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK4tap_SHORTCUT1 =" + file_MK4tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK4tap_SHORTCUT1 =" + functionscombobox_MK4tap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("MK4_tap[0]", GetControlContent(mk4tap_1.Text), 3)
-                            + ConstuctCodeLine("MK4_tap[1]", GetControlContent(mk4tap_2.Text), 3)
-                            + ConstuctCodeLine("MK4_tap[2]", GetControlContent(mk4tap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_MK4_tap2", GetControlContent(use_APP_MK4tap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK4tap_SHORTCUT2 =" + inbuiltfunc_MK4tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK4tap_SHORTCUT2 =" + file_MK4tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK4tap_SHORTCUT2 =" + functionscombobox_MK4tap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("MK4_tap2[0]", GetControlContent(mk4tap_21.Text), 3)
-                            + ConstuctCodeLine("MK4_tap2[1]", GetControlContent(mk4tap_22.Text), 3)
-                            + ConstuctCodeLine("MK4_tap2[2]", GetControlContent(mk4tap_23.Text), 3)
-                            + ConstuctCodeLine("MK4_taptext", GetControlContent(mk4tap_4.Text), 1)
-                            + ConstuctCodeLine("useapp_MK4_hold", GetControlContent(use_APP_MK4hold.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK4_hold =" + inbuiltfunc_MK4hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK4_hold =" + file_MK4hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK4hold =" + functionscombobox_MK4hold.Text + "\n"
-                            + ConstuctCodeLine("MK4_hold[0]", GetControlContent(mk4hold_1.Text), 3)
-                            + ConstuctCodeLine("MK4_hold[1]", GetControlContent(mk4hold_2.Text), 3)
-                            + ConstuctCodeLine("MK4_hold[2]", GetControlContent(mk4hold_3.Text), 3)
-                            + ConstuctCodeLine("MK4_holdtext", GetControlContent(mk4hold_4.Text), 1)
-                            + "\n"
-                            + ConstuctCodeLine("useapp_MK5_tap", GetControlContent(use_APP_MK5tap_SHORTCUT1.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK5tap_SHORTCUT1 =" + inbuiltfunc_MK5tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK5tap_SHORTCUT1 =" + file_MK5tap_SHORTCUT1.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK5tap_SHORTCUT1 =" + functionscombobox_MK5tap_SHORTCUT1.Text + "\n"
-                            + ConstuctCodeLine("MK5_tap[0]", GetControlContent(mk5tap_1.Text), 3)
-                            + ConstuctCodeLine("MK5_tap[1]", GetControlContent(mk5tap_2.Text), 3)
-                            + ConstuctCodeLine("MK5_tap[2]", GetControlContent(mk5tap_3.Text), 3)
-                            + ConstuctCodeLine("useapp_MK5_tap2", GetControlContent(use_APP_MK5tap_SHORTCUT2.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK5tap_SHORTCUT2 =" + inbuiltfunc_MK5tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK5tap_SHORTCUT2 =" + file_MK5tap_SHORTCUT2.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK5tap_SHORTCUT2 =" + functionscombobox_MK5tap_SHORTCUT2.Text + "\n"
-                            + ConstuctCodeLine("MK5_tap2[0]", GetControlContent(mk5tap_21.Text), 3)
-                            + ConstuctCodeLine("MK5_tap2[1]", GetControlContent(mk5tap_22.Text), 3)
-                            + ConstuctCodeLine("MK5_tap2[2]", GetControlContent(mk5tap_23.Text), 3)
-                            + ConstuctCodeLine("MK5_taptext", GetControlContent(mk5tap_4.Text), 1)
-                            + ConstuctCodeLine("useapp_MK5_hold", GetControlContent(use_APP_MK5hold.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_MK5_hold =" + inbuiltfunc_MK5hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_MK5_hold =" + file_MK5hold.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_MK5hold =" + functionscombobox_MK5hold.Text + "\n"
-                            + ConstuctCodeLine("MK5_hold[0]", GetControlContent(mk5hold_1.Text), 3)
-                            + ConstuctCodeLine("MK5_hold[1]", GetControlContent(mk5hold_2.Text), 3)
-                            + ConstuctCodeLine("MK5_hold[2]", GetControlContent(mk5hold_3.Text), 3)
-                            + ConstuctCodeLine("MK5_holdtext", GetControlContent(mk5hold_4.Text), 1)
-                            + fileversionModifier("mk", false)
-                            + fileversionModifier("spacenav", true)
-                            + ConstuctCodeLine("spacenav_func", SpaceNav_Mode().ToString(), 0)
-                            + ConstuctCodeLine("spacenav_continuousmode[0]", GetControlContent(continuoustilt.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("spacenav_continuousmode[1]", GetControlContent(continuousslide.IsChecked).ToLower(), 0)
-                            + ConstuctCodeLine("useapp_spacenav_tiltup", GetControlContent(use_APP_Spacenav_tiltup.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_tiltup =" + inbuiltfunc_Spacenav_tiltup.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_tiltup =" + file_Spacenav_tiltup.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_tiltup =" + functionscombobox_Spacenav_tiltup.Text + "\n"
-                            + ConstuctCodeLine("spacenav_tiltup[0]", GetControlContent(tiltup_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltup[1]", GetControlContent(tiltup_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltup[2]", GetControlContent(tiltup_3.Text), 3)
-                            + ConstuctCodeLine("useapp_spacenav_tiltdown", GetControlContent(use_APP_Spacenav_tiltdown.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_tiltdown =" + inbuiltfunc_Spacenav_tiltdown.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_tiltdown =" + file_Spacenav_tiltdown.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_tiltdown =" + functionscombobox_Spacenav_tiltdown.Text + "\n"
-                            + ConstuctCodeLine("spacenav_tiltdown[0]", GetControlContent(tiltdown_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltdown[1]", GetControlContent(tiltdown_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltdown[2]", GetControlContent(tiltdown_3.Text), 3)
-                            + ConstuctCodeLine("useapp_spacenav_tiltright", GetControlContent(use_APP_Spacenav_tiltright.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_tiltright =" + inbuiltfunc_Spacenav_tiltright.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_tiltright =" + file_Spacenav_tiltright.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_tiltright =" + functionscombobox_Spacenav_tiltright.Text + "\n"
-                            + ConstuctCodeLine("spacenav_tiltright[0]", GetControlContent(tiltright_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltright[1]", GetControlContent(tiltright_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltright[2]", GetControlContent(tiltright_3.Text), 3)
-                            + ConstuctCodeLine("useapp_spacenav_tiltleft", GetControlContent(use_APP_Spacenav_tiltleft.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_tiltleft =" + inbuiltfunc_Spacenav_tiltleft.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_tiltleft =" + file_Spacenav_tiltleft.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_tiltleft =" + functionscombobox_Spacenav_tiltleft.Text + "\n"
-                            + ConstuctCodeLine("spacenav_tiltleft[0]", GetControlContent(tiltleft_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltleft[1]", GetControlContent(tiltleft_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_tiltleft[2]", GetControlContent(tiltleft_3.Text), 3)
-                            + "\n"
-                            + ConstuctCodeLine("useapp_spacenav_slideup", GetControlContent(use_APP_Spacenav_slideup.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_slideup =" + inbuiltfunc_Spacenav_slideup.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_slideup =" + file_Spacenav_slideup.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_slideup =" + functionscombobox_Spacenav_slideup.Text + "\n"
-                            + ConstuctCodeLine("spacenav_slideup[0]", GetControlContent(slideup_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_slideup[1]", GetControlContent(slideup_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_slideup[2]", GetControlContent(slideup_3.Text), 3)
-                            + ConstuctCodeLine("useapp_spacenav_slidedown", GetControlContent(use_APP_Spacenav_slidedown.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_slidedown =" + inbuiltfunc_Spacenav_slidedown.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_slidedown =" + file_Spacenav_slidedown.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_slidedown =" + functionscombobox_Spacenav_slidedown.Text + "\n"
-                            + ConstuctCodeLine("spacenav_slidedown[0]", GetControlContent(slidedown_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_slidedown[1]", GetControlContent(slidedown_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_slidedown[2]", GetControlContent(slidedown_3.Text), 3)
-                            + ConstuctCodeLine("useapp_spacenav_slideright", GetControlContent(use_APP_Spacenav_slideright.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_slideright =" + inbuiltfunc_Spacenav_slideright.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_slideright =" + file_Spacenav_slideright.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_slideright =" + functionscombobox_Spacenav_slideright.Text + "\n"
-                            + ConstuctCodeLine("spacenav_slideright[0]", GetControlContent(slideright_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_slideright[1]", GetControlContent(slideright_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_slideright[2]", GetControlContent(slideright_3.Text), 3)
-                            + ConstuctCodeLine("useapp_spacenav_slideleft", GetControlContent(use_APP_Spacenav_slideleft.IsChecked).ToLower(), 0)
-                            + "// inbuiltfunc_Spacenav_slideleft =" + inbuiltfunc_Spacenav_slideleft.IsChecked.ToString().ToLower() + "\n"
-                            + "// file_Spacenav_slideleft =" + file_Spacenav_slideleft.IsChecked.ToString().ToLower() + "\n"
-                            + "// functionscombobox_Spacenav_slideleft =" + functionscombobox_Spacenav_slideleft.Text + "\n"
-                            + ConstuctCodeLine("spacenav_slideleft[0]", GetControlContent(slideleft_1.Text), 3)
-                            + ConstuctCodeLine("spacenav_slideleft[1]", GetControlContent(slideleft_2.Text), 3)
-                            + ConstuctCodeLine("spacenav_slideleft[2]", GetControlContent(slideleft_3.Text), 3)
-                            + fileversionModifier("spacenav", false)
-                            + "}" + "\n"
-                            );
-                        // Add config settings to the configfile.
-                        fs.Write(info, 0, info.Length);
-                        //MessageBox.Show("Configuration Created");
-                    }
+                    //MessageBox.Show("Configuration Created", "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.ToString(), "Ahmsville Dial", MessageBoxButton.OK, MessageBoxImage.Error);
+
                 }
+
             }
         }
 
@@ -3520,6 +3583,24 @@ namespace Ahmsville_Dial
             }
         }
 
+        private void configWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (MainWindow.connecteddialconfigpath != "")
+            {
+                try
+                {
+                    int res = Array.IndexOf(MainWindow.dialconfigpath, MainWindow.connecteddialconfigpath);
+                    diallist.SelectedIndex = res;
+                }
+                catch (Exception)
+                {
+
+                    
+                }
+            }
+          
+        }
+
 
 
 
@@ -3540,6 +3621,7 @@ namespace Ahmsville_Dial
             int[] lines = { 3, 10, 17, 24, 37, 48, 54, 63, 72, 81, 90, 99, 113 };
             string selectedconfig = ((ComboBoxItem)this.configlist.SelectedItem).Tag.ToString();
             string[] configsettings = System.IO.File.ReadAllLines(selectedconfig);
+            List<string> comments = new List<string>();
             for (int i = 0; i < configsettings.Length; i++)
             {
                 string configline = configsettings[i];
@@ -3547,6 +3629,21 @@ namespace Ahmsville_Dial
                 if (substringindex > 0)
                 {
                     string sub = configline.Substring(substringindex);
+                    if (sub.Contains("//default"))
+                    {
+                        DefaultConfig.IsChecked = true;
+                        //sub = sub.Replace("//default", "");
+                    }
+                    if (sub.Contains("//note"))
+                    {
+                        int notesubindex = sub.LastIndexOf("//note");
+                        comments.Add(sub.Substring(notesubindex).Replace("//note",""));
+                    }
+                    if (sub.Contains(";"))
+                    {
+                        sub = sub.Remove(sub.IndexOf(";"));
+                    }
+                    
                     if (sub.StartsWith("=\""))  //load strings differently
                     {
                         sub = sub.Replace("=", "");
@@ -3565,11 +3662,7 @@ namespace Ahmsville_Dial
                         sub = sub.Replace("CRGB::", "");
                     }
                     
-                    if (sub.Contains("//default"))
-                    {
-                        DefaultConfig.IsChecked = true;
-                        sub = sub.Replace("//default","");
-                    }
+                   
                     
                     configsettings[i] = sub;
                 }
@@ -3893,6 +3986,64 @@ namespace Ahmsville_Dial
             slideleft_1.Text = configsettings[currentline++];
             slideleft_2.Text = configsettings[currentline++];
             slideleft_3.Text = configsettings[currentline++];
+
+            #region load comments
+            if (comments.Count > 0)
+            {
+                int commentcnt = 0;
+                knob1_CW_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                knob1_CCW_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                knob2_CW_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                knob2_CCW_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                singletap_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                doubletap_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                shortpress_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                longpress_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                mk1tap_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                mk1hold_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                mk2tap_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                mk2hold_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                mk3tap_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                mk3hold_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                mk4tap_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                mk4hold_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                mk5tap_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                mk5hold_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                tiltup_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                tiltdown_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                tiltright_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                tiltleft_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                slideup_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                slidedown_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                slideright_funcnote.Text = comments.ElementAt(commentcnt);
+                commentcnt += 1;
+                slideleft_funcnote.Text = comments.ElementAt(commentcnt); 
+            }
+            #endregion
         }
 
     }

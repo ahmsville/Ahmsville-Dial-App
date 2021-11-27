@@ -73,6 +73,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="ActiveConfigPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DialConfiguration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -81,6 +85,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="ActiveConfigPopup.xaml.cs">
+      <DependentUpon>ActiveConfigPopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -90,6 +97,7 @@
       <DependentUpon>DialConfiguration.xaml</DependentUpon>
     </Compile>
     <Compile Include="GetSerialDevices.cs" />
+    <Compile Include="InApp_Operations\BLENDER.cs" />
     <Compile Include="InApp_Operations\FUSION360.cs" />
     <Compile Include="InApp_Operations\FUSION360_INTERFACE.cs" />
     <Compile Include="InApp_Operations\VirtualKeys_INTERFACE.cs" />

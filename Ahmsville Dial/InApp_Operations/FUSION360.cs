@@ -42,7 +42,7 @@ namespace Ahmsville_Dial.InApp_Operations
                 if (writer != null)
                 {
                     writer.WriteString(operationname);
-                    System.Console.WriteLine(operationname);
+                   // System.Console.WriteLine(operationname);
                     //Thread.Sleep(2000);
                 }
             }
@@ -69,7 +69,7 @@ namespace Ahmsville_Dial.InApp_Operations
             if (writer != null)
             {
                writer.WriteString(dataout);
-                System.Console.WriteLine(dataout);
+                //System.Console.WriteLine(dataout);
                 //Thread.Sleep(2000);
             }
             
@@ -100,6 +100,11 @@ namespace Ahmsville_Dial.InApp_Operations
         public void _FU360_auto_orientationLock()
         {
             Ahmsville_Dial.rawCalculations.orientationlock = !Ahmsville_Dial.rawCalculations.orientationlock;
+            if (Ahmsville_Dial.rawCalculations.orientationlock == false)
+            {
+                Ahmsville_Dial.rawCalculations.gyrolocked = 0;
+                Ahmsville_Dial.rawCalculations.planelocked = 0;
+            }
 
         }
 

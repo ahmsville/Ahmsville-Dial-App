@@ -44,17 +44,10 @@ namespace Ahmsville_Dial.InApp_Operations
         public void _SW_auto_orientationLock()
         {
             Ahmsville_Dial.rawCalculations.orientationlock = !Ahmsville_Dial.rawCalculations.orientationlock;
-
-            if (Ahmsville_Dial.rawCalculations.orientationlock)
+            if (Ahmsville_Dial.rawCalculations.orientationlock == false)
             {
-
-                //System.Console.WriteLine("Auto locking enabled");
-            }
-            else
-            {
-                //prevgyroQuadrant = 0;
-                //prevplaneQuadrant = 0;
-                //System.Console.WriteLine("Auto locking disabled");
+                Ahmsville_Dial.rawCalculations.gyrolocked = 0;
+                Ahmsville_Dial.rawCalculations.planelocked = 0;
             }
         }
 
@@ -101,7 +94,7 @@ namespace Ahmsville_Dial.InApp_Operations
                 if (writer != null)
                 {
                     writer.WriteString(operationname);
-                    System.Console.WriteLine(operationname);
+                    //System.Console.WriteLine(operationname);
                     //Thread.Sleep(2000);
                 }
             }
@@ -128,7 +121,7 @@ namespace Ahmsville_Dial.InApp_Operations
             if (writer != null)
             {
                 writer.WriteString(dataout);
-                System.Console.WriteLine(dataout);
+                //System.Console.WriteLine(dataout);
                 //Thread.Sleep(2000);
             }
 
