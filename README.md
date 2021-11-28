@@ -9,7 +9,7 @@ Step2 - Download and install the Release installer file for the [Ahmsville Dial 
 
 ## Setting up Arduino IDE for the Ahmsville Dial board
 
-Step1 – Open up the Arduino ide and go to Tools \&gt;\&gt; Board \&gt;\&gt; Boards Manager.
+Step1 – Open up the Arduino ide and go to Tools >> Board >> Boards Manager.
 
 ![ASSEMBLY FINAL_x264_Moment](https://user-images.githubusercontent.com/44074914/143771229-740d84f1-e3ef-41bc-afd0-634cb5792c26.jpg)
 
@@ -58,9 +58,11 @@ ADCRead - [https://github.com/ahmsville/ADCRead](https://github.com/ahmsville/AD
 
 
 **Select board as the Arduino Zero (Native USB Port) and select the COM-Port for the dial.**
+
 ![image](https://user-images.githubusercontent.com/44074914/143771592-5028a5b9-6f29-436a-8482-f1b8e1b29c1d.png)
 
 **The final step is to upload the sketch to your dial.**
+
 ![app instruction9](https://user-images.githubusercontent.com/44074914/143771611-3fabacf3-4e86-4d0e-863d-9f2e8d4c5cfa.PNG)
 
 
