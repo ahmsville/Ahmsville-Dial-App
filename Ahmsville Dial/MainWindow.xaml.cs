@@ -73,7 +73,7 @@ namespace Ahmsville_Dial
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Arduino\libraries\AhmsvilleDial_v2\examples\Absolute_Variant_main\"};
 
         public static string connecteddialconfigpath = "";
-        string[] dialvariants = { "Base", "MAcroKey", "SpaceNav", "Absolute" };
+        string[] dialvariants = { "Base", "MacroKey", "SpaceNav", "Absolute" };
         char[] detectedwirelessdials = { '0', '0', '0', '0' };
         char[] prevdetectedwirelessdials = { '0', '0', '0', '0' };
         string[] dialmain_arduinofileByVersion = {"Base_Variant_main.ino",
