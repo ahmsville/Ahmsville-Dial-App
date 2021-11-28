@@ -5,7 +5,7 @@ Companion software for the Ahmsville Dial.
 
 Step1 - Download and Install [Arduino IDE.](https://www.arduino.cc/en/software)
 
-Step2 - Download and install the Release installer file for the [Ahmsville Dial App.](https://github.com/ahmsville/Ahmsville-Dial-App)
+Step2 - Download and install the Release installer file for the [Ahmsville Dial App.](https://github.com/ahmsville/Ahmsville-Dial-App/releases)
 
 ## Setting up Arduino IDE for the Ahmsville Dial board
 
