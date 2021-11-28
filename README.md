@@ -11,7 +11,8 @@ Step2 - Download and install the Release installer file for the [Ahmsville Dial 
 
 Step1 – Open up the Arduino ide and go to Tools \&gt;\&gt; Board \&gt;\&gt; Boards Manager.
 
-![](RackMultipart20211128-4-3zxmhk_html_13da1a10646df483.jpg)
+![ASSEMBLY FINAL_x264_Moment](https://user-images.githubusercontent.com/44074914/143771229-740d84f1-e3ef-41bc-afd0-634cb5792c26.jpg)
+
 
 Step2 – Search for SAMD and install the Arduino SAMD Boards package. ![](RackMultipart20211128-4-3zxmhk_html_813fb0b59af30dc5.jpg)
 
