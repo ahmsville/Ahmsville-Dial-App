@@ -87,7 +87,7 @@ For now the Ahmsville Dial SpaceNav has dedicated addin for three modelling soft
 
 Different addin/addon have been developed for the mentioned software’s, that allows the Dial to control the modelling environment in these software’s, **the dial does not do this by manipulating your keyboard or mouse,** instead it uses the addin code running alongside the modelling software, so it does not impede your use of the keyboard, mouse or any other control devices. 
 
-**Setting up the Dial for Use in Solidworks**
+## **Setting up the Dial for Use in Solidworks**
 
 * Step 1 – You obviously need to have solidworks installed on your PC.
 * Step 2 – You also need to have a working Ahmsville Dial V2 - SpaceNav or Absolute variant.
@@ -95,7 +95,7 @@ Different addin/addon have been developed for the mentioned software’s, that a
 * Step 4 – Make sure you have a configuration for Solidworks named “SOLIDWORKS”, by default you will have this configuration in the app as I always bundle my personal dial’s configurations with the app.
 * Step 5 – Open Solidworks and you should be able to manipulate the model using the SpaceNav with no fuss, to see a full list of what you can do with the dial in Solidworks, click on MK5 on the Absolute Variant and Longpress the capacitive touch on the SpaceNav Variant, you can also watch the video for a more detailed demonstration.
 
-**Setting up the Dial for Use in Fusion 360**
+## **Setting up the Dial for Use in Fusion 360**
 
 * Step 1 – You obviously need to have Fusion 360 installed on your PC.
 * Step 2 – You also need to have a working Ahmsville Dial V2 - SpaceNav or Absolute variant.
@@ -103,7 +103,7 @@ Different addin/addon have been developed for the mentioned software’s, that a
 * Step 4 – Make sure you have a configuration for Fusion 360 named “Fusion_360”, by default you will have this configuration in the app as I always bundle my personal dial’s configurations with the app.
 * Step 5 – Open Fusion 360 and you should be able to manipulate the model using the SpaceNav with no fuss, to see a full list of what you can do with the dial in Fusion 360, click on MK5 on the Absolute Variant and Longpress the capacitive touch on the SpaceNav Variant, you can also watch the video for a more detailed demonstration.
 
-**Setting up the Dial for Use in Blender**
+## **Setting up the Dial for Use in Blender**
 
 * Step 1 – You obviously need to have Blender installed on your PC.
 * Step 2 – You also need to have a working Ahmsville Dial V2 - SpaceNav or Absolute variant.
