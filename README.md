@@ -110,9 +110,7 @@ Different addin/addon have been developed for the mentioned software’s, that a
 * Step 3 – install the latest release of the Ahmsville Dial companion app.
 * Step 4 – locate the python version bundled with your blender, it’s usually located in (C:\Program Files\Blender Foundation\Blender 2.93\2.93\python\bin).
 * Step 5 – open command prompt and cd into that folder with a command similar to this;
-  * cd C:\Program Files\Blender Foundation\Blender 2.93\2.93\python\bin
-
- Once you’re in, enter the following commands one after the other:
+  * cd C:\Program Files\Blender Foundation\Blender 2.93\2.93\python\bin.  Once you’re in, enter the following commands one after the other:
 
   * python.exe -m ensurepip
   * python.exe -m pip install pywin32
