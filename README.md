@@ -111,13 +111,14 @@ Different addin/addon have been developed for the mentioned software’s, that a
 * Step 4 – locate the python version bundled with your blender, it’s usually located in (C:\Program Files\Blender Foundation\Blender 2.93\2.93\python\bin).
 * Step 5 – open command prompt and cd into that folder with a command similar to this;
   * cd C:\Program Files\Blender Foundation\Blender 2.93\2.93\python\bin
-  
-Once you’re in, enter the following commands one after the other:
+
+ Once you’re in, enter the following commands one after the other:
 
   * python.exe -m ensurepip
   * python.exe -m pip install pywin32
   * python.exe -m pip install pynput
-this will install the python modules required by the Ahmsville Dial addon.
+
+ this will install the python modules required by the Ahmsville Dial addon.
 * Step 6 – Open Blender and navigate to Edit >> Preferences >> Add-ons and then click on install, Locate the Blender addon bundled with the Ahmsville dial companion app which is located @ (C:\Program Files\Ahmsville Labs\Ahmsville Dial\BLENDER Addon), select the file named _**ahmsville_dial.py**_ and make sure to enable it as shown in the image.
 * Step 7 – Make sure you have a configuration for Blender named “Blender”, by default you will have this configuration in the app as I always bundle my personal dial’s configurations with the app.
 * Step 8 – Open Blender and you should be able to manipulate the model using the SpaceNav after pressing ctrl + w, unlike solidworks and fusion 360 the Ahmsville dial blender addon does not start with blender automatically, hence the convenient shortcut. To see a full list of what you can do with the dial in Blender, click on MK5 on the Absolute Variant and Longpress the capacitive touch on the SpaceNav Variant, you can also watch the video for a more detailed demonstration.
