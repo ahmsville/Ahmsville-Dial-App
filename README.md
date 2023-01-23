@@ -5,6 +5,11 @@ Companion software for the Ahmsville Dial.
 
 New release installers will usually contain new features, bug fixes and optimizations, updated library and code for the Dials, or feature request from users.
 
+# Videos
+
+Dial Configurations - https://youtu.be/c8ueATFmURA
+SpaceNav Setup - https://youtu.be/7mp8e4i2rcc
+
 # Software Setup
 
 Step1 - Download and Install [Arduino IDE.](https://www.arduino.cc/en/software)
