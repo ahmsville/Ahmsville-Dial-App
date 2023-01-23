@@ -7,8 +7,8 @@ New release installers will usually contain new features, bug fixes and optimiza
 
 # Videos
 
-Dial Configurations - https://youtu.be/c8ueATFmURA
-SpaceNav Setup - https://youtu.be/7mp8e4i2rcc
+ - Dial Configurations - https://youtu.be/c8ueATFmURA
+ - SpaceNav Setup - https://youtu.be/7mp8e4i2rcc
 
 # Software Setup
 
