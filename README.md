@@ -1,6 +1,14 @@
 # Ahmsville-Dial-App
 Companion software for the Ahmsville Dial.
 
+# Building The App
+To compile the Ahmsville dial app, you will need to have the following installed:
+ - Visual Studio (setup for WPF applications)
+ - Visual studio installer project
+ - Solidworks 2019
+
+Run visual studio as administrator when building for the first time. 
+
 # Software Setup
 
 Step1 - Download and Install [Arduino IDE.](https://www.arduino.cc/en/software)
